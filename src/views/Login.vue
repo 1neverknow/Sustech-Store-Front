@@ -1,72 +1,72 @@
 <!--用户登陆界面-->
 
 <template>
-  <div class="login-wrap">
-    <div class="ms-login">
-      <el-container>
-        <div style="margin: 50px"></div>
-        <el-header style="height: 100px">
-          <router-link to="/">
-            <el-avatar
-                :size="90"
-                src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-                style="margin: 5px auto; overflow: hidden; border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,.05); position: relative;"
-            ></el-avatar>
-          </router-link>
-        </el-header>
-        <el-main>
-          <el-form
-              ref="ruleForm"
-              :model="ruleForm"
-              :rules="rules"
-              :label-position="labelPosition"
-              label-width="0px"
-              class="ms-content"
-          >
-            <el-form-item label="E-Mail Address" prop="email">
-              <el-input v-model="ruleForm.name"></el-input>
-            </el-form-item>
-            <el-form-item label="Password" prop="password">
-              <el-input v-model="ruleForm.password"></el-input>
-            </el-form-item>
-            <el-form-item label="" prop="remember" style="margin-top: -10px">
-              <el-checkbox v-model="ruleForm.remember" label="Remember Me"></el-checkbox>
-            </el-form-item>
-            <el-form-item>
-              <router-link to="/login/forgot">
-                <el-link type="primary" style="margin-left: 280px; margin-top: -330px">Forgot Password?</el-link>
-              </router-link>
-            </el-form-item>
+  <div class="ms-login">
+    <el-container>
+      <div style="margin: 50px"></div>
+      <el-header style="height: 100px">
+        <router-link to="/user">
+          <el-avatar
+              :size="90"
+              src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+              style="margin: 5px auto; overflow: hidden; border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,.05); position: relative;"
+          ></el-avatar>
+        </router-link>
+      </el-header>
+      <el-main>
+        <el-form
+            ref="ruleForm"
+            :model="ruleForm"
+            :rules="rules"
+            :label-position="labelPosition"
+            :hide-required-asterisk="true"
+            class="ms-content"
+        >
+          <el-form-item label="E-Mail Address" prop="email">
+            <el-input v-model="ruleForm.email"></el-input>
+          </el-form-item>
+          <el-form-item label="Password" prop="password">
+            <el-input v-model="ruleForm.password"></el-input>
+          </el-form-item>
+          <el-form-item label="" prop="remember">
+            <el-checkbox v-model="ruleForm.remember" label="Remember Me"></el-checkbox>
+          </el-form-item>
 
-            <div class="login-btn">
-                <el-button type="primary" @click="submitForm()">Login</el-button>
-            </div>
+          <div style="margin-top: -55px; margin-bottom: 50px; margin-left: 280px">
+            <router-link to="/login/forgot">
+              <!--                <el-link type="primary" style="margin-left: 280px; margin-top: -330px">Forgot Password?</el-link>-->
+              <el-link type="primary" style="height: 15px">Forgot Password?</el-link>
+            </router-link>
+          </div>
 
-            <el-form-item>
-              <!--跳转到注册页面-->
-              Don't have an account?
-              <router-link to="/register">
-                <el-link type="primary">Create One</el-link>
-              </router-link>
-            </el-form-item>
+          <div class="login-btn">
+            <el-button type="primary" @click="submitForm()">Login</el-button>
+          </div>
 
-          </el-form>
-        </el-main>
-      </el-container>
-    </div>
+          <div style="font-size: 14px">
+            <!--      跳转到创建账号-->
+            Don't have an account?
+            <router-link to="/register">
+              <el-link type="primary">Create One</el-link>
+            </router-link>
+          </div>
+
+        </el-form>
+      </el-main>
+    </el-container>
   </div>
-
 </template>
 
 
 <script>
-// import {postLogin} from "@/api/requist";
-
 export default {
   name: "Login",
   // 校验规则
   data() {
     var validateEmail = (rule, value, callback) => {
+      console.log(this)
+      console.log(value)
+
       if (value === '') {
         callback(new Error('Please input an email address'));
       } else {
@@ -93,7 +93,7 @@ export default {
       ruleForm: {
         email: '',
         password: '',
-        remember: false,
+        accept: false,
       },
       rules: {
         email: [
@@ -130,8 +130,6 @@ export default {
 }
 </script>
 
-
-
 <style scoped>
 .el-header {
   background-color: skyblue;
@@ -166,7 +164,7 @@ export default {
 }
 
 .login-btn {
-  margin-top: -70px;
+  /*margin-top: -70px;*/
   text-align: center;
 }
 .login-btn button {

@@ -26,7 +26,7 @@
             <el-input v-model="ruleForm.name"></el-input>
           </el-form-item>
           <el-form-item label="E-Mail Address" prop="email">
-            <el-input v-model="ruleForm.name"></el-input>
+            <el-input v-model="ruleForm.email"></el-input>
           </el-form-item>
           <el-form-item label="Password" prop="password">
             <el-input v-model="ruleForm.password"></el-input>
@@ -60,6 +60,9 @@ export default {
 
   data() {
     var validateEmail = (rule, value, callback) => {
+      console.log(this)
+      console.log(value)
+
       if (value === '') {
         callback(new Error('Please input an email address'));
       } else {
