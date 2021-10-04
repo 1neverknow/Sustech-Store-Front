@@ -22,8 +22,8 @@
             :hide-required-asterisk="true"
             class="ms-content"
         >
-          <el-form-item label="E-Mail Address" prop="email">
-            <el-input v-model="ruleForm.email"></el-input>
+          <el-form-item label="E-Mail Address" prop="username">
+            <el-input v-model="ruleForm.username"></el-input>
           </el-form-item>
           <el-form-item label="Password" prop="password">
             <el-input v-model="ruleForm.password"></el-input>
@@ -64,17 +64,18 @@ export default {
   // 校验规则
   data() {
     var validateEmail = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('Please input an email address'));
-      } else {
-        if (value !== '') {
-          var reg=/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-          if(!reg.test(value)){
-            callback(new Error('Email is invalid'));
-          }
-        }
-        callback();
-      }
+      // if (value === '') {
+      //   callback(new Error('Please input an email address'));
+      // } else {
+      //   if (value !== '') {
+      //     var reg=/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+      //     if(!reg.test(value)){
+      //       callback(new Error('Email is invalid'));
+      //     }
+      //   }
+      //   callback();
+      // }
+      callback();
     };
     var validatePass = (rule, value, callback) => {
       if (value === '') {
@@ -88,12 +89,12 @@ export default {
     return {
       labelPosition: 'top',
       ruleForm: {
-        email: '',
-        password: '',
+        username: 'markerhub',
+        password: '111111',
         accept: false,
       },
       rules: {
-        email: [
+        username: [
           {
             validator: validateEmail,
             trigger: 'blur',
@@ -113,10 +114,21 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           alert('Submit')
-          this.$axios.post('http://localhost:8080/login', this.ruleForm).then(res => {
+
+          console.log(this)
+          console.log(this.ruleForm)
+
+          this.$axios.post('http://localhost:8081/login', this.ruleForm).then(res => {
             console.log(res.headers)
             console.log(res)
-            // const jwt = res.headers['authorization']
+
+            // 获取到后端返回的数据
+            const jwt = res.headers['authorization']
+            const userInfo = res.data.data
+
+            console.log(userInfo)
+
+
           })
         } else {
           console.log('error submit!!')
