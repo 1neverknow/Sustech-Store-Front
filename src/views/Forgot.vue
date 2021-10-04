@@ -26,8 +26,16 @@
             <el-input v-model="ruleForm.email"></el-input>
           </el-form-item>
 
+          <el-form-item label="Varify Code" prop="varifycode">
+            <el-input v-model="ruleForm.varifycode"></el-input>
+          </el-form-item>
+
+          <div class="send-btn">
+            <el-button type="primary" @click="sendMsg('ruleForm')">Send</el-button>
+          </div>
+
           <div class="reset-btn">
-            <el-button type="primary" style="margin-top: 30px" @click="submitForm()">Reset Password</el-button>
+            <el-button type="primary" style="margin-top: 30px" @click="submitForm()">Reset</el-button>
           </div>
 
         </el-form>
@@ -82,6 +90,9 @@ export default {
         }
       })
     },
+    sendMsg(formName) {
+      alert('Verify!')
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields()
     },
@@ -114,6 +125,19 @@ export default {
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.3);
   overflow: hidden;
+}
+
+.send-btn {
+  text-align: right;
+  margin-left: 410px;
+  /*margin-top: -170px;*/
+  margin-bottom: 300px;
+}
+.send-btn button {
+  /*width: 100%;*/
+  width: 20px;
+  height: 15px;
+  font-size: 5px;
 }
 
 .reset-btn {

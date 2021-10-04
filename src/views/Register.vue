@@ -36,9 +36,9 @@
             <el-link href="http://cn.bing.com" type="primary">Terms and Conditions</el-link>
           </el-form-item>
 
-          <div class="register-btn">
-            <el-button type="primary" @click="submitForm()">Register</el-button>
-          </div>
+          <el-form-item class="register-btn">
+            <el-button type="primary" @click="submitForm('ruleForm')">Register</el-button>
+          </el-form-item>
 
           <el-form-item>
             <!--      跳转到创建账号-->
@@ -114,6 +114,7 @@ export default {
   },
   methods: {
     submitForm(formName) {
+      console.log(formName)
       this.$refs[formName].validate((valid) => {
         if (valid) {
           alert('Submit')

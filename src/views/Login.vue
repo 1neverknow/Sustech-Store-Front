@@ -39,8 +39,8 @@
             </router-link>
           </div>
 
-          <div class="login-btn">
-            <el-button type="primary" @click="submitForm()">Login</el-button>
+          <div class="login-btn" style="margin-top: -20px">
+            <el-button type="primary" @click="submitForm('ruleForm')">Login</el-button>
           </div>
 
           <div style="font-size: 14px">
@@ -64,9 +64,6 @@ export default {
   // 校验规则
   data() {
     var validateEmail = (rule, value, callback) => {
-      console.log(this)
-      console.log(value)
-
       if (value === '') {
         callback(new Error('Please input an email address'));
       } else {
@@ -116,6 +113,11 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           alert('Submit')
+          this.$axios.post('http://localhost:8080/login', this.ruleForm).then(res => {
+            console.log(res.headers)
+            console.log(res)
+            // const jwt = res.headers['authorization']
+          })
         } else {
           console.log('error submit!!')
           alert('Please check your input')
