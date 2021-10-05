@@ -33,7 +33,7 @@ axios.interceptors.response.use(response => {
         if(error.response.data) {
             error.message = error.response.data.msg
         }
-        // 根据请求状态觉得是否登录或者提示其他
+        // 根据请求状态决定是否登录或者提示其他
         if (error.response.status === 4001) {
             store.commit('REMOVE_INFO');
             router.push({
