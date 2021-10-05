@@ -23,7 +23,10 @@
             class="ms-content"
         >
           <el-form-item label="New Password" prop="password">
-            <el-input v-model="ruleForm.password"></el-input>
+            <el-input type="password" v-model="ruleForm.password"></el-input>
+          </el-form-item>
+          <el-form-item label="Input Your Password Again" prop="password">
+            <el-input type="password" v-model="ruleForm.confirm"></el-input>
           </el-form-item>
 
           <div class="submit-btn">
@@ -37,6 +40,8 @@
 </template>
 
 <script>
+import Element from "element-ui";
+
 export default {
   name: "Reset",
   data() {
@@ -53,9 +58,16 @@ export default {
       labelPosition: 'top',
       ruleForm: {
         password: '',
+        confirm: '',
       },
       rules: {
         password: [
+          {
+            validator: validatePass,
+            trigger: 'blur',
+          },
+        ],
+        confirm: [
           {
             validator: validatePass,
             trigger: 'blur',
@@ -68,7 +80,40 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('Submit')
+          Element.Message({
+            showClose: true,
+            message: 'Congrats, this is a success message.',
+            type: 'success',
+          })
+          console.log(this)
+          console.log(this.ruleForm)
+          // 更改为调用全局this -> 可以用来获取store里的信息
+          const _this = this
+
+          this.$axios.post('http://localhost:8081/login', this.ruleForm).then(res => {
+            // 接收到来自后端的消息
+            console.log(res.headers)
+            console.log(res)
+
+            // 接受后端返回的数据
+            // 希望全局都可以访问到jwt的内容 -> 使用 /store/index.js
+            // header中authorization字段即为用户登录后的权限验证
+            const jwt = res.headers['authorization']
+            const userInfo = res.data.data
+
+            console.log(userInfo)
+
+            // 将jwt和userInfo共享给整个vue项目
+            _this.$store.commit("SET_TOKEN",jwt)
+            _this.$store.commit("SET_USERINFO", userInfo)
+
+            // 验证 -> 获取userInfo
+            console.log(this.$store.getters.getUser)
+
+            // 验证成功后，跳转到user页面
+            _this.$router.push("/user")
+          })
+          // 认证不通过的情况 -> 全局axios拦截
         } else {
           console.log('error submit!!')
           alert('Please check your input')
@@ -79,6 +124,9 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields()
     },
+    getPwd() {
+      return this.ruleForm.password
+    }
   },
 }
 </script>

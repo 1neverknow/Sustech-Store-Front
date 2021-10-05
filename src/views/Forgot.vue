@@ -23,19 +23,20 @@
             class="ms-content"
         >
           <el-form-item label="E-Mail Address" prop="email">
-            <el-input v-model="ruleForm.email"></el-input>
+            <el-input v-model="ruleForm.email" style="width: 320px"></el-input>
+            <el-button type="primary" @click="resetForm('ruleForm')">Send</el-button>
           </el-form-item>
+<!--          <div class="send-btn">-->
+<!--            <el-button type="primary" @click="resetForm('ruleForm')">Send</el-button>-->
+<!--          </div>-->
 
           <el-form-item label="Varify Code" prop="varifycode">
             <el-input v-model="ruleForm.varifycode"></el-input>
           </el-form-item>
 
-          <div class="send-btn">
-            <el-button type="primary" @click="sendMsg('ruleForm')">Send</el-button>
-          </div>
 
           <div class="reset-btn">
-            <el-button type="primary" style="margin-top: 30px" @click="submitForm()">Reset</el-button>
+            <el-button type="primary" style="margin-top: 30px" @click="submitForm('ruleForm')">Reset</el-button>
           </div>
 
         </el-form>
@@ -45,6 +46,8 @@
 </template>
 
 <script>
+import Element from "element-ui";
+
 export default {
   name: "Forgot",
 
@@ -70,11 +73,9 @@ export default {
       },
       rules: {
         email: [
-          {
-            validator: validateEmail,
-            trigger: 'blur',
-          },
+          {validator: validateEmail, trigger: 'blur',},
         ],
+        varifycode: {trigger: 'blur',}
       },
     }
   },
@@ -82,7 +83,24 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('Submit')
+          Element.Message({
+            showClose: true,
+            message: 'Congrats, this is a success message.',
+            type: 'success',
+          })
+          console.log(this)
+          console.log(this.ruleForm)
+          // 更改为调用全局this -> 可以用来获取store里的信息
+          const _this = this
+          this.$axios.post('http://localhost:8081/login', this.ruleForm).then(res => {
+            // 接收到来自后端的消息
+            console.log(res.headers)
+            console.log(res)
+            const jwt = res.headers['authorization']
+            _this.$store.commit("SET_TOKEN",jwt)
+            // 验证成功后，跳转到reset页面
+            _this.$router.push("/login/reset")
+          })
         } else {
           console.log('error submit!!')
           alert('Please check your input')
@@ -90,11 +108,32 @@ export default {
         }
       })
     },
-    sendMsg(formName) {
-      alert('Verify!')
-    },
     resetForm(formName) {
-      this.$refs[formName].resetFields()
+      this.$refs[formName].validateField("email", error => {
+        if (!error) {
+          Element.Message({
+            showClose: true,
+            message: 'Input the verification code within 5 min',
+            type: 'success',
+          })
+
+          const _this = this
+          this.$axios.post('http://localhost:8081/login/forgot', this.ruleForm.email).then(res => {
+            console.log(res.headers)
+            console.log(res)
+            const jwt = res.headers['authorization']
+            _this.$store.commit("SET_TOKEN", jwt)
+          })
+        } else {
+          console.log('error submit!!')
+          Element.Message({
+            showClose: true,
+            message: 'Please check your input',
+            type: 'error',
+          })
+          return false
+        }
+      })
     },
   },
 }
@@ -127,25 +166,12 @@ export default {
   overflow: hidden;
 }
 
-.send-btn {
-  text-align: right;
-  margin-left: 410px;
-  /*margin-top: -170px;*/
-  margin-bottom: 300px;
-}
-.send-btn button {
-  /*width: 100%;*/
-  width: 20px;
-  height: 15px;
-  font-size: 5px;
-}
-
 .reset-btn {
   text-align: center;
+  margin-top: -10px;
 }
 .reset-btn button {
   width: 100%;
   height: 36px;
-  margin-bottom: 10px;
 }
 </style>

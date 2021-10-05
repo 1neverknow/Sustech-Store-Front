@@ -1,53 +1,58 @@
 import axios from "axios";
 import Element from "element-ui";
-import store from "./store";
-import router from "./router";
-axios.defaults.baseURL='http://localhost:8080'
+import store from '@/store'
+import router from "@/router";
 
+// 为交互请求添加域名信息（默认IP。端口号）
+axios.defaults.baseURL='http://localhost:8081'
 
+// 配置axios全局拦截 (发起请求时的配置)
+// 前置拦截
 axios.interceptors.request.use(config => {
-    console.log("前置拦截")
-    // 统一设置请求头
     return config
 })
-axios.interceptors.response.use(response => {
-        const res = response.data;
-        console.log("后置拦截")
-        // 当状态码为正常（200）的情况
-        if (res.code === 200) {
-            return response
-        } else {
-            // 弹窗异常信息
-            Element.Message({
-                message: response.data.msg,
-                type: 'error',
-                duration: 2 * 1000
-            })
-            // 直接拒绝往下面返回结果信息
-            return Promise.reject(response.data.msg)
-        }
-    },
-    error => {
-        console.log('err' + error)
 
-        if(error.response.data) {
-            error.message = error.response.data.msg
-        }
-        // 根据请求状态决定是否登录或者提示其他
-        if (error.response.status === 4001) {
-            store.commit('REMOVE_INFO');
-            router.push({
-                path: '/login'
-            });
-            error.message = 'Please register again';
-        }
-        if (error.response.status === 403) {
-            error.message = '权限不足，无法访问';
-        }
+// 后置拦截: 接收到后端发来的消息时处理
+// e.g. 出现异常时弹窗提示 -> 不需要一一alert
+axios.interceptors.response.use(response => {
+    let res = response.data
+
+    // console.log(res)
+    if (res.code === 200) {
+        // 请求成功
+        return response
+    } else {
+        // element-ui 错误弹窗
         Element.Message({
+            showClose: true,
+            message: 'Oops, this is a error message.',
+            type: 'error',
+        })
+        // 阻止进入后续逻辑
+        return Promise.reject(response.data.message)
+    }
+},
+    error => {
+        console.log(error)
+
+        if (error.response.data) {
+            error.message = error.response.data.message
+        }
+
+        if (error.response.status === 401) {
+            // 清空全局参数 -> store/index.js -> REMOVE_INFO方法
+            store.commit("REMOVE_INFO")
+            router.push("/login")
+        }
+        // 错误提示（弹窗）
+        Element.Message({
+            showClose: true,
             message: error.message,
             type: 'error',
-            duration: 3 * 1000
         })
+        // 阻止进入后续逻辑
         return Promise.reject(error)
-    })
+    }
+
+)
+

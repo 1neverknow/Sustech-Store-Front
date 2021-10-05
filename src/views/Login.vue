@@ -19,6 +19,7 @@
               ref="ruleForm"
               :model="ruleForm"
               :rules="rules"
+              :invisible="invisible"
               :label-position="labelPosition"
               :hide-required-asterisk="true"
               class="ms-content"
@@ -26,8 +27,13 @@
             <el-form-item label="E-Mail Address" prop="email">
               <el-input v-model="ruleForm.email"></el-input>
             </el-form-item>
-            <el-form-item label="Password" prop="password">
-              <el-input v-model="ruleForm.password"></el-input>
+            <el-form-item v-if="this.invisible" label="Password">
+              <el-input type="password" v-model="ruleForm.password" style="width: 320px"></el-input>
+              <el-button type="primary" @click="changePass('show')" style="width: 80px">Show</el-button>
+            </el-form-item>
+            <el-form-item v-else label="Password">
+              <el-input type="text" v-model="ruleForm.password" style="width: 320px"></el-input>
+              <el-button type="default" @click="changePass('hide')" style="width: 80px">Hide</el-button>
             </el-form-item>
             <el-form-item label="" prop="remember">
               <el-checkbox v-model="ruleForm.remember" label="Remember Me"></el-checkbox>
@@ -48,7 +54,7 @@
               <!--      跳转到创建账号-->
               Don't have an account?
               <router-link to="/register">
-                <el-link type="primary">Create One</el-link>
+                <el-link type="primary" style="height: 15px; margin-top: -5px">Create One</el-link>
               </router-link>
             </div>
 
@@ -61,6 +67,7 @@
 
 
 <script>
+import Element from "element-ui";
 export default {
   name: "Login",
   // 校验规则
@@ -109,28 +116,47 @@ export default {
           },
         ],
       },
+      invisible: true
     }
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('Submit')
-
+          Element.Message({
+            showClose: true,
+            message: 'Congrats, this is a success message.',
+            type: 'success',
+          })
           console.log(this)
           console.log(this.ruleForm)
+          // 更改为调用全局this -> 可以用来获取store里的信息
+          const _this = this
 
           this.$axios.post('http://localhost:8081/login', this.ruleForm).then(res => {
+            // 接收到来自后端的消息
             console.log(res.headers)
             console.log(res)
 
-            // 获取到后端返回的数据
-            // 希望全局都可以访问到jwt的内容 -> /store/index.js
+            // 接受后端返回的数据
+            // 希望全局都可以访问到jwt的内容 -> 使用 /store/index.js
+            // header中authorization字段即为用户登录后的权限验证
             const jwt = res.headers['authorization']
             const userInfo = res.data.data
 
             console.log(userInfo)
+
+            // 将jwt和userInfo共享给整个vue项目
+            _this.$store.commit("SET_TOKEN",jwt)
+            _this.$store.commit("SET_USERINFO", userInfo)
+
+            // 验证 -> 获取userInfo
+            console.log(this.$store.getters.getUser)
+
+            // 验证成功后，跳转到user页面
+            _this.$router.push("/user")
           })
+          // 认证不通过的情况 -> 全局axios拦截
         } else {
           console.log('error submit!!')
           alert('Please check your input')
@@ -141,6 +167,9 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields()
     },
+    changePass(value) {
+      this.invisible = !(value === 'show');
+    }    //判断渲染，true:暗文显示，false:明文显示
   },
 }
 </script>
