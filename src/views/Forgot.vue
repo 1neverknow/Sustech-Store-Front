@@ -92,7 +92,7 @@ export default {
           console.log(this.ruleForm)
           // 更改为调用全局this -> 可以用来获取store里的信息
           const _this = this
-          this.$axios.post('http://localhost:8081/login', this.ruleForm).then(res => {
+          this.$axios.post('http://localhost:8081/login/forgot', this.ruleForm).then(res => {
             // 接收到来自后端的消息
             console.log(res.headers)
             console.log(res)

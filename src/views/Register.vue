@@ -132,7 +132,7 @@ export default {
           console.log(this.ruleForm)
           const _this = this
 
-          this.$axios.post('http://localhost:8081/login', this.ruleForm).then(res => {
+          this.$axios.post('http://localhost:8081/register', this.ruleForm).then(res => {
             console.log(res.headers)
             console.log(res)
             const jwt = res.headers['authorization']
