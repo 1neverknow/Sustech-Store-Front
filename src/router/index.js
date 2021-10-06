@@ -7,6 +7,8 @@ import Register from "@/views/Register";
 import Forgot from "@/views/Forgot";
 import Reset from "@/views/Reset";
 import User from "@/views/User";
+import Details from "@/views/Details";
+import ShoppingCart from "@/views/ShoppingCart";
 
 Vue.use(VueRouter)
 // router: 路由 - 页面跳转管理
@@ -45,6 +47,19 @@ const routes = [
       requireAuth: true
     },
     component: User
+  },
+  {
+    path: '/product/details',
+    name: 'Details',
+    component: Details
+  },
+  {
+    path: '/user/shoppingCart',
+    name: 'ShoppingCart',
+    meta: {
+      requireAuth: true
+    },
+    component: ShoppingCart
   }
 ]
 
