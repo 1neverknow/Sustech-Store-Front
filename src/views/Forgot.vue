@@ -107,12 +107,8 @@ export default {
           })
           // 更改为调用全局this -> 可以用来获取store里的信息
           const _this = this
-          this.$axios.post('http://localhost:8081/login/forgot', this.ruleForm).then(res => {
-            // 接收到来自后端的消息
-            console.log(res.headers)
-            console.log(res)
-            const jwt = res.headers['authorization']
-            _this.$store.commit("SET_TOKEN",jwt)
+          this.$axios.post('http://localhost:8081/login/forgot', this.ruleForm)
+              .then(res => {
             // 验证成功后，跳转到reset页面
             _this.$router.push("/login/reset")
           })
@@ -126,7 +122,7 @@ export default {
     resetForm(formName) {
       this.$refs[formName].validateField("email", error => {
         if (!error) {
-          // this.$axios.post('http://localhost:8081/login/forgot', this.ruleForm.email).then(res => {
+          this.$axios.post('http://localhost:8081/login/forgot', this.ruleForm.email).then(res => {
             var countdown = setInterval(() => {
               if (this.verify.time_out < 1) {
                 console.log("send verify code")
@@ -142,7 +138,7 @@ export default {
                 this.verify.getCode = --this.verify.time_out + 's'
               }
             }, 1000);
-          // })
+          })
         } else {
           console.log('error submit!!')
           return false

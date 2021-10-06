@@ -25,7 +25,7 @@ axios.interceptors.response.use(response => {
         // element-ui 错误弹窗
         Element.Message({
             showClose: true,
-            message: 'Oops, this is a error message.',
+            message: response.data.message,
             type: 'error',
         })
         // 阻止进入后续逻辑

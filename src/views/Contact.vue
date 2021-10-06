@@ -1,13 +1,12 @@
 <template>
-  <div>
-    <h2>This is a shopping cart</h2>
-  </div>
-
+<div>
+  <h2>Contact with the owner!</h2>
+</div>
 </template>
 
 <script>
 export default {
-  name: "ShoppingCart"
+  name: "Contact"
 }
 </script>
 

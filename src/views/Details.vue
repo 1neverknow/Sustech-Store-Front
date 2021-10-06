@@ -46,8 +46,8 @@
         </div>
         <!--      内容区底部按钮-->
         <div class="button">
-          <el-button class="shop-cart" :disabled="dis" @click="addShoppingCart">Add to Shopping Cart</el-button>
-          <el-button class="like" @click="addCollect">Add to Collection</el-button>
+          <el-button class="buy" icon="el-icon-goods" :disabled="dis" @click="contactOwner">I Want This</el-button>
+          <el-button class="like" icon="el-icon-star-off" @click="addCollect">Add to Collection</el-button>
         </div>
         <!--      后续可以考虑显示：1包邮/邮费 2优质卖家（信誉极好） 3-->
       </div>
@@ -66,7 +66,7 @@ export default {
   name: "Details",
   data() {
     return {
-      dis: false, // 是否可以加入购物车
+      dis: false, // 是否可以购买（售出后打上已售出标签，除非卖家撤下，商品详情依然存在）
       productID: '11111111',  // 商品id
       productDetails: { // 商品详情
         productName: 'Mana Stone',
@@ -106,12 +106,8 @@ export default {
       })
       .then(res => {
         // this.productDetials = res.data.Product[0]
-        this.productDetials = res.data.data
+        this.productDetials = JSON.parse(res.data.data)
       })
-      // 已经设置了全局拦截，这里应该不需要了?
-      // .catch(err => {
-      //   return Promise.reject(err);
-      // })
     },
     // 获取商品图片
     getDetailsPicture(val) {
@@ -123,8 +119,8 @@ export default {
         this.productPicture = res.data.data
       })
     },
-    // 添加到购物车
-    addShoppingCart() {
+    // 联系卖家购买此商品
+    contactOwner() {
       // 需要先验证用户是否已经登陆
       if (!this.$store.getters.getUser) {
         Element.Message({
@@ -133,17 +129,51 @@ export default {
           type: 'error',
         })
         return
-        // 加入购物车
       }
+      // 进入“我想要”聊天页面
+      this.$axios.post("http://localhost:8081/product/user/contactOwner", {
+        userID: this.$store.getters.getUser.userID,
+        productID: this.productID,
+        ownerID: this.productDetails.owner
+      })
+      .then(res => {
+        if (res.data.code === "200") { // 状态码为200 -> 添加成功
+          Element.Message({
+            showClose: true,
+            message: 'Add product to collection successfully',
+            type: 'success',
+          })
+        }
+      })
     },
-    // 添加到收藏夹 // 收藏夹功能待定
+    // 添加到收藏夹
     addCollect() {
-    }
+      // 需要先验证用户是否已经登陆
+      if (!this.$store.getters.getUser) {
+        Element.Message({
+          showClose: true,
+          message: 'Please login first',
+          type: 'error',
+        })
+        return
+      }
+      this.$axios.post("http://localhost:8081/product/user/addCollect", {
+        userID: this.$store.getters.getUser.userID,
+        productID: this.productID
+      })
+      .then(res => {
+        if (res.data.code === "200") { // 状态码为200 -> 添加成功
+          Element.Message({
+            showClose: true,
+            message: 'Add product to collection successfully',
+            type: 'success',
+          })
+        }
+      })
+    },
   }
 }
 </script>
-
-
 
 
 <style scoped>
@@ -240,6 +270,7 @@ export default {
   background: #f9f9fa;
   padding: 30px 60px;
   margin: 50px 0 50px;
+  width: 440px;
 }
 #details .main .content .pro-list span {
   line-height: 30px;
@@ -269,11 +300,11 @@ export default {
   border: none;
   text-align: center;
 }
-#details .main .content .button .shop-cart {
-  width: 340px;
+#details .main .content .button .buy {
+  width: 260px;
   background-color: lightskyblue;
 }
-#details .main .content .button .shop-cart:hover {
+#details .main .content .button .buy:hover {
   background-color: deepskyblue;
 }
 

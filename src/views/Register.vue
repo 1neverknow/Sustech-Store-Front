@@ -132,13 +132,10 @@ export default {
           console.log(this.ruleForm)
           const _this = this
 
-          this.$axios.post('http://localhost:8081/register', this.ruleForm).then(res => {
-            console.log(res.headers)
-            console.log(res)
-            const jwt = res.headers['authorization']
-            // 将jwt和userInfo共享给整个vue项目
-            _this.$store.commit("SET_TOKEN",jwt)
-            // 验证成功后，弹窗提示前往邮箱查看，并跳转到user页面
+          this.$axios
+              .post('http://localhost:8081/register', this.ruleForm)
+              .then(res => {
+            // 验证成功后，弹窗提示前往邮箱查看，并跳转到login页面
             Element.Message({
               showClose: true,
               message: 'Register success! Please check your email for activation message',
