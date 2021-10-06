@@ -24,16 +24,14 @@
         >
           <el-form-item label="E-Mail Address" prop="email">
             <el-input v-model="ruleForm.email" style="width: 320px"></el-input>
-            <el-button type="primary" @click="resetForm('ruleForm')">Send</el-button>
+<!--            倒计时按钮-->
+            <el-button type="primary" :disabled="verify.disable" @click="resetForm('ruleForm')">{{verify.getCode}}</el-button>
+<!--            <el-button type="primary" :disabled="verify.disable" @click="getVerifyCode">{{verify.getCode}}</el-button>-->
           </el-form-item>
-<!--          <div class="send-btn">-->
-<!--            <el-button type="primary" @click="resetForm('ruleForm')">Send</el-button>-->
-<!--          </div>-->
 
           <el-form-item label="Varify Code" prop="varifycode">
             <el-input v-model="ruleForm.varifycode"></el-input>
           </el-form-item>
-
 
           <div class="reset-btn">
             <el-button type="primary" style="margin-top: 30px" @click="submitForm('ruleForm')">Reset</el-button>
@@ -65,10 +63,23 @@ export default {
         callback();
       }
     };
+    var countdown = setInterval(() => {
+      if (this.count < 1) {
+        this.isGeting = false
+        this.disable = false
+        this.getCode = 'Send'
+        this.count = 60
+        clearInterval(countDown)
+      } else {
+        this.isGeting = true
+        this.disable = true
+        this.getCode = this.count-- + 's'
+      }
+    }, 1000);
     return {
       labelPosition: 'top',
       ruleForm: {
-        email: '',
+        email: '111111@qq.com',
         varifycode: '',
       },
       rules: {
@@ -77,6 +88,12 @@ export default {
         ],
         varifycode: {trigger: 'blur',}
       },
+      verify: {
+        isGeting: false,
+        getCode: 'Send',
+        disable: false,
+        time_out: 0
+      }
     }
   },
   methods: {
@@ -88,8 +105,6 @@ export default {
             message: 'Congrats, this is a success message.',
             type: 'success',
           })
-          console.log(this)
-          console.log(this.ruleForm)
           // 更改为调用全局this -> 可以用来获取store里的信息
           const _this = this
           this.$axios.post('http://localhost:8081/login/forgot', this.ruleForm).then(res => {
@@ -111,26 +126,25 @@ export default {
     resetForm(formName) {
       this.$refs[formName].validateField("email", error => {
         if (!error) {
-          Element.Message({
-            showClose: true,
-            message: 'Input the verification code within 5 min',
-            type: 'success',
-          })
-
-          const _this = this
-          this.$axios.post('http://localhost:8081/login/forgot', this.ruleForm.email).then(res => {
-            console.log(res.headers)
-            console.log(res)
-            const jwt = res.headers['authorization']
-            _this.$store.commit("SET_TOKEN", jwt)
-          })
+          // this.$axios.post('http://localhost:8081/login/forgot', this.ruleForm.email).then(res => {
+            var countdown = setInterval(() => {
+              if (this.verify.time_out < 1) {
+                console.log("send verify code")
+                this.verify.isGeting = false
+                this.verify.disable = false
+                this.verify.getCode = 'Send'
+                this.verify.time_out = 6
+                clearInterval(countdown)
+              } else {
+                console.log("sending")
+                this.verify.isGeting = true
+                this.verify.disable = true
+                this.verify.getCode = --this.verify.time_out + 's'
+              }
+            }, 1000);
+          // })
         } else {
           console.log('error submit!!')
-          Element.Message({
-            showClose: true,
-            message: 'Please check your input',
-            type: 'error',
-          })
           return false
         }
       })

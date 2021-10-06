@@ -97,7 +97,7 @@ export default {
           // 更改为调用全局this -> 可以用来获取store里的信息
           const _this = this
 
-          this.$axios.post('http://localhost:8081/login/reset', this.ruleForm).then(res => {
+          this.$axios.post('http://localhost:8081/login/reset', this.ruleForm.password).then(res => {
             const jwt = res.headers['authorization']
             _this.$store.commit("SET_TOKEN",jwt)
             // 验证成功后，跳转到login页面
