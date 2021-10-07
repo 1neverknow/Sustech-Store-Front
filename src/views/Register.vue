@@ -99,7 +99,7 @@ export default {
     return {
       labelPosition: 'top',
       ruleForm: {
-        username:'mithra',
+        username:'123',
         email: '1315953661@qq.com',
         password: '123',
         gender: 0,
@@ -128,9 +128,27 @@ export default {
           console.log(this.ruleForm)
           const _this = this
 
-          this.$axios
-              .post('http://localhost:8081/user/register?username=123&email=1315953661@qq.com&password=123&gender=0', this.ruleForm)
-              .then(res => {
+          this.$axios({
+            method: 'post',
+            url: 'http://localhost:8081/user/register' + "?username=" + this.ruleForm.username
+                + "&email=" + this.ruleForm.email
+                + "&password=" + this.ruleForm.password
+                + "&gender=" + this.ruleForm.gender,
+            data: {
+              username: this.ruleForm.username,
+              email: this.ruleForm.email,
+              password: this.ruleForm.password,
+              gender: this.ruleForm.gender,
+            },
+            transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
+              var ret = '';
+              for (var it in data) {
+                // 如果要发送中文 编码
+                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+              }
+              return ret.substring(0,ret.length-1)
+            }],
+          }).then(res => {
             // 验证成功后，弹窗提示前往邮箱查看，并跳转到login页面
             Element.Message({
               showClose: true,
