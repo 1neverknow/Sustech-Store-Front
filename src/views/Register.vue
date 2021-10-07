@@ -100,8 +100,8 @@ export default {
       labelPosition: 'top',
       ruleForm: {
         username:'mithra',
-        email: '1111111@qq.com',
-        password: '11111111',
+        email: '1315953661@qq.com',
+        password: '123',
         gender: 0,
       },
       accept: '',
@@ -124,17 +124,12 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid && this.accept) {
-          // Element.Message({
-          //   showClose: true,
-          //   message: 'Congrats, this is a success message.',
-          //   type: 'success',
-          // })
           console.log(this)
           console.log(this.ruleForm)
           const _this = this
 
           this.$axios
-              .post('http://localhost:8081/user/register', this.ruleForm)
+              .post('http://localhost:8081/user/register?username=123&email=1315953661@qq.com&password=123&gender=0', this.ruleForm)
               .then(res => {
             // 验证成功后，弹窗提示前往邮箱查看，并跳转到login页面
             Element.Message({
