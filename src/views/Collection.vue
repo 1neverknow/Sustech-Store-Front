@@ -30,13 +30,14 @@ export default {
   components: {MyList},
   data() {
     return {
-      collectList: [{
-        productName: 'Mana Stone',
-        productID: 1111111111,
-        productPicture: '',
-        productIntro: 'Help you grow stronger',
-        productPrice: 11111111,
-      }]
+      collectList: []
+      // collectList: [{
+      //   productName: 'Mana Stone',
+      //   productID: 1111111111,
+      //   productPicture: '',
+      //   productIntro: 'Help you grow stronger',
+      //   productPrice: 11111111,
+      // }]
     }
   },
   activated() {
@@ -60,8 +61,8 @@ export default {
 }
 .collection .collect-header {
   height: 64px;
-  background-color: #fff;
-  border-bottom: 2px solid #ff6700;
+  background-color: lightskyblue;
+  /*border-bottom: 5px solid deepskyblue;*/
 }
 .collection .collect-header .collect-title {
   width: 1225px;
@@ -69,6 +70,7 @@ export default {
   height: 64px;
   line-height: 58px;
   font-size: 28px;
+  font-weight: bold;
 }
 .collection .content {
   padding: 20px 0;
