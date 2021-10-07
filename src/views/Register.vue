@@ -102,6 +102,7 @@ export default {
         name:'mithra',
         email: '1111111@qq.com',
         password: '11111111',
+        gender: 0,
         accept: '',
       },
       rules: {
