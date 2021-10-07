@@ -24,7 +24,7 @@
             class="ms-content"
         >
           <el-form-item label="Name" prop="name">
-            <el-input v-model="ruleForm.name"></el-input>
+            <el-input v-model="ruleForm.username"></el-input>
           </el-form-item>
           <el-form-item label="E-Mail Address" prop="email">
             <el-input v-model="ruleForm.email"></el-input>
@@ -42,7 +42,7 @@
 
 
           <el-form-item label="" prop="agree" style="margin-top: -10px">
-            <el-checkbox v-model="ruleForm.accept" label="I agree to"></el-checkbox>
+            <el-checkbox v-model="accept" label="I agree to"></el-checkbox>
             <el-link href="https://www.sustech.edu.cn/" type="primary" style="height: 15px; margin-top: -2px">Terms and Conditions</el-link>
           </el-form-item>
 
@@ -99,14 +99,14 @@ export default {
     return {
       labelPosition: 'top',
       ruleForm: {
-        name:'mithra',
+        username:'mithra',
         email: '1111111@qq.com',
         password: '11111111',
         gender: 0,
-        accept: '',
       },
+      accept: '',
       rules: {
-        name:[
+        username:[
           {required: true, message: 'Please input a name', trigger: 'blur'},
           {min: 3, max: 12, message: 'The length must be 3 to 12 characters', trigger: 'blur'}
         ],
@@ -123,12 +123,12 @@ export default {
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
-        if (valid && this.ruleForm.accept) {
-          Element.Message({
-            showClose: true,
-            message: 'Congrats, this is a success message.',
-            type: 'success',
-          })
+        if (valid && this.accept) {
+          // Element.Message({
+          //   showClose: true,
+          //   message: 'Congrats, this is a success message.',
+          //   type: 'success',
+          // })
           console.log(this)
           console.log(this.ruleForm)
           const _this = this
@@ -145,7 +145,7 @@ export default {
             _this.$router.push("/login")
           })
           // 认证不通过的情况 -> 全局axios拦截
-        } else if (!this.ruleForm.accept) {
+        } else if (!this.accept) {
           Element.Message({
             showClose: true,
             message: 'You must accept our terms and conditions',

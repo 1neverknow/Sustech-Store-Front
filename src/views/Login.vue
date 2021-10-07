@@ -123,11 +123,6 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          Element.Message({
-            showClose: true,
-            message: 'Congrats, this is a success message.',
-            type: 'success',
-          })
           console.log(this)
           console.log(this.ruleForm)
           // 更改为调用全局this -> 可以用来获取store里的信息
