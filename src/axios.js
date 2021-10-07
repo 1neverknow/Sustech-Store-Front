@@ -9,6 +9,9 @@ axios.defaults.baseURL='http://localhost:8081'
 // 配置axios全局拦截 (发起请求时的配置)
 // 前置拦截
 axios.interceptors.request.use(config => {
+    config.headers = {
+        'Content-Type': 'application/json' // 设置很关键
+    }
     return config
 })
 

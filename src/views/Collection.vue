@@ -30,14 +30,14 @@ export default {
   components: {MyList},
   data() {
     return {
-      collectList: []
-      // collectList: [{
-      //   productName: 'Mana Stone',
-      //   productID: 1111111111,
-      //   productPicture: '',
-      //   productIntro: 'Help you grow stronger',
-      //   productPrice: 11111111,
-      // }]
+      // collectList: []
+      collectList: [{
+        productName: 'Mana Stone',
+        productID: 1111111111,
+        productPicture: '',
+        productIntro: 'Help you grow stronger',
+        productPrice: 11111111,
+      }]
     }
   },
   activated() {
