@@ -134,7 +134,7 @@ export default {
           const _this = this
 
           this.$axios
-              .post('http://localhost:8081/register', this.ruleForm)
+              .post('http://localhost:8081/user/register', this.ruleForm)
               .then(res => {
             // 验证成功后，弹窗提示前往邮箱查看，并跳转到login页面
             Element.Message({
