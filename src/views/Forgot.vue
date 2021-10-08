@@ -97,32 +97,64 @@ export default {
     }
   },
   methods: {
+    // 提交请求重设密码的表单
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          Element.Message({
-            showClose: true,
-            message: 'Congrats, this is a success message.',
-            type: 'success',
-          })
           // 更改为调用全局this -> 可以用来获取store里的信息
           const _this = this
-          this.$axios.post('http://localhost:8081/login/forgot', this.ruleForm)
-              .then(res => {
+          this.$axios({
+            method: 'post',
+            url: 'http://localhost:8081/login/reset'
+                + "?email=" + this.ruleForm.email
+                + "&verifycode=" + this.ruleForm.varifycode,
+            data: {
+              email: this.ruleForm.email,
+              password: this.ruleForm.password,
+            },
+            transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
+              var ret = '';
+              for (var it in data) {
+                // 如果要发送中文 编码
+                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+              }
+              return ret.substring(0,ret.length-1)
+            }],
+          }).then(res => {
             // 验证成功后，跳转到reset页面
             _this.$router.push("/login/reset")
           })
         } else {
           console.log('error submit!!')
-          alert('Please check your input')
+          Element.Message({
+            showClose: true,
+            message: 'Please check your input',
+            type: 'error',
+          })
           return false
         }
       })
     },
+    // 提交获取验证码的表单（未填写验证码）
     resetForm(formName) {
       this.$refs[formName].validateField("email", error => {
         if (!error) {
-          this.$axios.post('http://localhost:8081/login/forgot', this.ruleForm.email).then(res => {
+          this.$axios({
+            method: 'post',
+            url: 'http://localhost:8081/login/forgot'
+                + "?email=" + this.ruleForm.email,
+            data: {
+              email: this.ruleForm.email,
+            },
+            transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
+              var ret = '';
+              for (var it in data) {
+                // 如果要发送中文 编码
+                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+              }
+              return ret.substring(0,ret.length-1)
+            }],
+          }).then(res => {
             var countdown = setInterval(() => {
               if (this.verify.time_out < 1) {
                 console.log("send verify code")

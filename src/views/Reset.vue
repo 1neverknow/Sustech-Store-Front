@@ -97,8 +97,22 @@ export default {
           // 更改为调用全局this -> 可以用来获取store里的信息
           const _this = this
 
-          this.$axios.post('http://localhost:8081/login/reset', this.ruleForm.password)
-              .then(res => {
+          this.$axios({
+            method: 'post',
+            url: 'http://localhost:8081/login/reset'
+                + "?password=" + this.ruleForm.password,
+            data: {
+              password: this.ruleForm.password,
+            },
+            transformRequest: [function (data) {
+              var ret = '';
+              for (var it in data) {
+                // 如果要发送中文 编码
+                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+              }
+              return ret.substring(0,ret.length-1)
+            }],
+          }).then(res => {
             // 验证成功后，跳转到login页面
             _this.$router.push("/login")
           })

@@ -9,6 +9,7 @@ import Reset from "@/views/Reset";
 import User from "@/views/User";
 import Details from "@/views/Details";
 import Collection from "@/views/Collection";
+import Activate from "@/views/Activate"
 import Contact from "@/views/Contact";
 
 import MainPage from "@/views/MainPage";
@@ -76,6 +77,11 @@ const routes = [
     component: Register
   },
   {
+    path: '/user/activate',
+    name: 'Activate',
+    component: Activate
+  },
+  {
     path: '/user',
     name: 'User',
     meta: {
@@ -85,12 +91,12 @@ const routes = [
     component: User
   },
   {
-    path: '/product/details',
+    path: '/goods/:goodsId/details',
     name: 'Details',
     component: Details
   },
   {
-    path: '/user/collection',
+    path: '/user/:userId/collection',
     name: 'Collection',
     // meta: {
     //   requireAuth: true

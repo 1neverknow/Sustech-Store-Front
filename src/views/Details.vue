@@ -131,10 +131,21 @@ export default {
         return
       }
       // 进入“我想要”聊天页面
-      this.$axios.post("http://localhost:8081/product/user/contactOwner", {
-        userID: this.$store.getters.getUser.userID,
-        productID: this.productID,
-        ownerID: this.productDetails.owner
+      this.$axios({
+        method: 'post',
+        url: 'http://localhost:8081/product/details'
+            + "?productName=" + this.ruleForm.productName,
+        data: {
+          password: this.ruleForm.password,
+        },
+        transformRequest: [function (data) {
+          var ret = '';
+          for (var it in data) {
+            // 如果要发送中文 编码
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+          }
+          return ret.substring(0,ret.length-1)
+        }],
       })
       .then(res => {
         if (res.data.code === "200") { // 状态码为200 -> 添加成功
