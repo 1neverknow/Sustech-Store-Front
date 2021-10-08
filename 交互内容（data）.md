@@ -3,25 +3,28 @@
 1. /login:
    - email
    - password
-   - remember-me
+   - (remember-me)
 2. /login/forgot
    - 点击send - email（向指定email发送邮件）
    - 点击submit：email，vericode（验证码）
 3. /login/reset
-   - 新密码
+   - password
 4. /register
    - username
    - email
    - password
-5. /product/details (商品详情)
-   - productPicture (路径) (list)
-   - productID
-   - productDetails (类-JSON)
-      - productName (attributes...下同)
-      - intro
-      - owner
-      - price
-6. /user/collection 收藏夹
+   - gender
+5. /goods/:goodsId (商品详情)
+   - price: ,
+   - title: ,
+   - picturePath: [], // 商品展示图（轮播图）=> 数组
+   - labels: [],
+   - introduce,
+   - announcer,
+   - comments: [],
+   - want: 1,  // “我想要”的人数,
+   - announceTime,
+6. /collection/:userId 收藏夹（param名字待定）
       - productName,
       - productID,
       - productPicture
