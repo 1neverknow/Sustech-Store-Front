@@ -91,12 +91,12 @@ const routes = [
     component: User
   },
   {
-    path: '/goods/:goodsId/details',
+    path: '/goods/:goodsId',
     name: 'Details',
     component: Details
   },
   {
-    path: '/user/:userId/collection',
+    path: 'collection/:userId',
     name: 'Collection',
     // meta: {
     //   requireAuth: true

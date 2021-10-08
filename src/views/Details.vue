@@ -3,7 +3,7 @@
 <!--    header-->
     <div class="page-header">
       <div class="title">
-        <p>{{productDetails.productName}}</p>
+        <p>{{title}}</p>
         <div class="list">
           <ul>
             <li><router-link to="">Contact us </router-link></li>
@@ -21,35 +21,34 @@
       <div class="block">
 <!--        注意：这里和源代码不一样，如果有错需要修改-->
         <el-carousel height="560px">
-          <el-carousel-item v-for="item in productPictures" :key="item.id">
+          <el-carousel-item v-for="item in picturePath" :key="item.id">
             <img style="height: 560px"
-                 :src="$target + item.display"
-                 :alt="item.intro" />
+                 :src="$target + item"/>
           </el-carousel-item>
         </el-carousel>
       </div>
 <!--      右侧内容区-->
       <div class="content">
-        <h1 class="name">{{productDetails.productName}}</h1>
-        <p class="intro">{{productDetails.intro}}</p>
+        <h1 class="name">{{title}}</h1>
+        <p class="intro">{{introduce}}</p>
         <p class="owner">
-          <router-link to="">{{productDetails.owner}}</router-link>
+          <router-link to="">{{announcer}}</router-link>
         </p>
         <div class="price">
-          <span>￥{{productDetails.price}}</span>
+          <span>￥{{price}}</span>
         </div>
         <div class="pro-list">
-          <span class="pro-name">{{productDetails.productName}}</span>
+          <span class="pro-name">{{title}}</span>
           <span class="pro-price">
-          <span>￥{{productDetails.price}}</span>
+          <span>￥{{price}}</span>
         </span>
         </div>
         <!--      内容区底部按钮-->
         <div class="button">
-          <el-button class="buy" icon="el-icon-goods" :disabled="dis" @click="contactOwner">I Want This</el-button>
+          <el-button class="buy" icon="el-icon-goods" :disabled="dis" @click="contactAnnouncer">I Want This</el-button>
           <el-button class="like" icon="el-icon-star-off" @click="addCollect">Add to Collection</el-button>
         </div>
-        <!--      后续可以考虑显示：1包邮/邮费 2优质卖家（信誉极好） 3-->
+
       </div>
     </div>
   </div>
@@ -67,20 +66,34 @@ export default {
   data() {
     return {
       dis: false, // 是否可以购买（售出后打上已售出标签，除非卖家撤下，商品详情依然存在）
-      productID: '11111111',  // 商品id
-      productDetails: { // 商品详情
-        productName: 'Mana Stone',
-        intro: 'you would be stronger after eating it',
-        owner: 'Snow/White',
-        price: '100000',
-      },
-      pictureItem: {
-        id: '22222222',
-        display: '',
-        intro: 'AAAAA'
-      },
-      productPictures: [], // 商品展示图（轮播图）=> 数组
+      goodsId: '11111111',  // 商品id
+      price: '100000',
+      title: 'Mana Stone',
+      picturePath: [], // 商品展示图（轮播图）=> 数组
+      labels: [],
+      introduce: 'you would be stronger after eating it',
+      announcer: 'Snow/White',
+      comments: [],
+      want: 1,  // “我想要”的人数,
+      announceTime: '',
     }
+  },
+  create() {
+    const goodsId = this.$route.params.goodsId
+    console.log(goodsId)
+    const _this = this
+    this.$axios.get('http://localhost:8081/goods/' + goodsId).then(res => {
+      const productDetails = res.data.data
+      _this.price = productDetails.price
+      _this.title = productDetails.title
+      _this.picturePath = productDetails.picturePath
+      _this.label = productDetails.label
+      _this.introduce = productDetails.introduce
+      _this.announcer = productDetails.announcer
+      _this.comments = productDetails.comments
+      _this.want = productDetails.want
+      _this.announceTime = productDetails.announceTime
+    })
   },
   // 通过路由获取商品id
   activated() {
@@ -120,7 +133,7 @@ export default {
       })
     },
     // 联系卖家购买此商品
-    contactOwner() {
+    contactAnnouncer() {
       // 需要先验证用户是否已经登陆
       if (!this.$store.getters.getUser) {
         Element.Message({

@@ -42,7 +42,7 @@ export default {
   },
   activated() {
     // 获取收藏夹数据
-    this.$axios.post("http://localhost:8081/user/collection", {
+    this.$axios.post("http://localhost:8081/collection/" + userId, {
       userID: this.$store.getters.getUser.userID
     })
     .then(res => {
