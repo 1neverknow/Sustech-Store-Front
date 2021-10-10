@@ -1,3 +1,4 @@
+<!--交易页面-->
 <template>
 
 </template>
@@ -20,5 +21,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

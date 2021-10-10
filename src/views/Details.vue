@@ -133,6 +133,7 @@ export default {
       announcer: 'Snow/White',
       comments: [
         {
+          commentId: '',
           userId: 1111,
           username: 'Figaro',
           content: '很好用🌹',
@@ -140,6 +141,7 @@ export default {
           date: '2021-10-20'
         },
         {
+          commentId: '',
           userId: 2222,
           username: 'Mithra',
           content: '味道还行',
@@ -147,6 +149,7 @@ export default {
           date: '2021-10-21'
         },
         {
+          commentId: '',
           userId: 3333,
           username: 'Bradley',
           content: '拿来吧你',
@@ -175,9 +178,8 @@ export default {
     getDetails(val) {
       const _this = this
       this.$axios({
-        method: 'post',
-        url: 'http://localhost:8081/goods'
-            + "?goodsId=" + val,
+        method: 'get',
+        url: 'http://localhost:8081/goods/' + val,
         data: {
           goodsId: val
         },
