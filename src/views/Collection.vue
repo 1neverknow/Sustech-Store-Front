@@ -24,19 +24,18 @@
 </template>
 
 <script>
-import MyList from "@/components/List";
+import MyList from "@/components/MyList";
 export default {
   name: "Collection",
   components: {MyList},
   data() {
     return {
-      // collectList: []
       collectList: [{
-        productName: 'Mana Stone',
-        productID: 1111111111,
-        productPicture: '',
-        productIntro: 'Help you grow stronger',
-        productPrice: 11111111,
+        goodsId: 11111111,
+        picture: '',
+        title: 'Mana Stone',
+        introduce: 'Help you grow stronger',
+        price: 100000,
       }]
     }
   },

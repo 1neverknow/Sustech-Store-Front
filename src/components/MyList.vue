@@ -4,7 +4,7 @@
   <div id="list" class="myList">
     <ul>
 <!--      productID是商品编号！-->
-      <li v-for="item in list" :key="item.productID">
+      <li v-for="item in list" :key="item.goodsId">
         <el-popover placement="top">
           <p>Delete it?</p>
           <div style="text-align: right; margin: 10px 0 0">
@@ -15,7 +15,7 @@
           <i class="el-icon-close delete" slot="reference" v-show="isDelete"></i>
         </el-popover>
 <!--        点击后跳转至商品详情-->
-        <router-link :to="{path:'/product/details/', query: item.productID}" class="router-link-active">
+        <router-link :to="{path:'/goods/', parameter: item.goodsId}" class="router-link-active">
           <img :src="item.productPicture" alt/>
           <h2>{{item.productName}}</h2>
           <h3>{{item.productIntro}}</h3>
@@ -41,16 +41,16 @@ export default {
     return{}
   },
   methods: {
-    deleteProduct(productID) {
-      this.$axios.put('http://localhost:8081/user/collect/deleteProduct', {
-        userID: this.$store.getters.getUser.userID,
-        productID: productID
+    deleteProduct(goodsId) {
+      this.$axios.put('http://localhost:8081/collections/' + userId, {
+        userId: this.$store.getters.getUser.userID,
+        goodsId: goodsId
       })
       .then(res => {
         if (res.data.code === '200') {
           for (let i=0; i<this.list.length; i++) {
             if (this.list[i].productID === productID) {
-              this.list.split(i, 1)
+              this.list.splice(i, 1)
             }
           }
           Element.Message({
