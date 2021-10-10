@@ -22,7 +22,7 @@
             <el-carousel height="560px">
               <el-carousel-item v-for="item in picturePath" :key="item.id">
                 <img style="height: 560px"
-                     :src="$target + item"/>
+                     :src="'http://localhost:8081/' + item"/>
               </el-carousel-item>
             </el-carousel>
           </div>
