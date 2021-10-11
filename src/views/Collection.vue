@@ -45,7 +45,7 @@ export default {
       userID: this.$store.getters.getUser.userID
     })
     .then(res => {
-      if (res.data.code === '200') {
+      if (res.data.code === 200) {
         this.collectList = res.data.collectList
       }
     })

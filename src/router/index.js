@@ -11,6 +11,8 @@ import Details from "@/views/Details";
 import Collection from "@/views/Collection";
 import Activate from "@/views/Activate"
 import Contact from "@/views/Contact";
+import Deal from "@/views/Deal"
+import Publish from "@/views/Publish"
 
 import MainPage from "@/views/MainPage";
 import Account from "@/views/Account";
@@ -72,7 +74,7 @@ const routes = [
     component: Reset
   },
   {
-    path: '/register',
+    path: '/user/register',
     name: 'Register',
     component: Register
   },
@@ -111,6 +113,22 @@ const routes = [
     },
     component: Contact
   },
+  {
+    path: '/deal',
+    name: 'Deal',
+    meta: {
+      requireAuth: true
+    },
+    component: Deal
+  },
+  {
+    path: '/publish',
+    name: 'Publish',
+    meta: {
+      requireAuth: true
+    },
+    component: Publish
+  }
   // {
   //   path: '/chat',  // 第一栏：微信
   //   component: Chat

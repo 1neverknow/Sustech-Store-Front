@@ -35,13 +35,16 @@ export default new Vuex.Store({
       this.state.userInfo = {}
       localStorage.setItem('token', '')
       sessionStorage.setItem('userInfo', JSON.stringify(''))
-    }
+    },
   },
   getters: {
     // get
     // 获取token，userInfo的方法
     getUser: state => {
       return state.userInfo
+    },
+    getToken: state => {
+      return state.token
     }
   },
   actions: {

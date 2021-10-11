@@ -36,7 +36,7 @@
               <el-button type="default" @click="changePass('hide')" style="width: 80px">Hide</el-button>
             </el-form-item>
             <el-form-item label="" prop="remember">
-              <el-checkbox v-model="ruleForm.remember" label="Remember Me"></el-checkbox>
+              <el-checkbox v-model="ruleForm['remember-me']" label="Remember Me"></el-checkbox>
             </el-form-item>
 
             <div style="margin-top: -55px; margin-bottom: 50px; margin-left: 280px">
@@ -98,8 +98,8 @@ export default {
     return {
       labelPosition: 'top',
       ruleForm: {
-        email: '111111@qq.com',
-        password: '111111',
+        email: 'c001hewanning@qq.com',
+        password: '123',
         'remember-me': false,
       },
       rules: {
@@ -121,13 +121,22 @@ export default {
   },
   methods: {
     submitForm(formName) {
+      if (this.$store.getters.getUser) {
+        Element.Message({
+          showClose: true,
+          message: 'You have already login',
+          type: 'error',
+        })
+        return
+      }
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log(this)
-          console.log(this.ruleForm)
           // 更改为调用全局this -> 可以用来获取store里的信息
           const _this = this
-
+          let remember = 0
+          if (this.ruleForm["remember-me"]) {
+            remember = 1
+          }
           this.$axios({
             method: 'post',
             url: 'http://localhost:8081/login'
@@ -136,10 +145,18 @@ export default {
             data: {
               email: this.ruleForm.email,
               password: this.ruleForm.password,
+              'remember-me': this.ruleForm['remember-me']
             },
+            transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
+              var ret = '';
+              for (var it in data) {
+                // 如果要发送中文 编码
+                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+              }
+              return ret.substring(0,ret.length-1)
+            }],
           }).then(res => {
             // 接收到来自后端的消息
-            console.log(res.headers)
             console.log(res)
 
             // 接受后端返回的数据
@@ -148,17 +165,17 @@ export default {
             const jwt = res.headers['authorization']
             const userInfo = res.data.data
 
-            console.log(userInfo)
-
             // 将jwt和userInfo共享给整个vue项目
             _this.$store.commit("SET_TOKEN",jwt)
             _this.$store.commit("SET_USERINFO", userInfo)
 
-            // 验证 -> 获取userInfo
-            console.log(this.$store.getters.getUser)
-
-            // 验证成功后，跳转到user页面
-            _this.$router.push("/user")
+            Element.Message({
+              showClose: true,
+              message: 'Login success!',
+              type: 'success',
+            })
+            // 验证成功后，跳转到home page
+            _this.$router.push("/")
           })
           // 认证不通过的情况 -> 全局axios拦截
         } else {

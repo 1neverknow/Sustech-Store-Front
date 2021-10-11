@@ -225,7 +225,7 @@ export default {
         productID: this.productID
       })
       .then(res => {
-        if (res.data.code === "200") { // 状态码为200 -> 添加成功
+        if (res.data.code === 200) { // 状态码为200 -> 添加成功
           Element.Message({
             showClose: true,
             message: 'Add product to collection successfully',

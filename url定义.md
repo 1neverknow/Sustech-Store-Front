@@ -10,7 +10,7 @@ Base:
   + "&password=" + this.ruleForm.password
 
 2. 注册：
-- 前端：/register
+- 前端：/user/register
 - 后端: /user/register' + "?username=" + this.ruleForm.username
   + "&email=" + this.ruleForm.email
   + "&password=" + this.ruleForm.password
@@ -37,3 +37,9 @@ Base:
 7. 用户收藏夹
 - 前端：/collection/:userId
 - 后端："http://localhost:8081/collection/" + userId
+
+8. 点击下单后确认界面
+- 前端：/deal
+
+9. 商品发布界面
+- 前端：/publish
