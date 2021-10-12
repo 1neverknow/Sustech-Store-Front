@@ -3,7 +3,7 @@
     <!--    <el-col :span = "2">-->
     <!--      <img src="../assets/img.jpg" class="user-avator" alt />-->
     <!--    </el-col>el-col-->
-    <el-card >
+    <el-card>
       <el-descriptions class="margin-top" title="Person Information" :column="3" border>
         <template slot="extra">
           <router-link to="/pi_modify">
@@ -189,15 +189,15 @@ export default {
   name: "Account",
   data() {
     return {
-      user_name: 'admin',
+      user_name: '',
       picture: '',
-      email: 'xxxxxxxx@sustech.edu.cn',
-      gender: 'men',
-      birthday: '2001-01-01',
-      credit: 100,
-      id_card: 'xxxxxxxxxxxxxx',
-      money: 500.0,
-      phone: 17796370472,
+      email: '',
+      gender: '',
+      birthday: '',
+      credit: '',
+      id_card: '',
+      money: '',
+      phone: '',
       PersonalitySignature: '',
       receiver1: '',
       telephone1: '',
@@ -213,29 +213,52 @@ export default {
   mounted() {
     this.initialAccount();
   },
+  // "userId": 1,
+  // "sign": null,
+  // "userName": "evelyn",
+  // "password": "$2a$10$AahBgEoEjpcPJlnWOdyE..g/4Z3.ExFKTvFaPWUA80m5PosF0vFlO",
+  // "gender": 0,
+  // "birthday": null,
+  // "credit": 0,
+  // "email": "208347209@qq.com",
+  // "idCard": null,
+  // "money": 0,
+  // "picturePath": "/user_picture_default.png",
+  // "phone": null,
+  // "addresses": null,
+  // "isActivate": true,
+  // "activateCode": "208347209@qq.comcFLaeLb2Kn8mht1H"
   methods: {
     initialAccount() {
       // this.user_name = 'user'
-      //   this.$axios({
-      //     method: 'get',
-      //     url: 'http://localhost:8081/user/information/'
-      //          + this.$store.getters.getUser.user_id ,
-      //     data: {
-      //       queryUserId: this.$store.getters.getUser.user_id,
-      //     },
-      //
-      //   }).then(res => {
-      //     if (res.data.code === 200) {
-      //       const data = res.data.data
-      //       this.user_name = data.userName
-      //       this.phone = data.phone
-      //     } else {
-      //       this.$alert(res.data.message, 'Tip', {
-      //         confirmButtonText: 'OK'
-      //       })
-      //     }
-      //   })
-      // }
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/user/information/'
+            + this.$store.getters.getUser.userId,
+        headers: {'authorization': this.$store.getters.getToken},
+        data: {
+          queryUserId: this.$store.getters.getUser.userId,
+        },
+      }).then(res => {
+        if (res.data.code === 2000) {
+          console.log(1)
+          const data = res.data.data
+          this.user_name = data.userName
+          this.phone = data.phone
+          this.picture = data.picturePath
+          this.email = data.email
+          this.gender = data.gender
+          this.birthday = data.birthday
+          this.credit = data.credit
+          this.money = data.money
+          this.id_card = data.idCard
+          this.PersonalitySignature = data.sign
+        } else {
+          this.$alert(res.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        }
+      })
     }
   }
 }
@@ -249,7 +272,6 @@ export default {
   height: 150px;
   border-radius: 100%;
 }
-
 
 
 </style>

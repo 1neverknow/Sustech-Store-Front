@@ -171,7 +171,7 @@ export default {
             // } else {
             // _this.$store.commit("SET_USERINFO", userInfo)
             // }
-            _this.$store.commit("SET_USERINFO_LOCAL", userInfo)
+            _this.$store.commit("SET_USERINFO", userInfo)
 
             Element.Message({
               showClose: true,

@@ -25,7 +25,7 @@ axios.interceptors.response.use(response => {
     let res = response.data
 
     // console.log(res)
-    if (res.code === 200) {
+    if (res.code === 200|| res.code === 2000|| res.code ===2001) {
         // 请求成功
         return response
     } else {
