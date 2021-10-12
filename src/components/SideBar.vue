@@ -68,7 +68,7 @@
         </el-menu-item>
 
 
-        <el-menu-item index="Roster" >
+        <el-menu-item index="Collection" >
           <i class="el-icon-notebook-2"></i>
           <span slot="title">Favorites</span>
         </el-menu-item>

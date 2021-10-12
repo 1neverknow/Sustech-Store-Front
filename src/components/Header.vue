@@ -15,7 +15,7 @@
         </div>
         <el-dropdown class="user-name" trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
-                        {{this.$store.state.name}}
+                        {{this.$store.getters.getToken.userId}}
                         <i class="el-icon-caret-bottom"></i>
                     </span>
           <template #dropdown>
