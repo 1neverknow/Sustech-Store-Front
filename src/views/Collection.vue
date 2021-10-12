@@ -30,13 +30,15 @@ export default {
   components: {MyList},
   data() {
     return {
-      collectList: [{
-        goodsId: 11111111,
-        picture: '',
-        title: 'Mana Stone',
-        introduce: 'Help you grow stronger',
-        price: 100000,
-      }]
+      collectList: [
+          // {
+          //   goodsId: 11111111,
+          //   picture: '',
+          //   title: 'Mana Stone',
+          //   introduce: 'Help you grow stronger',
+          //   price: 100000,
+          // }
+      ]
     }
   },
   activated() {

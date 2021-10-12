@@ -53,7 +53,7 @@
             <div style="font-size: 14px">
               <!--      跳转到创建账号-->
               Don't have an account?
-              <router-link to="/register">
+              <router-link to="/user/register">
                 <el-link type="primary" style="height: 15px; margin-top: -5px">Create One</el-link>
               </router-link>
             </div>
@@ -169,7 +169,7 @@ export default {
             // if (this.ruleForm["remember-me"]) {
             //   _this.$store.commit("SET_USERINFO_LOCAL", userInfo)
             // } else {
-            //   _this.$store.commit("SET_USERINFO", userInfo)
+            // _this.$store.commit("SET_USERINFO", userInfo)
             // }
             _this.$store.commit("SET_USERINFO_LOCAL", userInfo)
 

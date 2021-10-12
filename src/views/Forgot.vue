@@ -68,7 +68,7 @@ export default {
         this.isGeting = false
         this.disable = false
         this.getCode = 'Send'
-        this.count = 60
+        this.count = 30
         clearInterval(countDown)
       } else {
         this.isGeting = true
@@ -139,29 +139,29 @@ export default {
     resetForm(formName) {
       this.$refs[formName].validateField("email", error => {
         if (!error) {
-          this.$axios({
-            method: 'post',
-            url: 'http://localhost:8081/login/forgot'
-                + "?email=" + this.ruleForm.email,
-            data: {
-              email: this.ruleForm.email,
-            },
-            transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
-              var ret = '';
-              for (var it in data) {
-                // 如果要发送中文 编码
-                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-              }
-              return ret.substring(0,ret.length-1)
-            }],
-          }).then(res => {
+          // this.$axios({
+          //   method: 'post',
+          //   url: 'http://localhost:8081/login/forgot'
+          //       + "?email=" + this.ruleForm.email,
+          //   data: {
+          //     email: this.ruleForm.email,
+          //   },
+          //   transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
+          //     var ret = '';
+          //     for (var it in data) {
+          //       // 如果要发送中文 编码
+          //       ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+          //     }
+          //     return ret.substring(0,ret.length-1)
+          //   }],
+          // }).then(res => {
             var countdown = setInterval(() => {
               if (this.verify.time_out < 1) {
                 console.log("send verify code")
                 this.verify.isGeting = false
                 this.verify.disable = false
                 this.verify.getCode = 'Send'
-                this.verify.time_out = 6
+                this.verify.time_out = 30
                 clearInterval(countdown)
               } else {
                 console.log("sending")
@@ -170,7 +170,7 @@ export default {
                 this.verify.getCode = --this.verify.time_out + 's'
               }
             }, 1000);
-          })
+          // })
         } else {
           console.log('error submit!!')
           return false

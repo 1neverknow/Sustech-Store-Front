@@ -153,8 +153,13 @@ export default {
         data: {
           goodsId: val
         },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': store.getters.getToken
+        }
       }).then(res => {
         const productDetails = res.data.data
+        console.log(productDetails)
         this.goodsList[0].price = productDetails.price
         this.goodsList[0].goodsName = productDetails.title
         this.goodsList[0].goodsPicture = productDetails.picturePath
