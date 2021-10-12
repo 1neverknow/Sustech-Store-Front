@@ -60,7 +60,10 @@ Base:
 7. 用户收藏夹
 - 前端：/collection/:userId
 - 后端："http://localhost:8081/collection/" + userId
-
+![img_15.png](img_15.png)
+  (没有东西的情况)
+![img_16.png](img_16.png)
+  (擦汗猫是图片加载失败；点击“×”可以删除)
 
 8. 点击下单后确认界面
 - 前端：/deal
@@ -69,5 +72,5 @@ Base:
 9. 商品发布界面（施工中）
 - 前端：/publish
 ![img_14.png](img_14.png)
-点击'+'添加商品图片
+点击'+'添加商品
 

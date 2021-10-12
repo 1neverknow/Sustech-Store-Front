@@ -98,11 +98,11 @@ const routes = [
     component: Details
   },
   {
-    path: 'user/collections',
+    path: '/user/collections',
     name: 'Collection',
-    meta: {
-      requireAuth: true
-    },
+    // meta: {
+    //   requireAuth: true
+    // },
     component: Collection
   },
   {

@@ -2,15 +2,20 @@
 <template>
   <div class="collection">
 <!--    a static page for my favourite module-->
-    <div class="collect-header">
-      <div class="collect-title">
-        My Collections
-        <i class="el-icon-star-on" style="color: gold"></i>
+    <div class="collection-header">
+      <div class="header-content">
+        <p>
+          <i class="el-icon-star-on" style="color: gold"></i>
+        </p>
+        <p>My Collections</p>
+        <router-link to></router-link>
       </div>
     </div>
+
     <div class="content">
 <!--      有收藏物品-->
       <div class="goods-list" v-if="collectList.length > 0">
+<!--        <h1>有东西</h1>-->
         <MyList :list="collectList" :isDelete="true"></MyList>
       </div>
 <!--      收藏列表为空-->
@@ -31,27 +36,23 @@ export default {
   data() {
     return {
       collectList: [
-          // {
-          //   goodsId: 11111111,
-          //   picture: '',
-          //   title: 'Mana Stone',
-          //   introduce: 'Help you grow stronger',
-          //   price: 100000,
-          // }
+        //   {
+        //     goodsId: 1,
+        //     picture: '',
+        //     title: 'Mana Stone',
+        //     introduce: 'Help you grow stronger',
+        //     price: 100000,
+        //   },
+        // {
+        //   goodsId: 2,
+        //   picture: '',
+        //   title: 'KFC',
+        //   introduce: '写饿了',
+        //   price: 30,
+        // }
       ]
     }
   },
-  activated() {
-    // 获取收藏夹数据
-    this.$axios.get("http://localhost:8081/collection/" + userId, {
-      userID: this.$store.getters.getUser.userID
-    })
-    .then(res => {
-      if (res.data.code === 200) {
-        this.collectList = res.data.collectList
-      }
-    })
-  }
 }
 </script>
 
@@ -60,19 +61,31 @@ export default {
 .collection {
   background-color: #f5f5f5;
 }
-.collection .collect-header {
-  height: 64px;
-  background-color: lightskyblue;
-  /*border-bottom: 5px solid deepskyblue;*/
+.collection .collection-header {
+  background-color: #fff;
+  border-bottom: 2px solid deepskyblue;
+  margin-bottom: 20px;
+  margin-top: -50px;
+  width: 100%;
 }
-.collection .collect-header .collect-title {
+.collection .collection-header .header-content {
   width: 1225px;
-  margin: 0 auto;
-  height: 64px;
-  line-height: 58px;
-  font-size: 28px;
-  font-weight: bold;
+  margin: 30px auto;
+  height: 80px;
 }
+.collection .collection-header .header-content p {
+  float: left;
+  font-size: 28px;
+  line-height: 80px;
+  color: #424242;
+  margin-right: 20px;
+}
+.collection .collection-header .header-content p i {
+  font-size: 45px;
+  color: deepskyblue;
+  line-height: 80px;
+}
+
 .collection .content {
   padding: 20px 0;
   width: 1225px;

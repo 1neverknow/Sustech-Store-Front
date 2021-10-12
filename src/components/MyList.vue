@@ -2,7 +2,7 @@
 
 <template>
   <div id="list" class="myList">
-    <ul>
+    <ul style="list-style: none">
 <!--      productID是商品编号！-->
       <li v-for="item in list" :key="item.goodsId">
         <el-popover placement="top">
@@ -16,11 +16,11 @@
         </el-popover>
 <!--        点击后跳转至商品详情-->
         <router-link :to="{path:'/goods/', parameter: item.goodsId}" class="router-link-active">
-          <img :src="item.productPicture" alt/>
-          <h2>{{item.productName}}</h2>
-          <h3>{{item.productIntro}}</h3>
+          <img :src="'http://localhost:8081/'+ item.picture" alt/>
+          <h2>{{item.title}}</h2>
+          <h3>{{item.introduce}}</h3>
           <p>
-            <span>￥{{item.productPrice}}</span>
+            <span>￥{{item.price}}</span>
           </p>
         </router-link>
       </li>
@@ -73,7 +73,7 @@ export default {
   width: 234px;
   height: 280px;
   padding: 10px 0;
-  margin: 0 0 14.5px 13.7px;
+  margin: 0 0 14.5px 50px;
   background-color: white;
   -webkit-transition: all 0.2s linear;
   transition: all 0.2s linear;
