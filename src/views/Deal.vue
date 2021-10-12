@@ -3,26 +3,28 @@
   <div class="confirmOrder">
     <div class="confirmOrder-header">
       <div class="header-content">
-        <p><i class="el-icon-s-order>"></i></p>
-        <p>Confirm</p>
-        <!--      点击支付之后直接返回成功提示，跳转到？-->
+        <p>
+          <i class="el-icon-s-order"></i>
+        </p>
+        <p>Deal Confirm</p>
         <router-link to></router-link>
       </div>
     </div>
 
     <div class="content">
-<!--      选择地址-->
       <div class="section-address">
-        <p class="title">Address</p>
+        <p class="title">Addresses</p>
         <div class="address-body">
           <ul>
             <li
-              :class="item.id === this.confirmAddress ? 'in-section' : ''"
-              v-for="item in this.addresses"
-              :key="item.id">
-              <h2>{{item.name}}</h2>
-              <p class="phone">{{item.phone}}</p>
-              <p class="address">{{item.address}}</p>
+                :class="item.id === dealInfo.confirmAddress ? 'in-section' : ''"
+                v-for="item in userInfo.addresses"
+                :key="item.id"
+                @click="dealInfo.confirmAddress = item.id"
+            >
+                <h2>{{item.name}}</h2>
+                <p class="phone">{{item.phone}}</p>
+                <p class="address">{{item.address}}</p>
             </li>
             <li class="add-address">
               <i class="el-icon-circle-plus-outline" @click="addAddress"></i>
@@ -32,53 +34,54 @@
         </div>
       </div>
 
-<!--      购买的商品-->
       <div class="section-goods">
-        <p class="title">Goods</p>
+        <p class="title">Buying List</p>
         <div class="goods-list">
           <ul>
-            <img :src="'http://localhost:8081/'+goodsPicture" />
-            <span class="pro-name">{{this.goodsName}}</span>
-            <span class="pro-price">￥{{this.price}} x {{this.number}}</span>
-<!--            <span class="pro-status"></span>-->
-            <span class="pro-total">{{this.price * this.number}}</span>
+            <li v-for="item in goodsList" :key="item.id">
+              <img :src="item.goodsPicture" />
+              <span class="pro-name">{{item.goodsName}}</span>
+              <span class="pro-price">￥ {{item.price}} × {{item.number}}</span>
+              <span class="pro-status"></span>
+              <span class="pro-total">￥ {{item.price * item.number}}</span>
+            </li>
           </ul>
         </div>
       </div>
 
       <div class="section-shipment">
-        <p class="title">Shipment</p>
-        <p class="shipment">{{this.shipment}}</p>
+        <p class="title">Delivery Fee</p>
+        <p class="shipment">￥{{this.dealInfo.shipment}}</p>
       </div>
 
-<!--      结算列表-->
+      <!--      结算列表-->
       <div class="section-count">
         <div class="money-box">
-          <ul>
+          <ul style="list-style: none">
             <li>
               <span class="title">Number: </span>
-              <span class="value">{{this.number}}</span>
+              <span class="value">{{this.goodsList[0].number}}</span>
             </li>
             <li>
               <span class="title">Delivery Fee: </span>
-              <span class="value"></span>
+              <span class="value">{{this.dealInfo.shipment}}</span>
             </li>
             <li>
-              <span class="title">Total: </span>
+              <span class="title">Total:</span>
               <span class="value">
-                <span class="total-price">{{getTotalPrice}}</span>
+                <span class="total-price">{{getTotalPrice()}}</span>
               </span>
             </li>
           </ul>
         </div>
       </div>
 
-<!--      结算导航-->
+      <!--      结算导航-->
       <div class="section-bar">
         <div class="btn">
-          <router-link to="'/collections/'+this.$store.getters.getUser.userId"
-           class="btn-base btn-primary">Cancel</router-link>
-          <a href="javascript:void(0);" @click="addOrder" class="btn-base btn-primary">Pay</a>
+          <router-link to="'/collections/'+store.getters.getUser.userId"
+                       class="btn-base btn-cancel">Cancel</router-link>
+          <a href="javascript:void(0);" @click="addDeal" class="btn-base btn-primary">Pay</a>
         </div>
       </div>
 
@@ -87,46 +90,110 @@
 </template>
 
 <script>
+import store from "@/store"
 export default {
   name: "Deal",
-  date() {
+  data() {
     return {
-      buyId: 11111,  //买家id
-      goodsId: 111111, // 商品id,
-      goodsName: 'Mana Stone',
-      sellerId: 22222, // 卖家id
-      stage: '',    // 订单状态
-      shipment: 10, // 邮费 or 包邮
-      addresses: [
+      dealInfo: {
+        stage: 0,    // 订单状态
+        shipment: 10, // 邮费 or 包邮
+        confirmAddress: 1, // 选中的地址
+        total: '',
+      },
+      userInfo: {
+        buyId: 11111,  //买家id
+        addresses: [
+          // {
+          //   id: 1,
+          //   name: 'Mithra1',
+          //   phone: '11111111',
+          //   address: '魔法舍',
+          // },
+          // {
+          //   id: 2,
+          //   name: 'Mithra2',
+          //   phone: '22222222',
+          //   address: '死湖',
+          // },
+        ],  // 可选地址
+      },
+      goodsList: [
         {
-          id: 1,
-          name: 'Mithra',
-          phone: '11111111',
-          address: '魔法舍',
-        },
-        {
-          id: 2,
-          name: 'Mithra',
-          phone: '11111111',
-          address: '死之湖',
-        },
-      ],  // 可选地址
-      confirmAddress: 1, // 选中的地址
-      goodsPicture: '',
-      price: 111111,
-      number: 1111,
+          sellerId: 22222, // 卖家id
+          goodsId: 111111, // 商品id,
+          goodsName: 'Mana Stone',
+          goodsPicture: '',
+          price: 111111, // 商品单价
+          number: 1111,  // 购买的商品数
+        }
+      ],
     }
   },
   methods: {
-    addOrder() {
+    activate() {
+      let buyId = store.getters.getUser.userId
+      if (!buyId) {
+        alert('Authorization time out, please login again')
+        this.$router.push({ path: "/login" });
+      }
+      let goodsId = this.$route.params.goodsId
+      if (!goodsId) {
+        return
+      }
+      this.goodsList[0].goodsId = goodsId
+      this.userInfo.buyId = buyId
+      // this.getGoodsInfo(goodsId)
+      this.getUserInfo(buyId)
+    },
+    getGoodsInfo(val) {
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/goods/' + val,
+        data: {
+          goodsId: val
+        },
+      }).then(res => {
+        const productDetails = res.data.data
+        this.goodsList[0].price = productDetails.price
+        this.goodsList[0].goodsName = productDetails.title
+        this.goodsList[0].goodsPicture = productDetails.picturePath
+        this.goodsList[0].sellerId = productDetails.announcer.userId
+      })
+    },
+    getUserInfo(val) {
+      this.$axios.get('http://localhost:8081/user/address/')
+      .then(res => {
+        const addresses = res.data.data
+        // console.log(addresses)
+        for (let i in addresses) {
+          let a = addresses[i]
+          console.log(a)
+          let id = a.addressId
+          let address = a.addressName
+          let name = a.recipientName
+          let phone = a.phone
+          this.userInfo.addresses.push(
+              {
+                id: id,
+                name: name,
+                phone: phone,
+                address: address
+              }
+          )
+        }
+      })
+    },
+    addDeal() {
       this.$axios({
         method: 'post',
         url: 'http://localhost:8081/deal/addDeal'
-            + "?buyId=" + this.buyId
-            + "&goodsId=" + this.goodsId
-            + "&sellerId=" + this.sellerId
-            + "&confirmAddress=" + this.confirmAdrress
-            + "&total=" + this.getTotalPrice,
+            + "?buyId=" + this.userInfo.buyId
+            + "&goodsId=" + this.goodsList[0].goodsId
+            + "&sellerId=" + this.goodsList[0].sellerId
+            + "&stage=" + 0, // status=0: 未支付
+            // + "&confirmAddress=" + this.dealInfo.confirmAddress
+            // + "&total=" + this.dealInfo.total
         data: {
         },
         transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
@@ -138,25 +205,29 @@ export default {
           return ret.substring(0,ret.length-1)
         }],
       }).then(res => {
-          if (res.data.code === 200) {
-              // 提示结算结果
-              Element.Message({
-                showClose: true,
-                message: 'Buying Successfully!',
-                type: 'success',
-              })
-              // 跳转我的订单页面
-              this.$router.push({ path: "/order" });
-          }
-        })
+        if (res.data.code === 200) {
+          // 提示结算结果
+          Element.Message({
+            showClose: true,
+            message: 'Buying Successfully!',
+            type: 'success',
+          })
+          // 跳转我的订单页面
+          this.$router.push({ path: "/pay" });
+        }
+      })
     },
-    getTotalPrice () {
-      return this.data.price * this.data.number + this.data.shipment;
+    getTotalPrice() {
+      this.total = this.goodsList[0].number * this.goodsList[0].price + this.dealInfo.shipment;
+      return this.total
     },
     addAddress() {
       alert('待续')
     }
   },
+  mounted() {
+    this.activate()
+  }
 }
 </script>
 
@@ -167,12 +238,14 @@ export default {
 }
 .confirmOrder .confirmOrder-header {
   background-color: #fff;
-  border-bottom: 2px solid #ff6700;
+  border-bottom: 2px solid deepskyblue;
   margin-bottom: 20px;
+  margin-top: -50px;
+  width: 100%;
 }
 .confirmOrder .confirmOrder-header .header-content {
   width: 1225px;
-  margin: 0 auto;
+  margin: 30px auto;
   height: 80px;
 }
 .confirmOrder .confirmOrder-header .header-content p {
@@ -184,13 +257,13 @@ export default {
 }
 .confirmOrder .confirmOrder-header .header-content p i {
   font-size: 45px;
-  color: #ff6700;
+  color: deepskyblue;
   line-height: 80px;
 }
 .confirmOrder .content {
   width: 1225px;
   margin: 0 auto;
-  padding: 48px 0 0;
+  padding: 30px 0 0;
   background-color: #fff;
 }
 .confirmOrder .content .section-address {
@@ -204,17 +277,20 @@ export default {
   margin-bottom: 20px;
 }
 .confirmOrder .content .address-body li {
+  list-style: none;
   float: left;
   color: #333;
   width: 220px;
   height: 178px;
   border: 1px solid #e0e0e0;
   padding: 15px 24px 0;
-  margin-right: 17px;
-  margin-bottom: 24px;
+  margin: 30px 30px 30px auto;
 }
 .confirmOrder .content .address-body .in-section {
-  border: 1px solid #ff6700;
+  border: 1px solid deepskyblue;
+  -moz-box-shadow:2px 2px 10px skyblue;
+  -webkit-box-shadow:2px 2px 10px skyblue;
+  box-shadow:2px 2px 10px skyblue;
 }
 .confirmOrder .content .address-body li h2 {
   font-size: 18px;
@@ -242,6 +318,9 @@ export default {
   padding-top: 50px;
   text-align: center;
 }
+.confirmOrder .content .address-body .add-address i:hover {
+  color: #ff6700;
+}
 .confirmOrder .content .section-goods {
   margin: 0 48px;
 }
@@ -268,7 +347,7 @@ export default {
 }
 .confirmOrder .content .section-goods .goods-list li .pro-name {
   float: left;
-  width: 650px;
+  width: 500px;
   line-height: 30px;
 }
 .confirmOrder .content .section-goods .goods-list li .pro-price {
@@ -296,18 +375,19 @@ export default {
   padding: 25px 0;
   border-bottom: 1px solid #e0e0e0;
   overflow: hidden;
+  height: 50px;
 }
 .confirmOrder .content .section-shipment .title {
   float: left;
-  width: 150px;
+  width: 872px;
   color: #333;
   font-size: 18px;
-  line-height: 38px;
+  line-height: 20px;
 }
 .confirmOrder .content .section-shipment .shipment {
   float: left;
-  line-height: 38px;
-  font-size: 14px;
+  line-height: 20px;
+  font-size: 16px;
   color: #ff6700;
 }
 .confirmOrder .content .section-invoice {
@@ -331,13 +411,14 @@ export default {
   color: #ff6700;
 }
 .confirmOrder .content .section-count {
-  margin: 0 48px;
-  padding: 20px 0;
+  margin: 0 150px;
+  padding: 0 0;
   overflow: hidden;
 }
 .confirmOrder .content .section-count .money-box {
   float: right;
   text-align: right;
+  margin-bottom: 20px;
 }
 .confirmOrder .content .section-count .money-box .title {
   float: left;
@@ -363,18 +444,21 @@ export default {
 }
 .confirmOrder .content .section-count .money-box .total-price {
   font-size: 30px;
+  margin-left: 50px;
 }
 .confirmOrder .content .section-bar {
   padding: 20px 48px;
   border-top: 2px solid #f5f5f5;
   overflow: hidden;
+  /*margin-left: -100px;*/
 }
 .confirmOrder .content .section-bar .btn {
   float: right;
 }
 .confirmOrder .content .section-bar .btn .btn-base {
   float: left;
-  margin-left: 30px;
+  margin-right: 100px;
+  /*margin-left: 50px;*/
   width: 158px;
   height: 38px;
   border: 1px solid #b0b0b0;
@@ -382,13 +466,23 @@ export default {
   line-height: 38px;
   text-align: center;
 }
-.confirmOrder .content .section-bar .btn .btn-return {
-  color: rgba(0, 0, 0, 0.27);
-  border-color: rgba(0, 0, 0, 0.27);
+.confirmOrder .content .section-bar .btn .btn-cancel {
+  text-decoration-line: none;
+  background: lightgrey;
+  border-color: lightgrey;
+  color: #fff;
+  margin-right: 20px;
+}
+.confirmOrder .content .section-bar .btn .btn-cancel:hover {
+  background-color: grey;
 }
 .confirmOrder .content .section-bar .btn .btn-primary {
-  background: #ff6700;
-  border-color: #ff6700;
+  text-decoration-line: none;
+  background: lightskyblue;
+  border-color: lightskyblue;
   color: #fff;
+}
+.confirmOrder .content .section-bar .btn .btn-primary:hover {
+  background: deepskyblue;
 }
 </style>

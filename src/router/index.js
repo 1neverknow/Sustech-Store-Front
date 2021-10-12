@@ -98,11 +98,11 @@ const routes = [
     component: Details
   },
   {
-    path: 'collection/:userId',
+    path: 'user/collections',
     name: 'Collection',
-    // meta: {
-    //   requireAuth: true
-    // },
+    meta: {
+      requireAuth: true
+    },
     component: Collection
   },
   {
@@ -114,7 +114,7 @@ const routes = [
     component: Contact
   },
   {
-    path: '/deal',
+    path: '/deal/:goodsId',
     name: 'Deal',
     meta: {
       requireAuth: true

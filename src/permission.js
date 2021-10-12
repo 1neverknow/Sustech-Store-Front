@@ -1,4 +1,5 @@
 import router from "@/router";
+import store from "@/store"
 
 let unauthorized = ["/","/login","/login/forgot","/login/reset","/register"]
 
@@ -7,7 +8,7 @@ router.beforeEach((to, from, next) => {
     // 判断该路由是否需要登陆权限
     if (to.matched.some(record => record.meta.requireAuth)) {
         // token是用于权限检查的字段
-        const token = localStorage.getItem('token')
+        const token = store.getters.getToken
         console.log("==============" + token + "===================")
         if (token) { // 判断当前token是否存在（登录存入的token）
             if (unauthorized.includes(to.path)) {

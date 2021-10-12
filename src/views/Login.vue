@@ -158,7 +158,6 @@ export default {
           }).then(res => {
             // 接收到来自后端的消息
             console.log(res)
-
             // 接受后端返回的数据
             // 希望全局都可以访问到jwt的内容 -> 使用 /store/index.js
             // header中authorization字段即为用户登录后的权限验证
@@ -167,7 +166,12 @@ export default {
 
             // 将jwt和userInfo共享给整个vue项目
             _this.$store.commit("SET_TOKEN",jwt)
-            _this.$store.commit("SET_USERINFO", userInfo)
+            // if (this.ruleForm["remember-me"]) {
+            //   _this.$store.commit("SET_USERINFO_LOCAL", userInfo)
+            // } else {
+            //   _this.$store.commit("SET_USERINFO", userInfo)
+            // }
+            _this.$store.commit("SET_USERINFO_LOCAL", userInfo)
 
             Element.Message({
               showClose: true,
