@@ -135,11 +135,8 @@ export default {
       this.dialogVisible = true
     },
     handleSuccess(res, file) {
-      let url = URL.createObjectURL(file.raw)
-      // this.goods.photos = url
-
+      // let url = URL.createObjectURL(file.raw)
       this.uploadImgToBinary(file.raw)
-      this.base64ToBinary(this.goods.photos)
     },
     beforeUpload(file) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -162,7 +159,6 @@ export default {
       }
     },
     submitForm(formName) {
-
       // this.$refs[formName].validate((valid) => {
       //   if (valid) {
       //     this.$axios.post('http://localhost:8081/goods/addGoods'
@@ -191,18 +187,16 @@ export default {
       //     return false
       //   }
       // })
-      event.preventDefault();//取消默认行为
+
       //创建 formData 对象
       let formData = new FormData();
       // 向 formData 对象中添加文件
       formData.append('photos', this.goods.photos);
-
       const newRequest = axios.create({
         baseUrl: "http://localhost:8081"//请求地址
       });
 
       console.log(this.goods.photos)
-
       newRequest({
         method: "POST",
         url: "/goods/addGoods"
@@ -210,12 +204,12 @@ export default {
               + '&isSell=' + true
               + '&labels=' + this.goods.labels
               + '&price=' + this.goods.price
-              + '&title=' + this.goods.title
-              + '&photos=' + this.goods.photos,
+              + '&title=' + this.goods.title,
+              // + '&photos=' + JSON.stringify(this.goods.photos),
         data: formData,
         headers: {
           "Content-Type":
-              "multipart/form-data;boundary=ebf9f03029db4c2799ae16b5428b06bd1",
+              "multipart/form-data",
           'Authorization': store.getters.getToken
         }
       }).then(res => {
@@ -224,7 +218,7 @@ export default {
     },
     uploadImgToBinary(file) {
       // 核心方法，将图片转成base64字符串形式
-      let self = this.goods
+      let self = this
       const tmp = new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -232,23 +226,24 @@ export default {
           // 图片转base64完成后返回reader对象
           resolve(reader);
           console.log(reader)
-          self.photos = reader.result
+          self.goods.photos = reader.result
+          self.base64ToBinary(reader.result)
         };
         reader.onerror = reject;
       });
     },
-
     base64ToBinary(base) {
-      //二进制数组转换
-      var bytes = window.atob(base.split(',')[1]);        //去掉url的头，并转换为byte
-
-      //处理异常,将ascii码小于0的转换为大于0
-      var ab = new ArrayBuffer(bytes.length);
-      var ia = new Uint8Array(ab);
-      for (var i = 0; i < bytes.length; i++) {
-        ia[i] = bytes.charCodeAt(i);
+      // base64 -> 二进制
+      let byteString = window.atob(base.split(',')[1]);
+      let mimeString = base.split(',')[0].split(':')[1].split(';')[0];
+      let T = mimeString.split('/')[1]
+      let ab = new ArrayBuffer(byteString.length);
+      let ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
       }
-      this.goods.photos = ia
+      const blob =  new Blob([ab], {type: mimeString});
+      this.goods.photos = blob
     }
   },
 
