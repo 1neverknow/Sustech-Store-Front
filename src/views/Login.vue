@@ -98,7 +98,7 @@ export default {
     return {
       labelPosition: 'top',
       ruleForm: {
-        email: 'c001hewanning@qq.com',
+        email: '208347209@qq.com',
         password: '123',
         'remember-me': false,
       },

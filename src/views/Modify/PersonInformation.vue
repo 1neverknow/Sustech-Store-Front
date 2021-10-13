@@ -132,8 +132,6 @@
           <i class="el-icon-plus avatar-uploader-icon"></i>
         </template>
       </el-upload>
-
-
     </el-dialog>
 
 

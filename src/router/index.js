@@ -20,6 +20,7 @@ import HomePage from "@/views/HomePage";
 import Message from '@/views/Message'
 import PI from "@/views/Modify/PersonInformation";
 import AI from "@/views/Modify/AddressInformation";
+import Search from "@/views/Search"
 
 // import Chat from '../components/chat/chat'
 // import Address from '../components/address/address'
@@ -70,6 +71,11 @@ const routes = [
         // },
         component: Collection
       },
+      {
+        path: 'search',
+        name: 'Search',
+        component: Search
+      }
     ]
   },
   {

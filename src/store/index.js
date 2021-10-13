@@ -39,7 +39,7 @@ export default new Vuex.Store({
       state.token = null
       state.userInfo = null
       localStorage.removeItem('token')
-      sessionStorage.removeItem('userInfo')
+      localStorage.removeItem('userInfo')
     },
 
 

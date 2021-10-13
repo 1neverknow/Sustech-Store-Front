@@ -170,6 +170,12 @@
         </el-descriptions-item>
 
       </el-descriptions>
+      <el-alert
+          center
+          title="Tips：Click Modify to check more address and modify them."
+          type="warning"
+          :closable="false">
+      </el-alert>
 
     </el-card>
 
@@ -259,7 +265,65 @@ export default {
           })
         }
       })
-    }
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/user/address',
+        headers: {'authorization': this.$store.getters.getToken},
+        transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
+          var ret = '';
+          for (var it in data) {
+            // 如果要发送中文 编码
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+          }
+          return ret.substring(0, ret.length - 1)
+        }]
+      }).then(res => {
+        if (res.data.code === 200) {
+          const data = res.data.data
+          if(data.length>0){
+            this.receiver1=data[0].recipientName
+            this.telephone1=data[0].phone
+            this.address1= data[0].addressName
+            if(data.length>1){
+              this.receiver2=data[1].recipientName
+              this.telephone2=data[1].phone
+              this.address2= data[1].addressName
+              if(data.length>2){
+                this.receiver3=data[2].recipientName
+                this.telephone3=data[2].phone
+                this.address3= data[2].addressName
+              }else{
+                this.receiver3='not yet'
+                this.telephone3='not yet'
+                this.address3='not yet'
+              }
+            }else{
+              this.receiver3='not yet'
+              this.telephone3='not yet'
+              this.address3='not yet'
+              this.receiver2='not yet'
+              this.telephone2='not yet'
+              this.address2='not yet'
+            }
+          }else{
+            this.receiver1='not yet'
+            this.telephone1='not yet'
+            this.address1='not yet'
+            this.receiver2='not yet'
+            this.telephone2='not yet'
+            this.address2='not yet'
+            this.receiver3='not yet'
+            this.telephone3='not yet'
+            this.address3='not yet'
+          }
+        } else {
+          this.$alert(res.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        }
+      })
+    },
+
   }
 }
 </script>

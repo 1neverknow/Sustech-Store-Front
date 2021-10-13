@@ -36,20 +36,20 @@ export default {
   data() {
     return {
       collectList: [
-        //   {
-        //     goodsId: 1,
-        //     picture: '',
-        //     title: 'Mana Stone',
-        //     introduce: 'Help you grow stronger',
-        //     price: 100000,
-        //   },
-        // {
-        //   goodsId: 2,
-        //   picture: '',
-        //   title: 'KFC',
-        //   introduce: '写饿了',
-        //   price: 30,
-        // }
+          {
+            goodsId: 1,
+            picture: '',
+            title: 'Mana Stone',
+            introduce: 'Help you grow stronger',
+            price: 100000,
+          },
+        {
+          goodsId: 2,
+          picture: '',
+          title: 'KFC',
+          introduce: '写饿了',
+          price: 30,
+        }
       ]
     }
   },
