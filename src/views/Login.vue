@@ -133,14 +133,14 @@ export default {
   },
   methods: {
     submitForm(formName) {
-      if (this.$store.getters.getUser) {
-        Element.Message({
-          showClose: true,
-          message: 'You have already login',
-          type: 'error',
-        })
-        return
-      }
+      // if (this.$store.getters.getUser) {
+      //   Element.Message({
+      //     showClose: true,
+      //     message: 'You have already login',
+      //     type: 'error',
+      //   })
+      //   return
+      // }
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // 更改为调用全局this -> 可以用来获取store里的信息
