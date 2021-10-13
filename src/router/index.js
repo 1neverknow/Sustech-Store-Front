@@ -109,7 +109,6 @@ const routes = [
     name: 'Details',
     component: Details
   },
-
   {
     path: '/product/contact',
     name: 'Contact',
@@ -119,7 +118,7 @@ const routes = [
     component: Contact
   },
   {
-    path: '/deal/:goodsId',
+    path: '/deal/:dealId',
     name: 'Deal',
     meta: {
       requireAuth: true

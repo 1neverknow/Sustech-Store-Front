@@ -32,7 +32,7 @@
               <h1 class="name">{{title}}</h1>
               <p class="intro">{{introduce}}</p>
               <p class="announce">
-                <router-link to="">{{announcer}}</router-link>
+                <router-link to="">{{announcer.userName}}</router-link>
                 --
                 Announced in {{announceTime}}
               </p>
@@ -99,6 +99,7 @@
                 <el-button type="text" size="small" @click="handleDelete(index)">Delete</el-button>
               </template>
             </div>
+
           </el-collapse-item>
           <el-collapse-item name="2">
             <template #title>
@@ -130,7 +131,10 @@ export default {
       picturePath: [], // 商品展示图（轮播图）=> 数组
       // labels: [],
       introduce: 'you would be stronger after eating it',
-      announcer: 'Snow/White',
+      announcer: {
+        userId: '',
+        userName: '',
+      },
       comments: [
         {
           commentId: '',
@@ -160,6 +164,7 @@ export default {
       want: 1,  // “我想要”的人数,
       announceTime: '2021-10-10',
       looked: 10,
+      stage: 0,
 
       activeNames: '1',
       inputComment: '',
@@ -171,43 +176,48 @@ export default {
       console.log(this.$route.params.goodsId)
       if (this.$route.params.goodsId) {
         this.goodsId = this.$route.params.goodsId
-        this.getDetails(this.goodsId)
+        this.getDetails()
       }
     },
     // 获取商品详情
-    getDetails(val) {
+    getDetails() {
       const _this = this
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/goods/' + val,
-        data: {
-          goodsId: val
-        },
+        url: 'http://localhost:8081/goods/' + this.goodsId,
       })
       .then(res => {
         const productDetails = res.data.data
+        console.log(productDetails)
         _this.price = productDetails.price
         _this.title = productDetails.title
-        _this.picturePath = productDetails.picturePath
+
+        this.getPicture(productDetails.picturePath)
+
         // _this.labels = productDetails.labels
         _this.introduce = productDetails.introduce
         _this.announcer = productDetails.announcer
-        _this.comments = JSON.parse(productDetails.comments)
+        // _this.comments = productDetails.comments
         _this.want = productDetails.want
         _this.announceTime = productDetails.announceTime
       })
     },
+    getPicture(picturePaths) {
+      for (let i in picturePaths) {
+        this.picturePath.push(picturePaths[i].path)
+      }
+    },
     // 点击我想要联系卖家
     wantIt() {
       // 需要先验证用户是否已经登陆
-      if (!this.$store.getters.getUser) {
+      if (!this.$store.getters.getToken) {
         Element.Message({
-          showClose: true,
-          message: 'Please login first',
+          message: 'Please login',
           type: 'error',
         })
         return
       }
+      this.addDeal()
     },
     // 添加到收藏夹
     addCollect() {
@@ -267,7 +277,23 @@ export default {
     },
     handleDelete(index) {
       this.comments.splice(index, 1)
-    }
+    },
+    addDeal() {
+      this.$axios({
+        method: 'post',
+        url: 'http://localhost:8081/deal/addDeal'
+            + "?buyId=" + this.$store.getters.getUser.userId
+            + "&goodsId=" + this.goodsId
+            + "&sellerId=" + this.announcer.userId
+            + "&stage=" + 0, // status=0: 未支付
+      }).then(res => {
+        if (res.data.code === 200) {
+          // 提示结算结果
+          let dealId = res.data.data
+          this.$router.push('/deal/'+ dealId)
+        }
+      })
+    },
   },
   mounted() {
     this.activate()

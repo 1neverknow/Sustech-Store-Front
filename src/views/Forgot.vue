@@ -50,20 +50,20 @@ export default {
   name: "Forgot",
 
   data() {
-    var validateEmail = (rule, value, callback) => {
+    const validateEmail = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('Please input an email address'));
       } else {
         if (value !== '') {
-          var reg=/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-          if(!reg.test(value)){
+          var reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+          if (!reg.test(value)) {
             callback(new Error('Email is invalid'));
           }
         }
         callback();
       }
     };
-    var countdown = setInterval(() => {
+    const countdown = setInterval(() => {
       if (this.count < 1) {
         this.isGeting = false
         this.disable = false
@@ -139,22 +139,6 @@ export default {
     resetForm(formName) {
       this.$refs[formName].validateField("email", error => {
         if (!error) {
-          // this.$axios({
-          //   method: 'post',
-          //   url: 'http://localhost:8081/login/forgot'
-          //       + "?email=" + this.ruleForm.email,
-          //   data: {
-          //     email: this.ruleForm.email,
-          //   },
-          //   transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
-          //     var ret = '';
-          //     for (var it in data) {
-          //       // 如果要发送中文 编码
-          //       ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-          //     }
-          //     return ret.substring(0,ret.length-1)
-          //   }],
-          // }).then(res => {
             var countdown = setInterval(() => {
               if (this.verify.time_out < 1) {
                 console.log("send verify code")

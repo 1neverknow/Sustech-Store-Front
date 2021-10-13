@@ -79,9 +79,8 @@
       <!--      结算导航-->
       <div class="section-bar">
         <div class="btn">
-          <router-link to="'/collections/'+store.getters.getUser.userId"
-                       class="btn-base btn-cancel">Cancel</router-link>
-          <a href="javascript:void(0);" @click="addDeal" class="btn-base btn-primary">Pay</a>
+          <router-link :to="{path: '/goods/', params: { goodsId: this.goodsList[0].goodsId}}" class="btn-base btn-cancel">Cancel</router-link>
+          <a href="javascript:void(0);" @click="checkDeal" class="btn-base btn-primary">Pay</a>
         </div>
       </div>
 
@@ -96,6 +95,7 @@ export default {
   data() {
     return {
       dealInfo: {
+        dealId: '',
         stage: 0,    // 订单状态
         shipment: 10, // 邮费 or 包邮
         confirmAddress: 1, // 选中的地址
@@ -104,18 +104,6 @@ export default {
       userInfo: {
         buyId: 11111,  //买家id
         addresses: [
-          // {
-          //   id: 1,
-          //   name: 'Mithra1',
-          //   phone: '11111111',
-          //   address: '魔法舍',
-          // },
-          // {
-          //   id: 2,
-          //   name: 'Mithra2',
-          //   phone: '22222222',
-          //   address: '死湖',
-          // },
         ],  // 可选地址
       },
       goodsList: [
@@ -134,25 +122,34 @@ export default {
     activate() {
       let buyId = store.getters.getUser.userId
       if (!buyId) {
-        alert('Authorization time out, please login again')
+        alert('Authorization time out')
         this.$router.push({ path: "/login" });
       }
-      let goodsId = this.$route.params.goodsId
-      if (!goodsId) {
+      this.getDealInfo()
+      this.getUserInfo()
+      this.getGoodsInfo()
+    },
+    getDealInfo() {
+      let dealId = this.$route.params.dealId
+      if (!dealId) {
         return
       }
-      this.goodsList[0].goodsId = goodsId
-      this.userInfo.buyId = buyId
-      // this.getGoodsInfo(goodsId)
-      this.getUserInfo(buyId)
-    },
-    getGoodsInfo(val) {
+      this.dealInfo.dealId = dealId
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/goods/' + val,
-        data: {
-          goodsId: val
-        },
+        url: 'http://localhost:8081/deal/' + dealId,
+      }).then(res => {
+        const info = res.data.data
+        console.log(productDetails)
+        this.dealInfo.stage = info.stage
+        this.goodsList[0].goodsId = info.goods
+        this.goodsList[0].sellerId = info.seller
+      })
+    },
+    getGoodsInfo() {
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/goods/' + this.goodsList[0].goodsId,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': store.getters.getToken
@@ -162,15 +159,14 @@ export default {
         console.log(productDetails)
         this.goodsList[0].price = productDetails.price
         this.goodsList[0].goodsName = productDetails.title
-        this.goodsList[0].goodsPicture = productDetails.picturePath
+        this.goodsList[0].goodsPicture = productDetails.picturePath[0]
         this.goodsList[0].sellerId = productDetails.announcer.userId
       })
     },
-    getUserInfo(val) {
+    getUserInfo() {
       this.$axios.get('http://localhost:8081/user/address/')
       .then(res => {
         const addresses = res.data.data
-        // console.log(addresses)
         for (let i in addresses) {
           let a = addresses[i]
           console.log(a)
@@ -189,36 +185,15 @@ export default {
         }
       })
     },
-    addDeal() {
+    checkDeal() {
       this.$axios({
         method: 'post',
-        url: 'http://localhost:8081/deal/addDeal'
-            + "?buyId=" + this.userInfo.buyId
-            + "&goodsId=" + this.goodsList[0].goodsId
-            + "&sellerId=" + this.goodsList[0].sellerId
-            + "&stage=" + 0, // status=0: 未支付
-            // + "&confirmAddress=" + this.dealInfo.confirmAddress
-            // + "&total=" + this.dealInfo.total
-        data: {
-        },
-        transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
-          var ret = '';
-          for (var it in data) {
-            // 如果要发送中文 编码
-            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-          }
-          return ret.substring(0,ret.length-1)
-        }],
+        url: 'http://localhost:8081/deal/check/' + this.dealInfo.dealId
+            + "?addressId=" + this.dealInfo.confirmAddress
       }).then(res => {
         if (res.data.code === 200) {
           // 提示结算结果
-          Element.Message({
-            showClose: true,
-            message: 'Buying Successfully!',
-            type: 'success',
-          })
-          // 跳转我的订单页面
-          this.$router.push({ path: "/pay" });
+          this.$router.push('/deal/pay/' + this.dealInfo.dealId)
         }
       })
     },

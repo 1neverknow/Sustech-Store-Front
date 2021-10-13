@@ -65,7 +65,8 @@
 </template>
 
 <script>
-import Element from "element-ui";
+import Element from "element-ui"
+import axios from 'axios'
 
 export default {
   name: "Register",
@@ -130,7 +131,8 @@ export default {
 
           this.$axios({
             method: 'post',
-            url: 'http://localhost:8081/user/register' + "?username=" + this.ruleForm.username
+            url: 'http://localhost:8081/user/register'
+            + "?username=" + this.ruleForm.username
                 + "&email=" + this.ruleForm.email
                 + "&password=" + this.ruleForm.password
                 + "&gender=" + this.ruleForm.gender,
@@ -158,9 +160,32 @@ export default {
             _this.$router.push("/login")
           })
           // 认证不通过的情况 -> 全局axios拦截
+
+
+          // const newRequest = axios.create({
+          //   baseUrl: "http://localhost:8081"//请求地址
+          // });
+          // newRequest({
+          //   method: "POST",
+          //   url: "/user/register"
+          //       + "?username=" + this.ruleForm.username
+          //       + "&email=" + this.ruleForm.email
+          //       + "&password=" + this.ruleForm.password
+          //       + "&gender=" + this.ruleForm.gender,
+          //   data: this.ruleForm,
+          //   headers: {
+          //     "Content-Type": "multipart/form-data",
+          //   }
+          // }).then(res => {
+          //   //   // 验证成功后，弹窗提示前往邮箱查看，并跳转到login页面
+          //     Element.Message({
+          //       message: 'Register success! Please check your email for activation message',
+          //       type: 'success',
+          //     })
+          //     _this.$router.push("/login")
+          // });
         } else if (!this.accept) {
           Element.Message({
-            showClose: true,
             message: 'You must accept our terms and conditions',
             type: 'error',
           })

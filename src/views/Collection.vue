@@ -65,8 +65,8 @@ export default {
 .collection .collection-header {
   background-color: #fff;
   border-bottom: 2px solid deepskyblue;
-  margin-bottom: 20px;
-  margin-top: -50px;
+  margin-bottom: 50px;
+  margin-top: -100px;
   width: 100%;
 }
 .collection .collection-header .header-content {
