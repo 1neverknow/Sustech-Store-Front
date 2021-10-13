@@ -13,7 +13,8 @@ axios.defaults.baseURL='http://localhost:8081'
 axios.interceptors.request.use(config => {
     console.log(store.getters.getToken)
     config.headers = {
-        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
         'Authorization': store.getters.getToken
     }
     return config

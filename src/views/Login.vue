@@ -35,6 +35,14 @@
               <el-input type="text" v-model="ruleForm.password" style="width: 320px"></el-input>
               <el-button type="default" @click="changePass('hide')" style="width: 80px">Hide</el-button>
             </el-form-item>
+
+<!--            验证码-->
+<!--            <el-form-item>-->
+<!--              <el-button @click="getVerifyImg">Get Verify Image</el-button>-->
+<!--              <img src="verify.verifyImg">-->
+<!--              <el-input type="text" v-model="verify.verifycode" style="width: 320px"></el-input>-->
+<!--            </el-form-item>-->
+
             <el-form-item label="" prop="remember">
               <el-checkbox v-model="ruleForm['remember-me']" label="Remember Me"></el-checkbox>
             </el-form-item>
@@ -116,19 +124,23 @@ export default {
           },
         ],
       },
-      invisible: true
+      invisible: true,
+      verify: {
+        verifyImg: '',
+        verifycode: '',
+      }
     }
   },
   methods: {
     submitForm(formName) {
-      if (this.$store.getters.getUser) {
-        Element.Message({
-          showClose: true,
-          message: 'You have already login',
-          type: 'error',
-        })
-        return
-      }
+      // if (this.$store.getters.getUser) {
+      //   Element.Message({
+      //     showClose: true,
+      //     message: 'You have already login',
+      //     type: 'error',
+      //   })
+      //   return
+      // }
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // 更改为调用全局this -> 可以用来获取store里的信息
@@ -166,11 +178,6 @@ export default {
 
             // 将jwt和userInfo共享给整个vue项目
             _this.$store.commit("SET_TOKEN",jwt)
-            // if (this.ruleForm["remember-me"]) {
-            //   _this.$store.commit("SET_USERINFO_LOCAL", userInfo)
-            // } else {
-            // _this.$store.commit("SET_USERINFO", userInfo)
-            // }
             _this.$store.commit("SET_USERINFO", userInfo)
 
             Element.Message({
@@ -194,7 +201,20 @@ export default {
     },
     changePass(value) {
       this.invisible = !(value === 'show');
-    }    //判断渲染，true:暗文显示，false:明文显示
+    },    //判断渲染，true:暗文显示，false:明文显示
+    getVerifyImg() {
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/login',
+      }).then(res => {
+        this.verify.verifyImg = 'http://localhost:8081/'+res.data.data
+      })
+      // this.$axios.get('http://localhost:8081/code/image')
+      //     .then(res => {
+      //       console.log('+++++++++' + res.data + '+++++++++')
+      //       this.verify.verifyImg = 'http://localhost:8081/' + res.data.data
+      // })
+    }
   },
 }
 </script>
