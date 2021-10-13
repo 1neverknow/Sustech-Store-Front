@@ -2,23 +2,28 @@
 <template>
   <div class="publish">
     <div class="publish-header">
-      <div class="publish-title">
-        Publish New Goods
-<!--        <i class="el-icon-star-on" style="color: gold"></i>-->
+      <div class="header-content">
+        <p>
+          <i class="el-icon-circle-plus"></i>
+        </p>
+        <p>Publish New Goods</p>
+        <router-link to></router-link>
       </div>
     </div>
+
     <div class="content">
       <el-form
-          ref="ruleForm"
+          ref="goods"
           :model="goods"
           :rules="rules"
           :label-position="labelPosition"
+          :hide-required-asterisk="true"
           label-width="120px"
-          class="demo-ruleForm"
+          size="medium"
       >
         <el-row>
-          <el-col class="form-body" :span="8" :offset="2">
-            <el-form-item label="Goods' Name" prop="name">
+          <el-col class="form-body" :span="9" :offset="1">
+            <el-form-item label="Title" prop="name">
               <el-input v-model="goods.title"></el-input>
             </el-form-item>
             <el-form-item label="Price" prop="price">
@@ -40,102 +45,213 @@
             </el-form-item>
           </el-col>
 
-          <el-col :span="12" :offset="2">
+          <el-col :span="10" :offset="2" class="img-uploader">
             <span
-                style="color: grey; line-height: 60px; margin-left: 50px"
-            >Upload your goods' image
+                style="color: grey; line-height: 60px; font-size: 14px"
+            >Upload your goods' photos
             </span>
             <el-alert
                 title="Tips：Click '+' to upload your image. You can only upload .jpg or .png image"
                 type="warning"
+                style="width: 300px"
                 :closable="false">
             </el-alert>
-            <!--不使用action 符号#   用http-request实现自定义上传  :http-request="httpRequest"  :on-change="handleChange"-->
-            <el-upload
-                class="avatar-uploader"
-                action="lei"
-                :on-change="handleChange"
-                :show-file-list="false"
-                :http-request="httpRequest"><!--覆盖默认上传-->
-              <template >
-                <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              </template>
-            </el-upload>
+
+            <el-form class="avatar-uploader">
+              <el-upload
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  list-type="picture-card"
+                  :on-success="handleSuccess"
+                  :before-upload="beforeUpload"
+                  :on-preview="handlePictureCardPreview"
+                  :on-remove="handleRemove"
+              >
+                <i class="el-icon-plus"></i>
+              </el-upload>
+              <el-dialog v-model="dialogVisible">
+                <img width="100%" :src="dialogImageUrl" alt="" />
+              </el-dialog>
+            </el-form>
 
             <el-form-item label="goodsImg" prop="goodsImg" hidden>
               <el-input v-model="goods.goodsImg" clearable></el-input>
             </el-form-item>
           </el-col>
         </el-row>
+
+        <div>
+          <el-button type="primary" style="float: left;width: 30%; margin-top: 30px ;margin-left: 300px;"
+                     @click="submitForm('goods')"
+          >Publish</el-button
+          >
+        </div>
       </el-form>
     </div>
   </div>
 </template>
 
 <script>
+import { Element } from 'element-ui'
+import axios from 'axios'
+import store from '@/store'
+
 export default {
   name: "Publish",
   data() {
     return {
       labelPosition: 'left',
-      imageUrl: '',
+      photolist: [],
+      freeDelivery: false, // 是否包邮
       goods: {
-        title: '',
-        price: '',
-        introduce: '',
-        goodsImg: '',
-        freeDelivery: false, // 是否包邮
+        introduce: 'aaaaaaaaaa',
+        isSell: true,
+        labels: ['None'],
+        name: 'aaa',
+        price: '111111',
+        title: '11111111',
+        photos: '',
       },
       rules: {
-
-      }
+        title:[
+          {required: true, message: 'Title is required', trigger: 'blur'},
+        ],
+        introduce: [
+          { required: true, message: 'Price is required' },
+        ],
+        photolist: [
+          {required: true, trigger: 'blur',},
+        ],
+      },
+      dialogImageUrl: '',
+      dialogVisible: ''
     }
   },
   methods: {
-    //将上传图片的原路径赋值给临时路径
-    handleChange(file, fileList) {
-      this.tempUrl = URL.createObjectURL(file.raw);
+    handleRemove(file, fileList) {
+      console.log(file, fileList)
     },
-//实现图片上传功能
-    httpRequest(item) {
-      //验证图片格式大小信息
-      const isJPG = item.file.type === 'image/jpeg' || item.file.type === 'image/png';
-      const isLt2M = item.file.size / 1024 / 1024 < 2;
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
+    handleSuccess(res, file) {
+      let url = URL.createObjectURL(file.raw)
+      // this.goods.photos = url
+
+      this.uploadImgToBinary(file.raw)
+      this.base64ToBinary(this.goods.photos)
+    },
+    beforeUpload(file) {
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
       if (!isJPG) {
-        this.$message.error('上传图片只能是 JPG 或 PNG 格式!');
+        Element.Message({
+          showClose: true,
+          message: 'Picture must be JPG/PNG format!',
+          type: 'error',
+        })
+        return false
       }
       if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 2MB!');
-      }
-      //图片格式大小信息没问题 执行上传图片的方法
-      if (isJPG && isLt2M === true) {
-        // post上传图片
-        let App = this;
-        //定义FormData对象 存储文件
-        let mf = new FormData();
-        //将图片文件放入mf
-        mf.append('file', item.file);
-        App.$Api.fileUpload(mf, function (result) {
-          if (result.result === "true") {
-            App.$notify.success({
-              title: '温馨提示：',
-              message: result.message,
-            });
-            //将临时文件路径赋值给显示图片路径（前端显示的图片）
-            App.imageUrl = App.tempUrl;
-            //将后台传来的数据库图片路径赋值给car对象的图片路径
-            App.car.carImg = result.imgUrl;
-          } else {
-            App.$notify.error({
-              title: '温馨提示：',
-              message: result.message,
-            });
-          }
+        Element.Message({
+          showClose: true,
+          message: 'Picture size can not exceed 2MB!',
+          type: 'error',
         })
+        return false
       }
+    },
+    submitForm(formName) {
+
+      // this.$refs[formName].validate((valid) => {
+      //   if (valid) {
+      //     this.$axios.post('http://localhost:8081/goods/addGoods'
+      //         + '?introduce=' + this.goods.introduce
+      //         + '&isSell=' + true
+      //         + '&labels=' + this.goods.labels
+      //         + '&price=' + this.goods.price
+      //         + '&title=' + this.goods.title
+      //         , this.goods, {
+      //     }).then(res => {
+      //       // 验证成功后，弹窗提示前往邮箱查看，并跳转到login页面
+      //       Element.Message({
+      //         showClose: true,
+      //         message: 'Register success! Please check your email for activation message',
+      //         type: 'success',
+      //       })
+      //       _this.$router.push("/login")
+      //     })
+      //     // 认证不通过的情况 -> 全局axios拦截
+      //   }  else {
+      //     Element.Message({
+      //       showClose: true,
+      //       message: 'Please check your input',
+      //       type: 'success',
+      //     })
+      //     return false
+      //   }
+      // })
+      event.preventDefault();//取消默认行为
+      //创建 formData 对象
+      let formData = new FormData();
+      // 向 formData 对象中添加文件
+      formData.append('photos', this.goods.photos);
+
+      const newRequest = axios.create({
+        baseUrl: "http://localhost:8081"//请求地址
+      });
+
+      console.log(this.goods.photos)
+
+      newRequest({
+        method: "POST",
+        url: "/goods/addGoods"
+              + '?introduce=' + this.goods.introduce
+              + '&isSell=' + true
+              + '&labels=' + this.goods.labels
+              + '&price=' + this.goods.price
+              + '&title=' + this.goods.title
+              + '&photos=' + this.goods.photos,
+        data: formData,
+        headers: {
+          "Content-Type":
+              "multipart/form-data;boundary=ebf9f03029db4c2799ae16b5428b06bd1",
+          'Authorization': store.getters.getToken
+        }
+      }).then(res => {
+        alert('success')
+      });
+    },
+    uploadImgToBinary(file) {
+      // 核心方法，将图片转成base64字符串形式
+      let self = this.goods
+      const tmp = new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+          // 图片转base64完成后返回reader对象
+          resolve(reader);
+          console.log(reader)
+          self.photos = reader.result
+        };
+        reader.onerror = reject;
+      });
+    },
+
+    base64ToBinary(base) {
+      //二进制数组转换
+      var bytes = window.atob(base.split(',')[1]);        //去掉url的头，并转换为byte
+
+      //处理异常,将ascii码小于0的转换为大于0
+      var ab = new ArrayBuffer(bytes.length);
+      var ia = new Uint8Array(ab);
+      for (var i = 0; i < bytes.length; i++) {
+        ia[i] = bytes.charCodeAt(i);
+      }
+      this.goods.photos = ia
     }
-  }
+  },
+
 }
 </script>
 
@@ -144,45 +260,58 @@ export default {
   background-color: #f5f5f5;
 }
 .publish .publish-header {
-  height: 64px;
-  background-color: lightskyblue;
-  /*border-bottom: 5px solid deepskyblue;*/
+  background-color: #fff;
+  border-bottom: 2px solid deepskyblue;
+  margin-bottom: 20px;
+  margin-top: -50px;
+  width: 100%;
 }
-.publish .publish-header .publish-title {
+.publish .publish-header .header-content {
   width: 1225px;
-  margin-left: 100px;
-  height: 64px;
-  line-height: 58px;
-  font-size: 28px;
-  font-weight: bold;
+  margin: 30px auto;
+  height: 80px;
 }
+.publish .publish-header .header-content p {
+  float: left;
+  font-size: 28px;
+  line-height: 80px;
+  color: #424242;
+  margin-right: 20px;
+}
+.publish .publish-header .header-content p i {
+  font-size: 45px;
+  color: deepskyblue;
+  line-height: 80px;
+}
+
 .publish .content {
   padding: 20px 0;
   width: 1225px;
   margin: 0 auto;
+  height: 800px;
 }
 .publish .content .form-body {
-  /*width: 40%;*/
-  margin-top: 50px;
+  margin-top: 70px;
 }
-.publish .content .form-avatar {
-  margin: auto;
+.publish .content .img-uploader {
+  margin-top: 30px;
 }
-.avatar-uploader {
+.publish .content .img-uploader .avatar-uploader {
   margin-top: 20px;
-  margin-left: 50px;
+  /*margin-left: 50px;*/
+}
+
+.publish .content .img-uploader .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  width: 178px;
-  height: 178px;
 }
-.avatar-uploader:hover {
-  border-color: #409EFF;
+.publish .content .img-uploader .avatar-uploader .el-upload:hover {
+  border-color: #409eff;
 }
-.avatar-uploader-icon {
+.publish .content .img-uploader .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
   width: 178px;
@@ -190,9 +319,7 @@ export default {
   line-height: 178px;
   text-align: center;
 }
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: flex;
+.publish .content .form-btn {
+  margin: 40px auto;
 }
 </style>
