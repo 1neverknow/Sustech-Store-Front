@@ -60,6 +60,7 @@ export default {
 <style scoped>
 .collection {
   background-color: #f5f5f5;
+  margin: -20px;
 }
 .collection .collection-header {
   background-color: #fff;

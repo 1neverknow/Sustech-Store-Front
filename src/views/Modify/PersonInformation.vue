@@ -2,7 +2,12 @@
   <div>
     <div class="modifyImage">
       <img src="@/assets/img.jpg" class="user-avator-pi" @click="EditImage()"  />
-      <p style="text-align:center;">Click The Image to Modify</p>
+      <el-alert
+          center
+          title="Tips：Click image to modify your image. You can only upload .jpg or .png image"
+          type="warning"
+          :closable="false">
+      </el-alert>
     </div>
 
 
@@ -119,13 +124,16 @@
     <el-dialog title="收货地址" :visible.sync="edit_image">
       <el-upload
           class="avatar-uploader"
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action="lei"
+          :on-change="handleChange"
           :show-file-list="false"
-          :on-success="handleAvatarSuccess"
-          :before-upload="beforeAvatarUpload">
-        <img v-if="imageUrl" :src="imageUrl" class="avatar">
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          :http-request="httpRequest"><!--覆盖默认上传-->
+        <template >
+          <i class="el-icon-plus avatar-uploader-icon"></i>
+        </template>
       </el-upload>
+
+
     </el-dialog>
 
 
@@ -223,6 +231,47 @@ export default {
     };
   },
   methods: {
+    handleChange(file, fileList) {
+      this.tempUrl = URL.createObjectURL(file.raw);
+    },
+//实现图片上传功能
+    httpRequest(item) {
+      //验证图片格式大小信息
+      const isJPG = item.file.type === 'image/jpeg' || item.file.type === 'image/png';
+      const isLt2M = item.file.size / 1024 / 1024 < 2;
+      if (!isJPG) {
+        this.$message.error('上传图片只能是 JPG 或 PNG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传图片大小不能超过 2MB!');
+      }
+      //图片格式大小信息没问题 执行上传图片的方法
+      if (isJPG && isLt2M === true) {
+        // post上传图片
+        let App = this;
+        //定义FormData对象 存储文件
+        let mf = new FormData();
+        //将图片文件放入mf
+        mf.append('file', item.file);
+        App.$Api.fileUpload(mf, function (result) {
+          if (result.result === "true") {
+            App.$notify.success({
+              title: '温馨提示：',
+              message: result.message,
+            });
+            //将临时文件路径赋值给显示图片路径（前端显示的图片）
+            App.imageUrl = App.tempUrl;
+            //将后台传来的数据库图片路径赋值给car对象的图片路径
+            App.car.carImg = result.imgUrl;
+          } else {
+            App.$notify.error({
+              title: '温馨提示：',
+              message: result.message,
+            });
+          }
+        })
+      }
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {

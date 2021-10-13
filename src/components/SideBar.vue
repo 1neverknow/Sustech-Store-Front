@@ -15,7 +15,7 @@
         <router-link to="/login" style="text-decoration: none">
           <el-menu-item id="title" index="SS">
             <i style="margin-top: -10px">
-              <img :src="logo" alt="logo" style="width: 25px; margin-left: -5px; padding-bottom: 6px"/>
+              <img :src="logo" alt="logo" style="width: 40px; margin-left: -13px; padding-bottom: 6px"/>
             </i>
             <span slot="default" style="margin-left: 5px; font-size: 22px">Sustech Store</span>
           </el-menu-item>
@@ -68,7 +68,7 @@
         </el-menu-item>
 
 
-        <el-menu-item index="Roster" >
+        <el-menu-item index="Collection" >
           <i class="el-icon-notebook-2"></i>
           <span slot="title">Favorites</span>
         </el-menu-item>
@@ -122,7 +122,7 @@
 </template>
 
 <script>
-import logo from '@/assets/logo.png'
+import logo from '@/assets/pic.png'
 
 export default {
   data () {
@@ -143,8 +143,26 @@ export default {
       console.log(key, keyPath)
       if (key.indexOf("@") !== -1) {
         console.log('Not finished')
-      } else {
+      } else if(key!=='LO'){
         this.$router.push({name: key})
+      }else{
+        this.$confirm('Are you sure to Log out?', 'Tips', {
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+          this.$store.commit('logout')
+          this.$message({
+            type: 'success',
+            message: 'You have successfully log out'
+          });
+          this.$router.push("/login")
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'You have Cancel the operation'
+          });
+        });
       }
     }
   }

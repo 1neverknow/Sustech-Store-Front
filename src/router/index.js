@@ -19,6 +19,7 @@ import Account from "@/views/Account";
 import HomePage from "@/views/HomePage";
 import Message from '@/views/Message'
 import PI from "@/views/Modify/PersonInformation";
+import AI from "@/views/Modify/AddressInformation";
 
 // import Chat from '../components/chat/chat'
 // import Address from '../components/address/address'
@@ -55,7 +56,20 @@ const routes = [
         path: 'pi_modify',
         name: 'PI',
         component: PI
-      }
+      },
+      {
+        path: 'ai_modify',
+        name: 'AI',
+        component: AI
+      },
+      {
+        path: '/user/collections',
+        name: 'Collection',
+        // meta: {
+        //   requireAuth: true
+        // },
+        component: Collection
+      },
     ]
   },
   {
@@ -83,28 +97,13 @@ const routes = [
     name: 'Activate',
     component: Activate
   },
-  {
-    path: '/user',
-    name: 'User',
-    meta: {
-      // 登录后才能访问的受限资源，后面路由权限拦截时候会用到
-      requireAuth: true
-    },
-    component: User
-  },
+
   {
     path: '/goods/:goodsId',
     name: 'Details',
     component: Details
   },
-  {
-    path: '/user/collections',
-    name: 'Collection',
-    // meta: {
-    //   requireAuth: true
-    // },
-    component: Collection
-  },
+
   {
     path: '/product/contact',
     name: 'Contact',
