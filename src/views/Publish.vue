@@ -90,7 +90,6 @@
         <el-form-item label="Labels" prop="label">
         </el-form-item>
 
-
         <div>
           <el-button type="primary" style="float: left;width: 30%; margin-top: 30px ;margin-left: 300px;"
                      @click="submitForm('goods')"
@@ -106,6 +105,7 @@
 import { Element } from 'element-ui'
 import axios from 'axios'
 import store from '@/store'
+// import TagInput from '@/components/TagInput'
 
 export default {
   name: "Publish",
@@ -124,11 +124,11 @@ export default {
       goods: {
         introduce: 'aaaaaaaaaa',
         isSell: true,
-        tags: [],
-        name: 'aaa',
-        price: '111111',
-        title: '11111111',
-        photos: '',
+        labels: ['None'],
+        name: '300 Mana Sone',
+        price: '333333333333333',
+        title: '300 Mana Sone',
+        photos: [],
         postage: 0,
       },
       rules: {
@@ -161,7 +161,7 @@ export default {
       this.dialogVisible = true
     },
     handleSuccess(res, file) {
-      this.goods.photos = file.raw
+      this.goods.photos.push(file.raw)
     },
     beforeUpload(file) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -187,7 +187,10 @@ export default {
       //创建 formData 对象
       let formData = new FormData();
       // 向 formData 对象中添加文件
-      formData.append('photos', this.goods.photos);
+      // formData.append('photos[]', this.goods.photos);
+      for (let i in this.goods.photos) {
+        formData.append('photos[]', this.goods.photos[i])
+      }
       const newRequest = axios.create({
         baseUrl: "http://localhost:8081"//请求地址
       });

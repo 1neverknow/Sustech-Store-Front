@@ -21,7 +21,7 @@
             <div class="block">
             <el-carousel height="560px">
               <el-carousel-item v-for="item in picturePath" :key="item.id">
-                <img style="height: 560px"
+                <img style="height: 500px; margin-top: 50px; margin-left: 30px"
                      :src="'http://localhost:8081/' + item"/>
               </el-carousel-item>
             </el-carousel>
@@ -88,7 +88,7 @@
 
             <div class="comment" v-for="(item, index) in comments">
               <div class="info">
-                <el-avatar :size="50" fit="cover" :src="item.picturePath"></el-avatar>
+                <el-avatar :size="50" fit="cover" :src="item"></el-avatar>
                 <div class="right">
                   <div class="username">{{item.username}}</div>
                   <div class="date">{{item.date}}</div>
@@ -173,11 +173,13 @@ export default {
   methods: {
     // 通过路由获取商品id
     activate() {
-      console.log(this.$route.params.goodsId)
-      if (this.$route.params.goodsId) {
-        this.goodsId = this.$route.params.goodsId
-        this.getDetails()
+      const goodsId = this.$route.params.goodsId
+      console.log(goodsId)
+      if (!goodsId) {
+        return
       }
+      this.goodsId = goodsId
+      this.getDetails()
     },
     // 获取商品详情
     getDetails() {
@@ -193,7 +195,6 @@ export default {
         _this.title = productDetails.title
 
         this.getPicture(productDetails.picturePath)
-
         // _this.labels = productDetails.labels
         _this.introduce = productDetails.introduce
         _this.announcer = productDetails.announcer
