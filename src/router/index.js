@@ -66,9 +66,9 @@ const routes = [
       {
         path: '/user/collections',
         name: 'Collection',
-        // meta: {
-        //   requireAuth: true
-        // },
+        meta: {
+          requireAuth: true
+        },
         component: Collection
       },
       {
@@ -103,7 +103,6 @@ const routes = [
     name: 'Activate',
     component: Activate
   },
-
   {
     path: '/goods/:goodsId',
     name: 'Details',
@@ -132,7 +131,15 @@ const routes = [
       requireAuth: true
     },
     component: Publish
-  }
+  },
+  {
+    path: '/user/:userId',
+    name: 'User',
+    meta: {
+      requireAuth: true
+    },
+    component: User
+  },
   // {
   //   path: '/chat',  // 第一栏：微信
   //   component: Chat

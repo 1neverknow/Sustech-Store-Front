@@ -87,8 +87,13 @@
           </el-col>
         </el-row>
 
-        <el-form-item label="Labels" prop="label">
-        </el-form-item>
+        <el-row>
+          <el-col :span="10" :offset="1">
+            <el-form-item label="Labels" prop="label">
+              <TagInput v-bind:dynamicTags="goods.labels"></TagInput>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
         <div>
           <el-button type="primary" style="float: left;width: 30%; margin-top: 30px ;margin-left: 300px;"
@@ -105,10 +110,11 @@
 import { Element } from 'element-ui'
 import axios from 'axios'
 import store from '@/store'
-// import TagInput from '@/components/TagInput'
+import TagInput from '@/components/TagInput'
 
 export default {
   name: "Publish",
+  components: {TagInput},
   data() {
     const validatePostage = (rule, value, callback) => {
       if (!this.freeDelivery && val === 0) {
@@ -124,7 +130,7 @@ export default {
       goods: {
         introduce: 'aaaaaaaaaa',
         isSell: true,
-        labels: ['None'],
+        labels: [],
         name: '300 Mana Sone',
         price: '333333333333333',
         title: '300 Mana Sone',
@@ -143,6 +149,9 @@ export default {
         ],
         postage: [
           {validator: validatePostage, trigger: 'blur',}
+        ],
+        label: [
+          {required: true, message: 'Label is required'},
         ]
       },
       dialogImageUrl: '',
@@ -168,7 +177,6 @@ export default {
       const isLt2M = file.size / 1024 / 1024 < 2
       if (!isJPG) {
         Element.Message({
-          showClose: true,
           message: 'Picture must be JPG/PNG format!',
           type: 'error',
         })
@@ -176,7 +184,6 @@ export default {
       }
       if (!isLt2M) {
         Element.Message({
-          showClose: true,
           message: 'Picture size can not exceed 2MB!',
           type: 'error',
         })
@@ -187,7 +194,6 @@ export default {
       //创建 formData 对象
       let formData = new FormData();
       // 向 formData 对象中添加文件
-      // formData.append('photos[]', this.goods.photos);
       for (let i in this.goods.photos) {
         formData.append('photos[]', this.goods.photos[i])
       }
@@ -195,16 +201,19 @@ export default {
         baseUrl: "http://localhost:8081"//请求地址
       });
 
+      let murl = "/goods/addGoods"
+              + '?introduce=' + this.goods.introduce
+              + '&isSell=' + true
+              + '&price=' + this.goods.price
+              + '&title=' + this.goods.title
+              + '&postage=' + this.goods.postage
+      for (let i in this.goods.labels) {
+        murl = murl + '&labels=' + this.goods.labels[i]
+      }
       console.log(this.goods.photos)
       newRequest({
         method: "POST",
-        url: "/goods/addGoods"
-              + '?introduce=' + this.goods.introduce
-              + '&isSell=' + true
-              + '&labels=' + this.goods.labels
-              + '&price=' + this.goods.price
-              + '&title=' + this.goods.title
-              + '&postage=' + this.goods.postage,
+        url: murl,
         data: formData,
         headers: {
           "Content-Type": "multipart/form-data",
@@ -283,6 +292,10 @@ export default {
   line-height: 178px;
   text-align: center;
 }
+.publish .content .tag-input{
+  margin-left: 100px;
+}
+
 .publish .content .form-btn {
   margin: 40px auto;
 }

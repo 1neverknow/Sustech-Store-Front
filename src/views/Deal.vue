@@ -39,7 +39,7 @@
         <div class="goods-list">
           <ul>
             <li v-for="item in goodsList" :key="item.id">
-              <img :src="item.goodsPicture" />
+              <img :src="'http://localhost:8081/' + item.goodsPicture" />
               <span class="pro-name">{{item.goodsName}}</span>
               <span class="pro-price">￥ {{item.price}} × {{item.number}}</span>
               <span class="pro-status"></span>
@@ -50,21 +50,21 @@
       </div>
 
       <div class="section-shipment">
-        <p class="title">Delivery Fee</p>
-        <p class="shipment">￥{{this.dealInfo.shipment}}</p>
+        <p class="title">Postage</p>
+        <p class="shipment">￥{{this.dealInfo.postage}}</p>
       </div>
 
       <!--      结算列表-->
       <div class="section-count">
-        <div class="money-box">
-          <ul style="list-style: none">
+        <div>
+          <ul class="money-box">
             <li>
               <span class="title">Number: </span>
               <span class="value">{{this.goodsList[0].number}}</span>
             </li>
             <li>
-              <span class="title">Delivery Fee: </span>
-              <span class="value">{{this.dealInfo.shipment}}</span>
+              <span class="title">Postage: </span>
+              <span class="value">{{this.dealInfo.postage}}</span>
             </li>
             <li>
               <span class="title">Total:</span>
@@ -79,8 +79,14 @@
       <!--      结算导航-->
       <div class="section-bar">
         <div class="btn">
-          <router-link :to="{path: '/goods/', params: { goodsId: this.goodsList[0].goodsId}}" class="btn-base btn-cancel">Cancel</router-link>
+          <router-link :to="{path: '/goods/' + this.goodsList[0].goodsId}" class="btn-base btn-cancel">Cancel</router-link>
           <a href="javascript:void(0);" @click="checkDeal" class="btn-base btn-primary">Pay</a>
+          <el-dialog  :visible.sync="windowVisible" append-to-body>
+            <Pay
+                v-if="windowVisible"
+                @changeVisible="changeVisible"
+            ></Pay>
+          </el-dialog>
         </div>
       </div>
 
@@ -90,14 +96,17 @@
 
 <script>
 import store from "@/store"
+import Pay from "@/components/Pay"
 export default {
   name: "Deal",
+  components: {Pay},
   data() {
     return {
+      windowVisible: false,
       dealInfo: {
         dealId: '',
         stage: 0,    // 订单状态
-        shipment: 10, // 邮费 or 包邮
+        postage: 10, // 邮费 or 包邮
         confirmAddress: 1, // 选中的地址
         total: '',
       },
@@ -127,7 +136,6 @@ export default {
       }
       this.getDealInfo()
       this.getUserInfo()
-      this.getGoodsInfo()
     },
     getDealInfo() {
       let dealId = this.$route.params.dealId
@@ -140,28 +148,19 @@ export default {
         url: 'http://localhost:8081/deal/' + dealId,
       }).then(res => {
         const info = res.data.data
-        console.log(productDetails)
+        console.log(info)
         this.dealInfo.stage = info.stage
-        this.goodsList[0].goodsId = info.goods
-        this.goodsList[0].sellerId = info.seller
+        this.getGoodsInfo(info.goodsAbbreviation)
       })
     },
-    getGoodsInfo() {
-      this.$axios({
-        method: 'get',
-        url: 'http://localhost:8081/goods/' + this.goodsList[0].goodsId,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': store.getters.getToken
-        }
-      }).then(res => {
-        const productDetails = res.data.data
-        console.log(productDetails)
-        this.goodsList[0].price = productDetails.price
-        this.goodsList[0].goodsName = productDetails.title
-        this.goodsList[0].goodsPicture = productDetails.picturePath[0]
-        this.goodsList[0].sellerId = productDetails.announcer.userId
-      })
+    getGoodsInfo(goodsAbbreviation) {
+      this.goodsList[0].goodsId = goodsAbbreviation.goodsId
+      this.goodsList[0].goodsName = goodsAbbreviation.title
+      this.goodsList[0].goodsPicture = goodsAbbreviation.picturePath
+      this.goodsList[0].sellerId = goodsAbbreviation.announcer.userId
+      this.goodsList[0].price = goodsAbbreviation.price
+      this.goodsList[0].number = 1
+      this.dealInfo.postage = goodsAbbreviation.postage
     },
     getUserInfo() {
       this.$axios.get('http://localhost:8081/user/address/')
@@ -186,24 +185,30 @@ export default {
       })
     },
     checkDeal() {
-      this.$axios({
-        method: 'post',
-        url: 'http://localhost:8081/deal/check/' + this.dealInfo.dealId
-            + "?addressId=" + this.dealInfo.confirmAddress
-      }).then(res => {
-        if (res.data.code === 200) {
-          // 提示结算结果
-          this.$router.push('/deal/pay/' + this.dealInfo.dealId)
-        }
-      })
+      console.log('check deal')
+      // this.$axios({
+      //   method: 'get',
+      //   url: 'http://localhost:8081/deal/check/' + this.dealInfo.dealId
+      //       + "?addressId=" + this.dealInfo.confirmAddress
+      // }).then(res => {
+      //   console.log('res',res)
+      //   if (res.data.code === 200) {
+      //     alert('success')
+      //     this.windowVisible = true
+      //   }
+      // })
+      this.windowVisible = true
     },
     getTotalPrice() {
-      this.total = this.goodsList[0].number * this.goodsList[0].price + this.dealInfo.shipment;
+      this.total = this.goodsList[0].number * this.goodsList[0].price + this.dealInfo.postage;
       return this.total
     },
     addAddress() {
       alert('待续')
-    }
+    },
+    changeVisible(val) {
+      this.windowVisible = val
+    },
   },
   mounted() {
     this.activate()
@@ -318,11 +323,13 @@ export default {
   padding: 10px 0;
   color: #424242;
   overflow: hidden;
+  /*white-space:nowrap;*/
 }
 .confirmOrder .content .section-goods .goods-list li img {
   float: left;
-  width: 30px;
-  height: 30px;
+  width: 60px;
+  height: 60px;
+  margin-top: -10px;
   margin-right: 10px;
 }
 .confirmOrder .content .section-goods .goods-list li .pro-name {
@@ -359,7 +366,7 @@ export default {
 }
 .confirmOrder .content .section-shipment .title {
   float: left;
-  width: 872px;
+  width: 885px;
   color: #333;
   font-size: 18px;
   line-height: 20px;
@@ -399,6 +406,8 @@ export default {
   float: right;
   text-align: right;
   margin-bottom: 20px;
+  margin-left: 600px;
+  list-style: none
 }
 .confirmOrder .content .section-count .money-box .title {
   float: left;

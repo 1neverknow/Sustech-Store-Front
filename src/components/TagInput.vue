@@ -1,131 +1,82 @@
 <template>
-  <div class="tag-inputer-wrap">
-    <div class="input-wrap" v-for="(item,index) in tags" v-bind:key="index">
-      <div
-          class="my-input"
-          contenteditable="true"
-          v-text="item"
-          @input="handleOnInput($event,index)"
-      ></div>
-      <div class="cross" @click="removeTag(index)"></div>
-    </div>
-    <div class="plus" @click="pushTag" v-if="tags.length !== max">
-      <div class="plus-icon"></div>
-    </div>
+  <div>
+    <el-tag
+        v-for="tag in dynamicTags"
+        :key="tag"
+        closable
+        :disable-transitions="false"
+        @close="handleClose(tag)"
+    >
+      {{ tag }}
+    </el-tag>
+    <el-input
+        v-if="inputVisible"
+        ref="saveTagInput"
+        v-model="inputValue"
+        class="input-new-tag"
+        size="mini"
+        @keyup.enter="handleInputConfirm"
+        @blur="handleInputConfirm"
+    >
+    </el-input>
+    <el-button v-else-if="dynamicTags.length < 6" class="button-new-tag" size="small" @click="showInput"
+    >+ New Label</el-button
+    >
   </div>
 </template>
-<script>
+
+<script lang="ts">
 export default {
+  props: {
+    dynamicTags: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
     return {
-      tags: []
-    };
-  },
-  props: {
-    max: {
-      type: Number,
-      default: 3
+      // dynamicTags: [],
+      inputVisible: false,
+      inputValue: '',
     }
   },
   methods: {
-    pushTag() {
-      const temp = JSON.parse(JSON.stringify(this.tags));
-      temp.push("");
-      this.tags = temp;
-      this.$emit("change", this.tags);
+    handleClose(tag) {
+      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
     },
-    removeTag(index) {
-      const temp = JSON.parse(JSON.stringify(this.tags));
-      temp.splice(index, 1);
-      this.tags = temp;
-      this.$emit("change", this.tags);
+
+    showInput() {
+      this.inputVisible = true
+      this.$nextTick((_) => {
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
     },
-    handleOnInput(e, index) {
-      this.tags[index] = e.target.innerText;
-      this.$emit("change", this.tags);
-    }
-  }
-};
-</script>
-<style scoped lang="scss">
-.tag-inputer-wrap {
-  .input-wrap {
-    display: inline-block;
-    .my-input {
-      color: #66757f;
-      display: inline-block;
-      height: 22px;
-      min-width: 20px;
-      max-width: 100px;
-      outline: none;
-      overflow: hidden;
-      vertical-align: bottom;
-      border: 1px solid #cccccc;
-      margin-right: 3px;
-      text-indent: 3px;
-      font-size: 13px;
-      box-sizing: border-box;
-      border-radius: 2px;
-    }
-    .cross {
-      // 画叉
-      width: 16px;
-      height: 16px;
-      position: relative;
-      display: inline-block;
-      vertical-align: middle;
-      &:hover {
-        cursor: pointer;
+    handleInputConfirm() {
+      const inputValue = this.inputValue
+      if (inputValue) {
+        this.dynamicTags.push(inputValue)
       }
-    }
-    .cross::before,
-    .cross::after {
-      content: "";
-      position: absolute;
-      height: 16px;
-      width: 1.5px;
-      right: 9px;
-      background: #cccccc;
-    }
-    .cross::before {
-      transform: rotate(45deg);
-    }
-    .cross::after {
-      transform: rotate(-45deg);
-    }
-  }
-  .plus {
-    // 画加号
-    &:hover {
-      cursor: pointer;
-    }
-    &:active {
-      opacity: 0.7;
-    }
-    box-sizing: border-box;
-    display: inline-block;
-    width: 22px;
-    height: 22px;
-    border: 1px solid #ddd;
-    line-height: 22px;
-    text-align: center;
-    .plus-icon {
-      display: inline-block;
-      background: deepskyblue;
-      height: 12px;
-      position: relative;
-      width: 2px;
-    }
-    .plus-icon:after {
-      background: deepskyblue;
-      content: "";
-      height: 12px;
-      left: 0;
-      position: absolute;
-      top: 0;
-      width: 2px;
-      transform: rotateZ(90deg);
-    }
-  }
+      this.inputVisible = false
+      this.inputValue = ''
+    },
+  },
+}
+</script>
+
+<style>
+.el-tag + .el-tag {
+  margin-left: 10px;
+}
+.button-new-tag {
+  margin-left: 10px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.input-new-tag {
+  width: 90px;
+  margin-left: 10px;
+  vertical-align: bottom;
 }
 </style>

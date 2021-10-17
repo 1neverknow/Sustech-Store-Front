@@ -32,19 +32,38 @@
               <h1 class="name">{{title}}</h1>
               <p class="intro">{{introduce}}</p>
               <p class="announce">
-                <router-link to="">{{announcer.userName}}</router-link>
-                --
+                <span class="name">{{announcer.userName}}</span>
+                <span class="time">
+                  --
                 Announced in {{announceTime}}
+                </span>
               </p>
               <div class="price">
                 <span>￥{{price}}</span>
               </div>
-              <div class="pro-list">
-                <span class="pro-name">{{title}}</span>
-                <span class="pro-price">
-                    <span>￥{{price}}</span>
+
+<!--              这一部分改成announcer信息-->
+<!--              avatar，信誉分，性别，name，id-->
+              <div class="announcer-info">
+                <el-avatar class="announcer-avatar" :size="40" :src="'http://localhost:8081/' + announcer.avatar"></el-avatar>
+                <span>
+                  <router-link class="announcer-name" :to="{path: '/user/'+ announcer.userId}">{{announcer.userName}}</router-link>
                 </span>
+                <span class="gender">
+                  {{announcer.gender}}
+                </span>
+                <span class="UID">
+                    <span>UID: {{announcer.userId}}</span>
+                </span>
+                <div class="credit">
+                  Sustech信誉{{announcer.credits}}
+                </div>
+                <div class="sign">
+                  " {{announcer.sign}} "
+                </div>
               </div>
+
+
               <!--      内容区底部按钮-->
               <div class="button">
                 <el-button class="buy" icon="el-icon-goods" :disabled="state" @click="wantIt">I Want This</el-button>
@@ -67,7 +86,7 @@
         <el-collapse v-model="activeNames" class="collapse">
           <el-collapse-item name="1">
             <template #title>
-              <h2 style="margin-right: 10px">Content </h2>
+              <h2 style="margin-right: 10px">Comments </h2>
               <i class="header-icon el-icon-info"></i>
             </template>
 
@@ -129,11 +148,15 @@ export default {
       price: '100000',
       title: 'Mana Stone',
       picturePath: [], // 商品展示图（轮播图）=> 数组
-      // labels: [],
+      labels: [],
       introduce: 'you would be stronger after eating it',
       announcer: {
-        userId: '',
-        userName: '',
+        userId: 1,
+        userName: 'mithra',
+        avatar: '',
+        credits: '良好',
+        gender: '♂',
+        sign: '!!!!!!!!!!!!!!!!!!!'
       },
       comments: [
         {
@@ -147,8 +170,8 @@ export default {
         {
           commentId: '',
           userId: 2222,
-          username: 'Mithra',
-          content: '味道还行',
+          username: 'Oz',
+          content: '....',
           picturePath: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
           date: '2021-10-21'
         },
@@ -195,9 +218,9 @@ export default {
         _this.title = productDetails.title
 
         this.getPicture(productDetails.picturePath)
-        // _this.labels = productDetails.labels
+        _this.labels = productDetails.labels
         _this.introduce = productDetails.introduce
-        _this.announcer = productDetails.announcer
+        // _this.announcer = productDetails.announcer
         // _this.comments = productDetails.comments
         _this.want = productDetails.want
         _this.announceTime = productDetails.announceTime
@@ -274,7 +297,8 @@ export default {
       })
     },
     canDelete(id) {
-      return (this.$store.getters.getUser && this.$store.getters.getUser.userId === id)
+      return (this.$store.getters.getUser
+          && this.$store.getters.getUser.userId === id)
     },
     handleDelete(index) {
       this.comments.splice(index, 1)
@@ -318,7 +342,7 @@ export default {
   width: 1225px;
   height: 64px;
   line-height: 64px;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 400;
   color: #212121;
 }
@@ -354,6 +378,7 @@ export default {
 #details .main .block {
   float: left;
   margin-left: 100px;
+  margin-top: 50px;
   /*margin-right: -100px;*/
   width: 560px;
   height: 560px;
@@ -371,7 +396,7 @@ export default {
 #details .main .content .name {
   height: 30px;
   line-height: 30px;
-  font-size: 24px;
+  font-size: 30px;
   font-weight: normal;
   color: #212121;
 }
@@ -382,6 +407,12 @@ export default {
 }
 #details .main .content .announce {
   padding-top: 10px;
+}
+#details .main .content .announce .name {
+  font-size: 17px;
+  color: darkslategrey;
+}
+#details .main .content .announce .time {
   color: grey;
   font-size: 13px;
 }
@@ -398,24 +429,46 @@ export default {
   color: #b0b0b0;
   text-decoration: line-through;
 }
-#details .main .content .pro-list {
+#details .main .content .announcer-info {
   background: #f9f9fa;
   padding: 30px 60px;
   margin: 50px 0 50px;
   width: 440px;
+  height: 100px;
 }
-#details .main .content .pro-list span {
+#details .main .content .announcer-info span {
   line-height: 30px;
   color: #616161;
 }
-#details .main .content .pro-list .pro-price {
+#details .main .content .announcer-info .announcer-avatar {
+  float: left;
+  margin-top: 8px;
+  margin-left: -40px;
+  margin-right: 20px;
+}
+#details .main .content .announcer-info .announcer-name {
+  margin-top: -100px;
+}
+#details .main .content .announcer-info .UID {
   float: right;
+  font-size: 10px;
 }
-#details .main .content .pro-list .pro-price .pro-del {
+#details .main .content .announcer-info .gender {
   margin-left: 10px;
-  text-decoration: line-through;
 }
-#details .main .content .pro-list .price-sum {
+#details .main .content .announcer-info .credit {
+  margin-left: 20px;
+  margin-top: 5px;
+  font-size: 13px;
+  color: grey;
+}
+#details .main .content .announcer-info .sign {
+  margin-top: 18px;
+  line-height: 20px;
+  color: grey;
+
+}
+#details .main .content .announcer-info .price-sum {
   color: #ff6700;
   font-size: 24px;
   padding-top: 20px;
