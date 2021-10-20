@@ -10,7 +10,7 @@ export default new Vuex.Store({
     // token和userInfo具体指的是什么？
     token: localStorage.getItem('token'),
     // 后端发送过来的用户信息
-    userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
+    userInfo: JSON.parse(localStorage.getItem('userInfo')),
     name : 'user1',
     message : 1,
     modify_pos :'#test'
@@ -28,12 +28,7 @@ export default new Vuex.Store({
       state.userInfo = userInfo
       // 登录之后，一次会话期间，保留登陆状态
       // localStorage.removeItem("userInfo")
-      sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
-    },
-    SET_USERINFO_LOCAL: (state, userInfo) => {
-      state.token = userInfo
-      // 可以通过token继续获取userInfo的信息
-      localStorage.setItem("userInfo", JSON.stringify(userInfo))
+      localStorage.setItem('userInfo', JSON.stringify(userInfo))
     },
     logout (state) {
       state.token = null
@@ -49,7 +44,7 @@ export default new Vuex.Store({
       this.state.userInfo = {}
       localStorage.setItem('token', '')
       // sessionStorage.setItem('userInfo', JSON.stringify(''))
-      sessionStorage.setItem('userInfo', JSON.stringify(''))
+      localStorage.setItem('userInfo', JSON.stringify(''))
     },
   },
   getters: {
