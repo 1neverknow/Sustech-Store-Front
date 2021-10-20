@@ -21,7 +21,7 @@ import Message from '@/views/Message'
 import PI from "@/views/Modify/PersonInformation";
 import AI from "@/views/Modify/AddressInformation";
 import Search from "@/views/Search"
-
+import Main from "@/views/Main/Main";
 // import Chat from '../components/chat/chat'
 // import Address from '../components/address/address'
 // import AddressDetail from '../components/address/address-detail/address-detail'
@@ -51,7 +51,7 @@ const routes = [
       {
         path: 'message',
         name: 'Message',
-        component: Message
+        component: Main
       },
       {
         path: 'pi_modify',
