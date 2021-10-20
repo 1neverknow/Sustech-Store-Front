@@ -27,11 +27,42 @@
                 <p class="address">{{item.address}}</p>
             </li>
             <li class="add-address">
-              <i class="el-icon-circle-plus-outline" @click="addAddress"></i>
+              <i class="el-icon-circle-plus-outline" @click="showAddrBox"></i>
               <p>Add New Address</p>
             </li>
           </ul>
         </div>
+        <!-- 修改修改地址的对话框 -->
+        <el-dialog
+            title="Add Address"
+            :visible.sync="addressVisible"
+            width="50%"
+        >
+          <!-- 内容主体区域 -->
+          <el-form
+              :model="addressForm"
+              :rules="addressFormRules"
+              label-position="top"
+              ref="addressFormRef"
+              label-width="100px"
+          >
+            <el-form-item label="Recipient" prop="recipient">
+              <el-input v-model="addressForm.recipient"></el-input>
+            </el-form-item>
+            <el-form-item label="Phone Number" prop="phoneNumber">
+              <el-input v-model="addressForm.phoneNumber"></el-input>
+            </el-form-item>
+            <el-form-item label="Address" prop="address">
+              <el-input v-model="addressForm.address"></el-input>
+            </el-form-item>
+          </el-form>
+          <!-- 底部区域 -->
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="addressVisible = false">Cancel</el-button>
+            <el-button type="primary" @click="addAddress"
+            >Submit</el-button>
+          </span>
+        </el-dialog>
       </div>
 
       <div class="section-goods">
@@ -79,12 +110,19 @@
       <!--      结算导航-->
       <div class="section-bar">
         <div class="btn">
-          <router-link :to="{path: '/goods/' + this.goodsList[0].goodsId}" class="btn-base btn-cancel">Cancel</router-link>
-          <a href="javascript:void(0);" @click="checkDeal" class="btn-base btn-primary">Pay</a>
+          <router-link
+              :to="{path: '/goods/' + this.goodsList[0].goodsId}"
+              class="btn-base btn-cancel"
+          >Cancel</router-link>
+          <a href="javascript:void(0);"
+             @click="checkDeal"
+             class="btn-base btn-primary"
+          >Pay</a>
           <el-dialog  :visible.sync="windowVisible" append-to-body>
             <Pay
                 v-if="windowVisible"
                 @changeVisible="changeVisible"
+                v-bind:dealId="dealInfo.dealId"
             ></Pay>
           </el-dialog>
         </div>
@@ -125,17 +163,36 @@ export default {
           number: 1111,  // 购买的商品数
         }
       ],
+      addressVisible: false,
+      addressForm: {
+        recipient: '',
+        phoneNumber: '',
+        address: ''
+      },
+      addressFormRules: {
+        recipient: [
+          { required: true, message: 'Please input your name', trigger: 'blur' }
+        ],
+        phoneNumber: [
+          { required: true, message: 'Please input your phone number', trigger: 'blur' }
+        ],
+        address: [
+          { required: true, message: 'Please input your address', trigger: 'blur' }
+        ]
+      },
     }
   },
   methods: {
     activate() {
       let buyId = store.getters.getUser.userId
+      console.log(buyId)
       if (!buyId) {
         alert('Authorization time out')
         this.$router.push({ path: "/login" });
       }
       this.getDealInfo()
       this.getUserInfo()
+      this.userInfo.buyId = buyId
     },
     getDealInfo() {
       let dealId = this.$route.params.dealId
@@ -149,6 +206,10 @@ export default {
       }).then(res => {
         const info = res.data.data
         console.log(info)
+        if (info.buyer.userId !== store.getters.getUser.userId) {
+          alert('You cannot access this deal!')
+          this.$router.push('/goods/'+ info.goodsAbbreviation.goodsId)
+        }
         this.dealInfo.stage = info.stage
         this.getGoodsInfo(info.goodsAbbreviation)
       })
@@ -186,29 +247,47 @@ export default {
     },
     checkDeal() {
       console.log('check deal')
-      // this.$axios({
-      //   method: 'get',
-      //   url: 'http://localhost:8081/deal/check/' + this.dealInfo.dealId
-      //       + "?addressId=" + this.dealInfo.confirmAddress
-      // }).then(res => {
-      //   console.log('res',res)
-      //   if (res.data.code === 200) {
-      //     alert('success')
-      //     this.windowVisible = true
-      //   }
-      // })
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/deal/check/' + this.dealInfo.dealId
+            + "?addressId=" + this.dealInfo.confirmAddress
+      }).then(res => {
+        console.log('res',res)
+        if (res.data.code === 200) {
+          alert('success')
+          this.windowVisible = true
+        }
+      })
       this.windowVisible = true
     },
     getTotalPrice() {
       this.total = this.goodsList[0].number * this.goodsList[0].price + this.dealInfo.postage;
       return this.total
     },
+    showAddrBox() {
+      this.addressVisible = true
+    },
+    // changeVisible(val) {
+    //   this.windowVisible = val
+    // },
     addAddress() {
-      alert('待续')
-    },
-    changeVisible(val) {
-      this.windowVisible = val
-    },
+      this.$axios({
+        method: 'post',
+        url: 'http://localhost:8081/user/address/'
+            + "?addressNamee=" + this.addressForm.address
+            + "&phone=" + this.addressForm.phoneNumber
+            + "&recipientName=" + this.addressForm.recipient
+      }).then(res => {
+        console.log('res',res)
+        if (res.data.code === 200) {
+          Element.Message({
+            message: 'Success!',
+            type: 'success',
+          })
+          this.addressVisible = false
+        }
+      })
+    }
   },
   mounted() {
     this.activate()

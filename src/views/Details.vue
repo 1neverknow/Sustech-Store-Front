@@ -4,6 +4,22 @@
       <el-header class="page-header">
         <div class="title">
           <p>{{title}}</p>
+          <el-button
+              v-if="isAnnouncer"
+              type="default"
+              icon="el-icon-edit"
+              class="edit-btn"
+              size="small"
+              @click="editGoodsInfo"
+          ></el-button>
+          <el-button
+              v-if="isAnnouncer"
+              type="default"
+              icon="el-icon-delete"
+              class="edit-btn"
+              size="small"
+              @click="deleteGoods"
+          ></el-button>
           <div class="list">
             <ul>
               <li><router-link to="">Contact us </router-link></li>
@@ -21,11 +37,24 @@
             <div class="block">
             <el-carousel height="560px">
               <el-carousel-item v-for="item in picturePath" :key="item.id">
-                <img style="height: 500px; margin-top: 50px; margin-left: 30px"
-                     :src="'http://localhost:8081/' + item"/>
+                <img
+                    style="height: 500px; margin-top: 50px; margin-left: 30px"
+                    :src="'http://localhost:8081/' + item"/>
               </el-carousel-item>
             </el-carousel>
+
+              <el-tag
+                  v-for="item in labels"
+                  :key="item.id"
+                  :disable-transitions="false"
+                  effect="dark"
+                  type="success"
+                  class="tags"
+              >
+                ● {{ item }}
+              </el-tag>
           </div>
+
 
           <!--      右侧内容区-->
             <div class="content">
@@ -75,7 +104,7 @@
                     <i class="el-icon-circle-check"></i> {{want}} people want
                   </li>
                   <li>
-                    <i class="el-icon-view"></i> {{looked}} views
+                    <i class="el-icon-view"></i> {{view}} views
                   </li>
                 </ul>
               </div>
@@ -143,6 +172,8 @@ export default {
   components: {MyList},
   data() {
     return {
+      isAnnouncer: false,
+      editMode: false,  // editMode = ture时，可以编辑商品
       state: false, // 是否可以购买（售出后打上已售出标签，除非卖家撤下，商品详情依然存在）
       goodsId: '11111111',  // 商品id
       price: '100000',
@@ -186,7 +217,7 @@ export default {
       ],
       want: 1,  // “我想要”的人数,
       announceTime: '2021-10-10',
-      looked: 10,
+      view: 10,
       stage: 0,
 
       activeNames: '1',
@@ -203,6 +234,7 @@ export default {
       }
       this.goodsId = goodsId
       this.getDetails()
+      this.isAnnouncer = (this.$store.getters.getUser.userId === this.announcer.userId)
     },
     // 获取商品详情
     getDetails() {
@@ -218,17 +250,31 @@ export default {
         _this.title = productDetails.title
 
         this.getPicture(productDetails.picturePath)
+        this.getAnnouncer(productDetails.announcer)
         _this.labels = productDetails.labels
         _this.introduce = productDetails.introduce
-        // _this.announcer = productDetails.announcer
+        _this.view = productDetails.view
         // _this.comments = productDetails.comments
         _this.want = productDetails.want
         _this.announceTime = productDetails.announceTime
+
       })
     },
     getPicture(picturePaths) {
       for (let i in picturePaths) {
         this.picturePath.push(picturePaths[i].path)
+      }
+    },
+    getAnnouncer(announcer) {
+      this.announcer.userName = announcer.userName
+      this.announcer.sign = announcer.sign
+      this.announcer.credits = announcer.credit
+      this.announcer.avatar = announcer.picturePath
+      this.announcer.userId = announcer.userId
+      if (announcer.gender === 0) {
+        this.announcer.gender = '♂'
+      } else {
+        this.announcer.gender = '♀'
       }
     },
     // 点击我想要联系卖家
@@ -237,6 +283,13 @@ export default {
       if (!this.$store.getters.getToken) {
         Element.Message({
           message: 'Please login',
+          type: 'error',
+        })
+        return
+      }
+      if (this.isAnnouncer) {
+        Element.Message({
+          message: 'You cannot buy your own goods',
           type: 'error',
         })
         return
@@ -273,7 +326,6 @@ export default {
       // 需要先验证用户是否已经登陆
       if (!this.$store.getters.getUser) {
         Element.Message({
-          showClose: true,
           message: 'Please login first',
           type: 'error',
         })
@@ -281,7 +333,6 @@ export default {
       }
       if (this.inputComment === '') {
         Element.Message({
-          showClose: true,
           message: 'Your input cannot be null',
           type: 'error',
         })
@@ -302,6 +353,7 @@ export default {
     },
     handleDelete(index) {
       this.comments.splice(index, 1)
+      // 评论相关接口？
     },
     addDeal() {
       this.$axios({
@@ -319,6 +371,21 @@ export default {
         }
       })
     },
+    editGoodsInfo() {
+    },
+    deleteGoods() {
+      this.$axios({
+        method: 'delete',
+        url: 'http://localhost:8081/goods/deleteGoods'
+            + "?goodsId=" + this.goodsId
+      }).then(res => {
+        Element.Message({
+          message: 'Delete Successfully',
+          type: 'success',
+        })
+        this.$router.push('/user')
+      })
+    }
   },
   mounted() {
     this.activate()
@@ -338,13 +405,18 @@ export default {
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.07);
 }
 #details .page-header .title {
-  margin-top: -20px;
+  margin-top: -30px;
   width: 1225px;
   height: 64px;
   line-height: 64px;
-  font-size: 20px;
+  font-size: 25px;
   font-weight: 400;
   color: #212121;
+}
+#details .page-header .title .edit-btn {
+  margin-left: 30px;
+  margin-top: 40px;
+  margin-right: -15px;
 }
 #details .page-header .title p {
   float: left;
@@ -372,8 +444,8 @@ export default {
   width: 100%;
   /*width: 1225px;*/
   /*height: 560px;*/
-  padding-top: 30px;
-  margin: 0 auto;
+  /*margin: 0 auto;*/
+  margin-top: -30px;
 }
 #details .main .block {
   float: left;
@@ -383,6 +455,15 @@ export default {
   width: 560px;
   height: 560px;
 }
+
+#details .main .block .tags {
+  margin-top: 20px;
+  margin-right: 20px;
+  float: right;
+  width: 100px;
+  text-align: center;
+}
+
 #details .el-carousel .el-carousel__indicator .el-carousel__button {
   background-color: rgba(163, 163, 163, 0.8);
 }

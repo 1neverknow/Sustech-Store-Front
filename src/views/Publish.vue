@@ -107,7 +107,7 @@
 </template>
 
 <script>
-import { Element } from 'element-ui'
+import Element from 'element-ui'
 import axios from 'axios'
 import store from '@/store'
 import TagInput from '@/components/TagInput'
@@ -123,6 +123,13 @@ export default {
         callback()
       }
     }
+    const validateLabel = (rule, value, callback) => {
+      if (this.goods.labels.length === 0) {
+        callback(new Error('Label is needed'))
+      } else {
+        callback()
+      }
+    }
     return {
       labelPosition: 'left',
       photolist: [],
@@ -131,9 +138,8 @@ export default {
         introduce: 'aaaaaaaaaa',
         isSell: true,
         labels: [],
-        name: '300 Mana Sone',
         price: '333333333333333',
-        title: '300 Mana Sone',
+        title: '300 Mana Stone',
         photos: [],
         postage: 0,
       },
@@ -151,7 +157,7 @@ export default {
           {validator: validatePostage, trigger: 'blur',}
         ],
         label: [
-          {required: true, message: 'Label is required'},
+          {validator: validateLabel, trigger: 'blur',},
         ]
       },
       dialogImageUrl: '',
@@ -194,9 +200,10 @@ export default {
       //创建 formData 对象
       let formData = new FormData();
       // 向 formData 对象中添加文件
-      for (let i in this.goods.photos) {
-        formData.append('photos[]', this.goods.photos[i])
-      }
+      // for (let i in this.goods.photos) {
+      //   formData.append('photos[]', this.goods.photos[i])
+      // }
+      formData.append('photos', this.goods.photos[0])
       const newRequest = axios.create({
         baseUrl: "http://localhost:8081"//请求地址
       });
@@ -220,7 +227,12 @@ export default {
           'Authorization': store.getters.getToken
         }
       }).then(res => {
-        alert('success')
+        Element.Message({
+          message: 'Success!',
+          type: 'success',
+        })
+        const goodsId = res.data.data
+        this.$router.push('/goods/' + goodsId)
       });
     },
   },

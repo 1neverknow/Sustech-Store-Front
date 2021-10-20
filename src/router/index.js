@@ -13,6 +13,7 @@ import Activate from "@/views/Activate"
 import Contact from "@/views/Contact";
 import Deal from "@/views/Deal"
 import Publish from "@/views/Publish"
+import Order from "@/views/Order"
 
 import MainPage from "@/views/MainPage";
 import Account from "@/views/Account";
@@ -94,7 +95,7 @@ const routes = [
     component: Reset
   },
   {
-    path: '/user/register',
+    path: '/register',
     name: 'Register',
     component: Register
   },
@@ -131,6 +132,14 @@ const routes = [
       requireAuth: true
     },
     component: Publish
+  },
+  {
+    path: '/user/order',
+    name: 'Order',
+    meta: {
+      requireAuth: true
+    },
+    component: Order
   },
   {
     path: '/user/:userId',
