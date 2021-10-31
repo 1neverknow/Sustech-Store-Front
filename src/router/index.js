@@ -95,7 +95,7 @@ const routes = [
     component: Reset
   },
   {
-    path: '/register',
+    path: '/user/register',
     name: 'Register',
     component: Register
   },

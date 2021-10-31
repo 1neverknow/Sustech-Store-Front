@@ -109,21 +109,32 @@
 
       <!--      结算导航-->
       <div class="section-bar">
+        <el-button type="primary"
+                   @click="chargeVisible = true"
+                   style="float: left"
+        >Charge</el-button>
+
         <div class="btn">
           <router-link
               :to="{path: '/goods/' + this.goodsList[0].goodsId}"
               class="btn-base btn-cancel"
           >Cancel</router-link>
           <a href="javascript:void(0);"
-             @click="checkDeal"
+             @click="addDeal"
              class="btn-base btn-primary"
           >Pay</a>
           <el-dialog  :visible.sync="windowVisible" append-to-body>
             <Pay
                 v-if="windowVisible"
-                @changeVisible="changeVisible"
                 v-bind:dealId="dealInfo.dealId"
             ></Pay>
+          </el-dialog>
+          <el-dialog  :visible.sync="chargeVisible" append-to-body>
+            <Charge
+                v-if="chargeVisible"
+                @changeVisible="changeVisible"
+                v-bind:dealId="dealInfo.dealId"
+            ></Charge>
           </el-dialog>
         </div>
       </div>
@@ -135,11 +146,13 @@
 <script>
 import store from "@/store"
 import Pay from "@/components/Pay"
+import Charge from "@/components/Charge"
 export default {
   name: "Deal",
-  components: {Pay},
+  components: {Pay, Charge},
   data() {
     return {
+      chargeVisible: false,
       windowVisible: false,
       dealInfo: {
         dealId: '',
@@ -245,20 +258,21 @@ export default {
         }
       })
     },
-    checkDeal() {
-      console.log('check deal')
+    addDeal() {
       this.$axios({
-        method: 'get',
-        url: 'http://localhost:8081/deal/check/' + this.dealInfo.dealId
-            + "?addressId=" + this.dealInfo.confirmAddress
+        method: 'post',
+        url: 'http://localhost:8081/deal/addDeal'
+            + "?buyId=" + this.$store.getters.getUser.userId
+            + "&goodsId=" + this.goodsList[0].goodsId
+            + "&sellerId=" + this.goodsList[0].sellerId
+            + "&stage=" + 0, // status=0: 未支付
       }).then(res => {
-        console.log('res',res)
         if (res.data.code === 200) {
-          alert('success')
-          this.windowVisible = true
+          // 提示结算结果
+          let dealId = res.data.data
+          this.$router.push('/deal/'+ dealId)
         }
       })
-      this.windowVisible = true
     },
     getTotalPrice() {
       this.total = this.goodsList[0].number * this.goodsList[0].price + this.dealInfo.postage;
@@ -267,9 +281,9 @@ export default {
     showAddrBox() {
       this.addressVisible = true
     },
-    // changeVisible(val) {
-    //   this.windowVisible = val
-    // },
+    changeVisible(val) {
+      this.chargeVisible = val
+    },
     addAddress() {
       this.$axios({
         method: 'post',
@@ -521,7 +535,7 @@ export default {
   /*margin-left: -100px;*/
 }
 .confirmOrder .content .section-bar .btn {
-  float: right;
+  float: right
 }
 .confirmOrder .content .section-bar .btn .btn-base {
   float: left;

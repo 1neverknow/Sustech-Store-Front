@@ -7,14 +7,6 @@
           <el-button
               v-if="isAnnouncer"
               type="default"
-              icon="el-icon-edit"
-              class="edit-btn"
-              size="small"
-              @click="editGoodsInfo"
-          ></el-button>
-          <el-button
-              v-if="isAnnouncer"
-              type="default"
               icon="el-icon-delete"
               class="edit-btn"
               size="small"
@@ -354,24 +346,6 @@ export default {
     handleDelete(index) {
       this.comments.splice(index, 1)
       // 评论相关接口？
-    },
-    addDeal() {
-      this.$axios({
-        method: 'post',
-        url: 'http://localhost:8081/deal/addDeal'
-            + "?buyId=" + this.$store.getters.getUser.userId
-            + "&goodsId=" + this.goodsId
-            + "&sellerId=" + this.announcer.userId
-            + "&stage=" + 0, // status=0: 未支付
-      }).then(res => {
-        if (res.data.code === 200) {
-          // 提示结算结果
-          let dealId = res.data.data
-          this.$router.push('/deal/'+ dealId)
-        }
-      })
-    },
-    editGoodsInfo() {
     },
     deleteGoods() {
       this.$axios({
