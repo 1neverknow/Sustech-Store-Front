@@ -11,7 +11,7 @@ axios.defaults.baseURL='http://localhost:8081'
 // 配置axios全局拦截 (发起请求时的配置)
 // 前置拦截
 axios.interceptors.request.use(config => {
-    console.log(store.getters.getToken)
+    // console.log(store.getters.getToken)
     config.headers = {
         'Content-Type': 'application/json',
         // 'Content-Type': 'multipart/form-data',
@@ -25,8 +25,8 @@ axios.interceptors.request.use(config => {
 axios.interceptors.response.use(response => {
     let res = response.data
 
-    // console.log(res)
-    if (res.code === 200|| res.code === 2000|| res.code ===2001) {
+    console.log(res)
+    if (res.code === 200|| res.code === 2000 || res.code === 2001 || res.code === 2002) {
         // 请求成功
         return response
     } else {

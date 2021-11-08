@@ -144,6 +144,7 @@
 </template>
 
 <script>
+import Element from "element-ui"
 import store from "@/store"
 import Pay from "@/components/Pay"
 import Charge from "@/components/Charge"
@@ -201,7 +202,7 @@ export default {
       console.log(buyId)
       if (!buyId) {
         alert('Authorization time out')
-        this.$router.push({ path: "/login" });
+        this.$router.push({ path: "/login" })
       }
       this.getDealInfo()
       this.getUserInfo()
@@ -267,11 +268,14 @@ export default {
             + "&sellerId=" + this.goodsList[0].sellerId
             + "&stage=" + 0, // status=0: 未支付
       }).then(res => {
-        if (res.data.code === 200) {
-          // 提示结算结果
-          let dealId = res.data.data
-          this.$router.push('/deal/'+ dealId)
-        }
+        // 提示结算结果
+        Element.Message({
+          message: 'Success!',
+          type: 'success',
+        })
+        this.$router.push({ path: "/user/order" })
+        // let dealId = res.data.data
+        // this.$router.push('/deal/'+ dealId)
       })
     },
     getTotalPrice() {
@@ -293,13 +297,11 @@ export default {
             + "&recipientName=" + this.addressForm.recipient
       }).then(res => {
         console.log('res',res)
-        if (res.data.code === 200) {
-          Element.Message({
-            message: 'Success!',
-            type: 'success',
-          })
-          this.addressVisible = false
-        }
+        Element.Message({
+          message: 'Success!',
+          type: 'success',
+        })
+        this.addressVisible = false
       })
     }
   },

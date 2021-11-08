@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: "Activate",
   data() {
@@ -21,11 +22,12 @@ export default {
     },
     send() {
       // 获取收藏夹数据
-      this.$axios.post("http://localhost:8081/user/activate/" + this.activateCode)
+      const newRequest = axios.create({
+        baseUrl: "http://localhost:8081"//请求地址
+      });
+      newRequest.put("http://localhost:8081/user/activate/" + this.activateCode)
         .then(res => {
-          if (res.data.code === 200) {
-            this.content = 'Activate account successfully! You can close this page'
-          }
+          this.content = 'Activate account successfully! You can close this page'
       })
     },
     change() {

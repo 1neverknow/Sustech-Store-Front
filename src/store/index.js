@@ -14,7 +14,7 @@ export default new Vuex.Store({
         // token和userInfo具体指的是什么？
         token: localStorage.getItem('token'),
         // 后端发送过来的用户信息
-        userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
+        userInfo: JSON.parse(localStorage.getItem('userInfo')),
         name : 'user1',
         message : 1,
         modify_pos: '#test',
@@ -63,22 +63,6 @@ export default new Vuex.Store({
                     }
                 ]
             },
-            // {
-            //     chatId: 1,
-            //     linkmanIndex: 1,
-            //     isMute: false,
-            //     isOnTop: false,
-            //     messages: [
-            //         {
-            //             avatar,
-            //             ctn: "你好",
-            //             nickname: "111",
-            //             // sender: "1",
-            //             time: new Date("2011-01-11 9:11:11"),
-            //             type: "chat"
-            //         }
-            //     ]
-            // }
         ],
         linkmans: [
             {
@@ -130,7 +114,7 @@ export default new Vuex.Store({
         SET_USERINFO: (state, userInfo) => {
             state.userInfo = userInfo
             // 登录之后，一次会话期间，保留登陆状态
-            sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
+            localStorage.setItem('userInfo', JSON.stringify(userInfo))
         },
 
         REMOVE_INFO: () => {
@@ -138,7 +122,7 @@ export default new Vuex.Store({
             this.state.token = ''
             this.state.userInfo = {}
             localStorage.setItem('token', '')
-            sessionStorage.setItem('userInfo', JSON.stringify(''))
+            localStorage.setItem('userInfo', JSON.stringify(''))
         },
 
         setExpression(state, isShowExpression) {

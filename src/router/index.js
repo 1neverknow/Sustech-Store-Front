@@ -23,13 +23,6 @@ import PI from "@/views/Modify/PersonInformation";
 import AI from "@/views/Modify/AddressInformation";
 import Search from "@/views/Search"
 import Main from "@/views/Main/Main";
-// import Chat from '../components/chat/chat'
-// import Address from '../components/address/address'
-// import AddressDetail from '../components/address/address-detail/address-detail'
-// import Chatroom from '../components/chatroom/chatroom'
-// import ChatroomUser from '../components/chatroom/chatroom-user/chatroom-user'
-// import AddressMore from '../components/address/address-detail/address-more/address-more'
-
 Vue.use(VueRouter)
 // router: 路由 - 页面跳转管理
 
@@ -149,36 +142,6 @@ const routes = [
     },
     component: User
   },
-  // {
-  //   path: '/chat',  // 第一栏：微信
-  //   component: Chat
-  // },
-  // {
-  //   path: '/address',  // 第二栏：通讯录
-  //   component: Address,
-  //   children: [
-  //     {
-  //       path: ':id', // 传入不同的id,就可以跳转到不同的子路由
-  //       component: AddressDetail,
-  //       children: [
-  //         {
-  //           path: 'more',
-  //           component: AddressMore
-  //         }
-  //       ]
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: '/chatroom',  // 聊天打字界面
-  //   component: Chatroom,
-  //   children: [
-  //     {
-  //       path: 'user',
-  //       component: ChatroomUser
-  //     }
-  //   ]
-  // },
 ]
 
 const router = new VueRouter({

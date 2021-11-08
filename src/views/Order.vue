@@ -164,6 +164,13 @@ export default {
     this.getOrderList()
   },
   methods: {
+    activate() {
+      const dealId = this.$route.params.dealId
+      if (!dealId) {
+        return
+      }
+
+    },
     getOrderList() {
     },
     handleSizeChange(newSize) {
@@ -202,6 +209,9 @@ export default {
     showCommentBox() {
       this.commentVisible = true
     },
+  },
+  mounted() {
+    this.activate()
   }
 }
 </script>

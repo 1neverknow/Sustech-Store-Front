@@ -4,14 +4,14 @@
       <el-header class="page-header">
         <div class="title">
           <p>{{title}}</p>
-          <el-button
-              v-if="isAnnouncer"
-              type="default"
-              icon="el-icon-delete"
-              class="edit-btn"
-              size="small"
-              @click="deleteGoods"
-          ></el-button>
+<!--          <el-button-->
+<!--              v-if="isAnnouncer"-->
+<!--              type="default"-->
+<!--              icon="el-icon-delete"-->
+<!--              class="edit-btn"-->
+<!--              size="small"-->
+<!--              @click="deleteGoods"-->
+<!--          ></el-button>-->
           <div class="list">
             <ul>
               <li><router-link to="">Contact us </router-link></li>
@@ -135,9 +135,9 @@
                 </div>
               </div>
               <div class="commentContent">{{item.content}}</div>
-              <template v-if="canDelete(item.userId)">
-                <el-button type="text" size="small" @click="handleDelete(index)">Delete</el-button>
-              </template>
+<!--              <template v-if="canDelete(item.userId)">-->
+<!--                <el-button type="text" size="small" @click="handleDelete(index)">Delete</el-button>-->
+<!--              </template>-->
             </div>
 
           </el-collapse-item>
@@ -164,8 +164,8 @@ export default {
   components: {MyList},
   data() {
     return {
-      isAnnouncer: false,
-      editMode: false,  // editMode = ture时，可以编辑商品
+      // isAnnouncer: false,
+      // editMode: false,  // editMode = ture时，可以编辑商品
       state: false, // 是否可以购买（售出后打上已售出标签，除非卖家撤下，商品详情依然存在）
       goodsId: '11111111',  // 商品id
       price: '100000',
@@ -226,30 +226,30 @@ export default {
       }
       this.goodsId = goodsId
       this.getDetails()
-      this.isAnnouncer = (this.$store.getters.getUser.userId === this.announcer.userId)
+      // this.isAnnouncer = (this.$store.getters.getUser.userId === this.announcer.userId)
     },
     // 获取商品详情
     getDetails() {
-      const _this = this
+      // const _this = this
       this.$axios({
         method: 'get',
         url: 'http://localhost:8081/goods/' + this.goodsId,
       })
       .then(res => {
         const productDetails = res.data.data
-        console.log(productDetails)
-        _this.price = productDetails.price
-        _this.title = productDetails.title
+        console.log('productDetails', productDetails)
+        this.price = productDetails.price
+        this.title = productDetails.title
 
         this.getPicture(productDetails.picturePath)
-        this.getAnnouncer(productDetails.announcer)
-        _this.labels = productDetails.labels
-        _this.introduce = productDetails.introduce
-        _this.view = productDetails.view
+        // console.log('announcer\'s Id', productDetails.announcer.userId)
+        this.getAnnouncer(productDetails.announcer.userId)
+        this.labels = productDetails.labels
+        this.introduce = productDetails.introduce
+        this.view = productDetails.view
         // _this.comments = productDetails.comments
-        _this.want = productDetails.want
-        _this.announceTime = productDetails.announceTime
-
+        this.want = productDetails.want
+        this.announceTime = productDetails.announceTime
       })
     },
     getPicture(picturePaths) {
@@ -257,17 +257,30 @@ export default {
         this.picturePath.push(picturePaths[i].path)
       }
     },
-    getAnnouncer(announcer) {
-      this.announcer.userName = announcer.userName
-      this.announcer.sign = announcer.sign
-      this.announcer.credits = announcer.credit
-      this.announcer.avatar = announcer.picturePath
-      this.announcer.userId = announcer.userId
-      if (announcer.gender === 0) {
-        this.announcer.gender = '♂'
-      } else {
-        this.announcer.gender = '♀'
-      }
+    getAnnouncer(announcerId) {
+      console.log('announcer ID', announcerId)
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/user/information/'
+            + announcerId,
+        headers: {'authorization': this.$store.getters.getToken},
+        // data: {
+        //   queryUserId: announcerId,
+        // },
+      }).then(res => {
+        const announcer = res.data.data
+        console.log(announcer)
+        this.announcer.userName = announcer.userName
+        this.announcer.sign = announcer.sign
+        this.announcer.credits = announcer.credit
+        this.announcer.avatar = announcer.picturePath
+        this.announcer.userId = announcer.userId
+        if (announcer.gender === 0) {
+          this.announcer.gender = '♂'
+        } else {
+          this.announcer.gender = '♀'
+        }
+      })
     },
     // 点击我想要联系卖家
     wantIt() {
@@ -279,14 +292,15 @@ export default {
         })
         return
       }
-      if (this.isAnnouncer) {
+      console.log(this.$store.getters.getUser.userId)
+      if (this.$store.getters.getUser.userId === this.announcer.userId) {
         Element.Message({
           message: 'You cannot buy your own goods',
           type: 'error',
         })
         return
       }
-      this.addDeal()
+      // this.addDeal()
     },
     // 添加到收藏夹
     addCollect() {
@@ -299,18 +313,15 @@ export default {
         })
         return
       }
-      this.$axios.post("http://localhost:8081/product/user/addCollect", {
-        userID: this.$store.getters.getUser.userID,
-        productID: this.productID
-      })
-      .then(res => {
-        if (res.data.code === 200) { // 状态码为200 -> 添加成功
-          Element.Message({
-            showClose: true,
-            message: 'Add product to collection successfully',
-            type: 'success',
-          })
-        }
+      this.$axios.post("http://localhost:8081/user/collection?goodsId="
+          + this.goodsId, {
+        goodsId: this.goodsId
+      }).then(res => {
+        Element.Message({
+          showClose: true,
+          message: 'Add product to collection successfully',
+          type: 'success',
+        })
       })
     },
     // 提交评论
@@ -339,27 +350,18 @@ export default {
         date: '2021-11-1'
       })
     },
-    canDelete(id) {
-      return (this.$store.getters.getUser
-          && this.$store.getters.getUser.userId === id)
-    },
-    handleDelete(index) {
-      this.comments.splice(index, 1)
-      // 评论相关接口？
-    },
-    deleteGoods() {
-      this.$axios({
-        method: 'delete',
-        url: 'http://localhost:8081/goods/deleteGoods'
-            + "?goodsId=" + this.goodsId
-      }).then(res => {
-        Element.Message({
-          message: 'Delete Successfully',
-          type: 'success',
-        })
-        this.$router.push('/user')
-      })
-    }
+    // addDeal() {
+    //   this.$axios.post("http://localhost:8081/deal/addDeal", {
+    //     userID: this.$store.getters.getUser.userID,
+    //     productID: this.productID
+    //   }).then(res => {
+    //     Element.Message({
+    //       showClose: true,
+    //       message: 'Add product to collection successfully',
+    //       type: 'success',
+    //     })
+    //   })
+    // }
   },
   mounted() {
     this.activate()

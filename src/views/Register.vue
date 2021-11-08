@@ -129,28 +129,11 @@ export default {
           console.log(this.ruleForm)
           const _this = this
 
-          this.$axios({
-            method: 'post',
-            url: 'http://localhost:8081/user/register'
-            + "?username=" + this.ruleForm.username
-                + "&email=" + this.ruleForm.email
-                + "&password=" + this.ruleForm.password
-                + "&gender=" + this.ruleForm.gender,
-            data: {
-              username: this.ruleForm.username,
-              email: this.ruleForm.email,
-              password: this.ruleForm.password,
-              gender: this.ruleForm.gender,
-            },
-            transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
-              var ret = '';
-              for (var it in data) {
-                // 如果要发送中文 编码
-                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-              }
-              return ret.substring(0,ret.length-1)
-            }],
-          }).then(res => {
+          const newRequest = axios.create();
+          newRequest.post('http://localhost:8081/user/register', this.ruleForm).then((res)=>{
+            const token = res.headers['authorization']
+            _this.$store.commit('SET_TOKEN', token)
+            _this.$store.commit('SET_USERINFO', res.data.data)
             // 验证成功后，弹窗提示前往邮箱查看，并跳转到login页面
             Element.Message({
               showClose: true,
@@ -159,31 +142,26 @@ export default {
             })
             _this.$router.push("/login")
           })
-          // 认证不通过的情况 -> 全局axios拦截
-
-
-          // const newRequest = axios.create({
-          //   baseUrl: "http://localhost:8081"//请求地址
-          // });
           // newRequest({
-          //   method: "POST",
-          //   url: "/user/register"
-          //       + "?username=" + this.ruleForm.username
-          //       + "&email=" + this.ruleForm.email
-          //       + "&password=" + this.ruleForm.password
-          //       + "&gender=" + this.ruleForm.gender,
-          //   data: this.ruleForm,
-          //   headers: {
-          //     "Content-Type": "multipart/form-data",
-          //   }
+          //   method: 'post',
+          //   url: murl,
+          //   headers: {"Content-Type": "multipart/form-data",},
+          //   data: {
+          //     username: this.ruleForm.username,
+          //     email: this.ruleForm.email,
+          //     password: this.ruleForm.password,
+          //     gender: this.ruleForm.gender,
+          //   },
           // }).then(res => {
-          //   //   // 验证成功后，弹窗提示前往邮箱查看，并跳转到login页面
-          //     Element.Message({
-          //       message: 'Register success! Please check your email for activation message',
-          //       type: 'success',
-          //     })
-          //     _this.$router.push("/login")
-          // });
+          //   // 验证成功后，弹窗提示前往邮箱查看，并跳转到login页面
+          //   Element.Message({
+          //     showClose: true,
+          //     message: 'Register success! Please check your email for activation message',
+          //     type: 'success',
+          //   })
+          //   _this.$router.push("/login")
+          // })
+          // 认证不通过的情况 -> 全局axios拦截
         } else if (!this.accept) {
           Element.Message({
             message: 'You must accept our terms and conditions',

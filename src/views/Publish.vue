@@ -82,7 +82,7 @@
             </el-form>
 
             <el-form-item label="goodsImg" prop="goodsImg" hidden>
-              <el-input v-model="goods.photos" clearable></el-input>
+              <el-input v-model="photos" clearable></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -140,9 +140,11 @@ export default {
         labels: [],
         price: '333333333333333',
         title: '300 Mana Stone',
-        photos: [],
+        // photos: [],
         postage: 0,
       },
+      goodsId: -1,
+      photos: [],
       rules: {
         title:[
           {required: true, message: 'Title is required', trigger: 'blur'},
@@ -176,7 +178,7 @@ export default {
       this.dialogVisible = true
     },
     handleSuccess(res, file) {
-      this.goods.photos.push(file.raw)
+      this.photos.push(file.raw)
     },
     beforeUpload(file) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -196,45 +198,47 @@ export default {
         return false
       }
     },
-    submitForm(formName) {
-      //创建 formData 对象
-      let formData = new FormData();
-      // 向 formData 对象中添加文件
-      // for (let i in this.goods.photos) {
-      //   formData.append('photos[]', this.goods.photos[i])
-      // }
-      formData.append('photos', this.goods.photos[0])
-      const newRequest = axios.create({
-        baseUrl: "http://localhost:8081"//请求地址
-      });
-
-      let murl = "/goods/addGoods"
-              + '?introduce=' + this.goods.introduce
-              + '&isSell=' + true
-              + '&price=' + this.goods.price
-              + '&title=' + this.goods.title
-              + '&postage=' + this.goods.postage
-      for (let i in this.goods.labels) {
-        murl = murl + '&labels=' + this.goods.labels[i]
-      }
-      console.log(this.goods.photos)
+    async submitForm(formName) {
+      await this.submitInfo()
+      await this.uploadPicture()
+    },
+    submitInfo() {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          this.$axios.post('http://localhost:8081/goods/add', this.goods).then((res) => {
+            Element.Message({
+              message: 'Publish success!',
+              type: 'success',
+            })
+            this.goodsId = res.data.data
+            resolve('done');
+          })
+        }, 1000)
+        }
+      )
+    },
+    uploadPicture() {
+      // 上传商品图片
+      let photoData = new FormData();
+      photoData.append('photos', this.photos[0])
+      const newRequest = axios.create();
       newRequest({
         method: "POST",
-        url: murl,
-        data: formData,
+        url: 'http://localhost:8081/goods/upload/picture?'
+            + 'goodsId=' + this.goodsId,
+        data: photoData,
         headers: {
           "Content-Type": "multipart/form-data",
           'Authorization': store.getters.getToken
         }
       }).then(res => {
         Element.Message({
-          message: 'Success!',
+          message: 'Upload Picture Success!',
           type: 'success',
         })
-        const goodsId = res.data.data
         this.$router.push('/goods/' + goodsId)
-      });
-    },
+      })
+    }
   },
 
 }

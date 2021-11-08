@@ -47,18 +47,16 @@ export default {
         goodsId: goodsId
       })
       .then(res => {
-        if (res.data.code === '200') {
-          for (let i=0; i<this.list.length; i++) {
-            if (this.list[i].productID === productID) {
-              this.list.splice(i, 1)
-            }
+        for (let i=0; i<this.list.length; i++) {
+          if (this.list[i].productID === productID) {
+            this.list.splice(i, 1)
           }
-          Element.Message({
-            showClose: true,
-            message: 'Delete the product from collection successfully',
-            type: 'success',
-          })
         }
+        Element.Message({
+          showClose: true,
+          message: 'Delete the product from collection successfully',
+          type: 'success',
+        })
       })
     }
   }

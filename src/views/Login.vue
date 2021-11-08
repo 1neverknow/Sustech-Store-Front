@@ -75,7 +75,8 @@
 
 
 <script>
-import Element from "element-ui";
+import Element from "element-ui"
+import axios from 'axios'
 export default {
   name: "Login",
   // 校验规则
@@ -137,11 +138,14 @@ export default {
         if (valid) {
           // 更改为调用全局this -> 可以用来获取store里的信息
           const _this = this
-          let remember = 0
-          if (this.ruleForm["remember-me"]) {
-            remember = 1
-          }
-          this.$axios({
+          // let remember = 0
+          // if (this.ruleForm["remember-me"]) {
+          //   remember = 1
+          // }
+          const newRequest = axios.create({
+            baseUrl: "http://localhost:8081"//请求地址
+          });
+          newRequest({
             method: 'post',
             url: 'http://localhost:8081/login'
                 + "?email=" + this.ruleForm.email

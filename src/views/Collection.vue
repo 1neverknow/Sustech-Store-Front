@@ -53,6 +53,16 @@ export default {
       ]
     }
   },
+  methods: {
+    getCollectList() {
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/user/collection',
+      }).then(res => {
+
+      })
+    }
+  }
 }
 </script>
 
