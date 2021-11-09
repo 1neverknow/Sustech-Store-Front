@@ -40,9 +40,9 @@ export default {
       disabled: false,
       //充值参数
       rechargeParams: {
-        "totalAmt": '', //金额
-        "paymentType": "0", //支付方式[0:微信,1:支付宝,2:余额,3:活动]
-        "transType": "0" //交易类型[0:充值,1:消费]
+        totalAmt: 0, //金额
+        paymentType: 0, //支付方式[0:微信,1:支付宝,2:余额,3:活动]
+        transType: 0, //交易类型[0:充值,1:消费]
       }
     }
   },
@@ -66,15 +66,14 @@ export default {
         return;
       }
       this.$axios({
-        method: 'post',
+        method: 'put',
         url: 'http://localhost:8081/user/charge'
-            + '?money=' + this.amount
+            + '?money=' + this.rechargeParams.totalAmt
       }).then(res => {
         Element.Message({
           message: 'Success!',
           type: 'success',
         })
-
         // if (res.data.code === 200) {
         //   if (this.rechargeParams.paymentType === '0') {
         //     Element.Message({

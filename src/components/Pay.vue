@@ -14,7 +14,7 @@
       </li>
     </ul>
     <div style="text-align: center; margin-top: 30px;">
-      <el-button type="primary" @click="surePay">Confirm</el-button>
+      <el-button type="primary" @click="getPay">Confirm</el-button>
     </div>
   </el-card>
 </template>
@@ -43,13 +43,13 @@ export default {
       this.rechargeParams.paymentType = val
     },
     //确认支付
-    surePay() {
+    getPay() {
       this.$axios({
-        method: 'get',
+        method: 'put',
         url: 'http://localhost:8081/deal/pay/' + this.dealId
       }).then(res => {
         Element.Message({
-          message: 'Success!',
+          message: 'Pay Success!',
           type: 'success',
         })
         this.closeDialog()

@@ -112,7 +112,7 @@ const routes = [
     component: Contact
   },
   {
-    path: '/deal/:dealId',
+    path: '/deal/:goodsId',
     name: 'Deal',
     meta: {
       requireAuth: true

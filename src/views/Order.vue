@@ -165,13 +165,10 @@ export default {
   },
   methods: {
     activate() {
-      const dealId = this.$route.params.dealId
-      if (!dealId) {
-        return
-      }
 
     },
     getOrderList() {
+
     },
     handleSizeChange(newSize) {
       this.queryInfo.pagesize = newSize

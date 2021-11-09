@@ -1,4 +1,3 @@
-<!--交易页面-->
 <template>
   <div class="confirmOrder">
     <div class="confirmOrder-header">
@@ -22,9 +21,9 @@
                 :key="item.id"
                 @click="dealInfo.confirmAddress = item.id"
             >
-                <h2>{{item.name}}</h2>
-                <p class="phone">{{item.phone}}</p>
-                <p class="address">{{item.address}}</p>
+              <h2>{{item.name}}</h2>
+              <p class="phone">{{item.phone}}</p>
+              <p class="address">{{item.address}}</p>
             </li>
             <li class="add-address">
               <i class="el-icon-circle-plus-outline" @click="showAddrBox"></i>
@@ -209,29 +208,24 @@ export default {
       this.userInfo.buyId = buyId
     },
     getDealInfo() {
-      let dealId = this.$route.params.dealId
-      if (!dealId) {
+      const goodsId = this.$route.params.goodsId
+      if (!goodsId) {
+        this.$router.push('/none')
         return
       }
-      this.dealInfo.dealId = dealId
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/deal/' + dealId,
+        url: 'http://localhost:8081/goods/' + goodsId,
       }).then(res => {
         const info = res.data.data
         console.log(info)
-        if (info.buyer.userId !== store.getters.getUser.userId) {
-          alert('You cannot access this deal!')
-          this.$router.push('/goods/'+ info.goodsAbbreviation.goodsId)
-        }
-        this.dealInfo.stage = info.stage
-        this.getGoodsInfo(info.goodsAbbreviation)
+        this.getGoodsInfo(info)
       })
     },
     getGoodsInfo(goodsAbbreviation) {
       this.goodsList[0].goodsId = goodsAbbreviation.goodsId
       this.goodsList[0].goodsName = goodsAbbreviation.title
-      this.goodsList[0].goodsPicture = goodsAbbreviation.picturePath
+      this.goodsList[0].goodsPicture = goodsAbbreviation.picturePath[0].path
       this.goodsList[0].sellerId = goodsAbbreviation.announcer.userId
       this.goodsList[0].price = goodsAbbreviation.price
       this.goodsList[0].number = 1
@@ -269,13 +263,8 @@ export default {
             + "&stage=" + 0, // status=0: 未支付
       }).then(res => {
         // 提示结算结果
-        Element.Message({
-          message: 'Success!',
-          type: 'success',
-        })
-        this.$router.push({ path: "/user/order" })
-        // let dealId = res.data.data
-        // this.$router.push('/deal/'+ dealId)
+        this.dealInfo.dealId = res.data.data
+        this.windowVisible = true
       })
     },
     getTotalPrice() {

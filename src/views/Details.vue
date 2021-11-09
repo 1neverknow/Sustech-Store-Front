@@ -179,35 +179,10 @@ export default {
         gender: '♂',
         sign: '!!!!!!!!!!!!!!!!!!!'
       },
-      comments: [
-        {
-          commentId: '',
-          userId: 1111,
-          username: 'Figaro',
-          content: '很好用🌹',
-          picturePath: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-          date: '2021-10-20'
-        },
-        {
-          commentId: '',
-          userId: 2222,
-          username: 'Oz',
-          content: '....',
-          picturePath: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-          date: '2021-10-21'
-        },
-        {
-          commentId: '',
-          userId: 3333,
-          username: 'Bradley',
-          content: '拿来吧你',
-          picturePath: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-          date: '2021-10-22'
-        }
-      ],
-      want: 1,  // “我想要”的人数,
-      announceTime: '2021-10-10',
-      view: 10,
+      comments: [],
+      want: '',  // “我想要”的人数,
+      announceTime: '',
+      view: '',
       stage: 0,
       activeNames: '1',
 
@@ -240,15 +215,14 @@ export default {
         const productDetails = res.data.data
         this.price = productDetails.price
         this.title = productDetails.title
-
         this.getPicture(productDetails.picturePath)
         this.getAnnouncer(productDetails.announcer.userId)
         this.labels = productDetails.labels
         this.introduce = productDetails.introduce
         this.view = productDetails.view
-        // this.comments = productDetails.goodsComments
         this.want = productDetails.want
         this.announceTime = productDetails.announceTime
+        this.getComments(this.goodsId)
       })
     },
     getPicture(picturePaths) {
@@ -273,6 +247,20 @@ export default {
           this.announcer.gender = '♂'
         } else {
           this.announcer.gender = '♀'
+        }
+      })
+    },
+    getComments(goodsId) {
+      console.log('get comments')
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/goods/comment?goodsId='
+            + goodsId,
+      }).then(res => {
+        if (res.data.data !== null) {
+          this.comments = res.data.data
+        } else {
+          this.comments = []
         }
       })
     },
@@ -306,10 +294,8 @@ export default {
         })
         return
       }
-      this.$axios.post("http://localhost:8081/user/collection?goodsId="
-          + this.goodsId, {
-        goodsId: this.goodsId
-      }).then(res => {
+      this.$axios.put("http://localhost:8081/user/collection?goodsId="
+          + this.goodsId).then(res => {
         Element.Message({
           showClose: true,
           message: 'Add product to collection successfully',
