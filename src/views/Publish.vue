@@ -204,7 +204,6 @@ export default {
     },
     submitInfo() {
       return new Promise(resolve => {
-        setTimeout(() => {
           this.$axios.post('http://localhost:8081/goods/add', this.goods).then((res) => {
             Element.Message({
               message: 'Publish success!',
@@ -213,31 +212,42 @@ export default {
             this.goodsId = res.data.data
             resolve('done');
           })
-        }, 1000)
         }
       )
+      // this.$axios.post('http://localhost:8081/goods/add', this.goods).then((res) => {
+      //   Element.Message({
+      //     message: 'Publish success!',
+      //     type: 'success',
+      //   })
+      //   this.goodsId = res.data.data
+      //   resolve('done');
+      // })
     },
     uploadPicture() {
-      // 上传商品图片
-      let photoData = new FormData();
-      photoData.append('photos', this.photos[0])
-      const newRequest = axios.create();
-      newRequest({
-        method: "POST",
-        url: 'http://localhost:8081/goods/upload/picture?'
-            + 'goodsId=' + this.goodsId,
-        data: photoData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-          'Authorization': store.getters.getToken
-        }
-      }).then(res => {
-        Element.Message({
-          message: 'Upload Picture Success!',
-          type: 'success',
+      return new Promise(resolve => {
+        // 上传商品图片
+        let photoData = new FormData();
+        photoData.append('photos', this.photos[0])
+        const newRequest = axios.create();
+        newRequest({
+          method: "POST",
+          url: 'http://localhost:8081/goods/upload/picture?'
+              + 'goodsId=' + this.goodsId,
+          data: photoData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+            'Authorization': store.getters.getToken
+          }
+        }).then(res => {
+          Element.Message({
+            message: 'Upload Picture Success!',
+            type: 'success',
+          })
+          this.$router.push('/goods/' + goodsId)
         })
-        this.$router.push('/goods/' + goodsId)
-      })
+        resolve('done');
+        }
+      )
     }
   },
 

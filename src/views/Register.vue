@@ -142,26 +142,6 @@ export default {
             })
             _this.$router.push("/login")
           })
-          // newRequest({
-          //   method: 'post',
-          //   url: murl,
-          //   headers: {"Content-Type": "multipart/form-data",},
-          //   data: {
-          //     username: this.ruleForm.username,
-          //     email: this.ruleForm.email,
-          //     password: this.ruleForm.password,
-          //     gender: this.ruleForm.gender,
-          //   },
-          // }).then(res => {
-          //   // 验证成功后，弹窗提示前往邮箱查看，并跳转到login页面
-          //   Element.Message({
-          //     showClose: true,
-          //     message: 'Register success! Please check your email for activation message',
-          //     type: 'success',
-          //   })
-          //   _this.$router.push("/login")
-          // })
-          // 认证不通过的情况 -> 全局axios拦截
         } else if (!this.accept) {
           Element.Message({
             message: 'You must accept our terms and conditions',

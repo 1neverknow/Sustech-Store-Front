@@ -114,7 +114,7 @@
             <transition name="fade">
               <div class="input-wrapper">
                 <el-input class="gray-bg-input"
-                          v-model="inputComment"
+                          v-model="commentForm.content"
                           type="textarea"
                           :rows="3"
                           autofocus
@@ -164,8 +164,6 @@ export default {
   components: {MyList},
   data() {
     return {
-      // isAnnouncer: false,
-      // editMode: false,  // editMode = ture时，可以编辑商品
       state: false, // 是否可以购买（售出后打上已售出标签，除非卖家撤下，商品详情依然存在）
       goodsId: '11111111',  // 商品id
       price: '100000',
@@ -211,22 +209,25 @@ export default {
       announceTime: '2021-10-10',
       view: 10,
       stage: 0,
-
       activeNames: '1',
-      inputComment: '',
+
+      commentForm: {
+        content: '',
+        goodsId: '',
+      }
     }
   },
   methods: {
     // 通过路由获取商品id
     activate() {
       const goodsId = this.$route.params.goodsId
-      console.log(goodsId)
       if (!goodsId) {
+        this.$router.push('/none')
         return
       }
       this.goodsId = goodsId
+      this.commentForm.goodsId = goodsId
       this.getDetails()
-      // this.isAnnouncer = (this.$store.getters.getUser.userId === this.announcer.userId)
     },
     // 获取商品详情
     getDetails() {
@@ -237,17 +238,15 @@ export default {
       })
       .then(res => {
         const productDetails = res.data.data
-        console.log('productDetails', productDetails)
         this.price = productDetails.price
         this.title = productDetails.title
 
         this.getPicture(productDetails.picturePath)
-        // console.log('announcer\'s Id', productDetails.announcer.userId)
         this.getAnnouncer(productDetails.announcer.userId)
         this.labels = productDetails.labels
         this.introduce = productDetails.introduce
         this.view = productDetails.view
-        // _this.comments = productDetails.comments
+        // this.comments = productDetails.goodsComments
         this.want = productDetails.want
         this.announceTime = productDetails.announceTime
       })
@@ -258,18 +257,13 @@ export default {
       }
     },
     getAnnouncer(announcerId) {
-      console.log('announcer ID', announcerId)
       this.$axios({
         method: 'get',
         url: 'http://localhost:8081/user/information/'
             + announcerId,
         headers: {'authorization': this.$store.getters.getToken},
-        // data: {
-        //   queryUserId: announcerId,
-        // },
       }).then(res => {
         const announcer = res.data.data
-        console.log(announcer)
         this.announcer.userName = announcer.userName
         this.announcer.sign = announcer.sign
         this.announcer.credits = announcer.credit
@@ -292,7 +286,6 @@ export default {
         })
         return
       }
-      console.log(this.$store.getters.getUser.userId)
       if (this.$store.getters.getUser.userId === this.announcer.userId) {
         Element.Message({
           message: 'You cannot buy your own goods',
@@ -327,41 +320,41 @@ export default {
     // 提交评论
     commitComment() {
       // 需要先验证用户是否已经登陆
-      if (!this.$store.getters.getUser) {
+      if (!this.$store.getters.getToken) {
         Element.Message({
           message: 'Please login first',
           type: 'error',
         })
         return
       }
-      if (this.inputComment === '') {
+      if (this.commentForm.content === '') {
         Element.Message({
           message: 'Your input cannot be null',
           type: 'error',
         })
         return
       }
-      console.log(this.inputComment);
-      this.comments.push({
-        userId: '',
-        username: 'Me',
-        content: this.inputComment,
-        picturePath: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-        date: '2021-11-1'
+
+      this.$axios.post('http://localhost:8081/goods/comment', this.commentForm).then((res)=>{
+        Element.Message({
+          showClose: true,
+          message: 'Comment success!',
+          type: 'success',
+        })
+        let d = new Date()
+        let now = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate()
+        console.log(now)
+        console.log(this.$store.getters.getUser)
+        this.comments.push({
+          userId: this.$store.getters.getUser.userId,
+          username: 'ME',
+          content: this.commentForm.content,
+          picturePath: '',
+          date: now
+        })
       })
     },
-    // addDeal() {
-    //   this.$axios.post("http://localhost:8081/deal/addDeal", {
-    //     userID: this.$store.getters.getUser.userID,
-    //     productID: this.productID
-    //   }).then(res => {
-    //     Element.Message({
-    //       showClose: true,
-    //       message: 'Add product to collection successfully',
-    //       type: 'success',
-    //     })
-    //   })
-    // }
+
   },
   mounted() {
     this.activate()

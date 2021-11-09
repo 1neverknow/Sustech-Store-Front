@@ -26,7 +26,7 @@ axios.interceptors.response.use(response => {
     let res = response.data
 
     console.log(res)
-    if (res.code === 200|| res.code === 2000 || res.code === 2001 || res.code === 2002) {
+    if (res.code === 200 || res.code === 2000 || res.code === 2001 || res.code === 2002) {
         // 请求成功
         return response
     } else {
@@ -36,6 +36,10 @@ axios.interceptors.response.use(response => {
             message: response.data.message,
             type: 'error',
         })
+        // 商品不存在
+        if (res.code === 4050) {
+            router.push('/none')
+        }
         // 阻止进入后续逻辑
         return Promise.reject(response.data.message)
     }
@@ -46,8 +50,8 @@ axios.interceptors.response.use(response => {
         if (error.response.data) {
             error.message = error.response.data.message
         }
-        // 401: unauthorized -> 跳转到login
-        if (error.response.status === 401) {
+        // 未登录 -> 跳转到login
+        if (error.response.status === 4010) {
             // 清空全局参数 -> store/index.js -> REMOVE_INFO方法
             store.commit("REMOVE_INFO")
             router.push("/login")

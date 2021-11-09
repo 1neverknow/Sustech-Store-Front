@@ -138,10 +138,6 @@ export default {
         if (valid) {
           // 更改为调用全局this -> 可以用来获取store里的信息
           const _this = this
-          // let remember = 0
-          // if (this.ruleForm["remember-me"]) {
-          //   remember = 1
-          // }
           const newRequest = axios.create({
             baseUrl: "http://localhost:8081"//请求地址
           });
@@ -155,34 +151,36 @@ export default {
               password: this.ruleForm.password,
               'remember-me': this.ruleForm['remember-me']
             },
-            transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
-              var ret = '';
-              for (var it in data) {
-                // 如果要发送中文 编码
-                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-              }
-              return ret.substring(0,ret.length-1)
-            }],
           }).then(res => {
             // 接收到来自后端的消息
             console.log(res)
-            // 接受后端返回的数据
-            // 希望全局都可以访问到jwt的内容 -> 使用 /store/index.js
-            // header中authorization字段即为用户登录后的权限验证
-            const jwt = res.headers['authorization']
-            const userInfo = res.data.data
 
-            // 将jwt和userInfo共享给整个vue项目
-            _this.$store.commit("SET_TOKEN",jwt)
-            _this.$store.commit("SET_USERINFO", userInfo)
+            if (res.data.code === 2000) {
+              // 接受后端返回的数据
+              // 希望全局都可以访问到jwt的内容 -> 使用 /store/index.js
+              // header中authorization字段即为用户登录后的权限验证
+              const jwt = res.headers['authorization']
+              const userInfo = res.data.data
 
-            Element.Message({
-              showClose: true,
-              message: 'Login success!',
-              type: 'success',
-            })
-            // 验证成功后，跳转到home page
-            _this.$router.push("/")
+              // 将jwt和userInfo共享给整个vue项目
+              _this.$store.commit("SET_TOKEN",jwt)
+              _this.$store.commit("SET_USERINFO", userInfo)
+
+              Element.Message({
+                showClose: true,
+                message: 'Login success!',
+                type: 'success',
+              })
+              // 验证成功后，跳转到home page
+              _this.$router.push("/")
+            } else {
+              Element.Message({
+                message: res.data.message,
+                type: 'error',
+              })
+            }
+
+
           })
           // 认证不通过的情况 -> 全局axios拦截
         } else {

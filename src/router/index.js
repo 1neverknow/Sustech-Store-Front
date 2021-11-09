@@ -14,6 +14,7 @@ import Contact from "@/views/Contact";
 import Deal from "@/views/Deal"
 import Publish from "@/views/Publish"
 import Order from "@/views/Order"
+import None from "@/views/None"
 
 import MainPage from "@/views/MainPage";
 import Account from "@/views/Account";
@@ -133,6 +134,11 @@ const routes = [
       requireAuth: true
     },
     component: Order
+  },
+  {
+    path: '/none',
+    name: 'none',
+    component: None
   },
   {
     path: '/user/:userId',
