@@ -26,7 +26,7 @@
               <p class="address">{{item.address}}</p>
             </li>
             <li class="add-address">
-              <i class="el-icon-circle-plus-outline" @click="showAddrBox"></i>
+              <i class="el-icon-circle-plus-outline" @click="changeAddressVisible(true)"></i>
               <p>Add New Address</p>
             </li>
           </ul>
@@ -37,30 +37,10 @@
             :visible.sync="addressVisible"
             width="50%"
         >
-          <!-- 内容主体区域 -->
-          <el-form
-              :model="addressForm"
-              :rules="addressFormRules"
-              label-position="top"
-              ref="addressFormRef"
-              label-width="100px"
-          >
-            <el-form-item label="Recipient" prop="recipient">
-              <el-input v-model="addressForm.recipient"></el-input>
-            </el-form-item>
-            <el-form-item label="Phone Number" prop="phoneNumber">
-              <el-input v-model="addressForm.phoneNumber"></el-input>
-            </el-form-item>
-            <el-form-item label="Address" prop="address">
-              <el-input v-model="addressForm.address"></el-input>
-            </el-form-item>
-          </el-form>
-          <!-- 底部区域 -->
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="addressVisible = false">Cancel</el-button>
-            <el-button type="primary" @click="addAddress"
-            >Submit</el-button>
-          </span>
+          <AddressDialogue
+              v-if="addressVisible"
+              v-bind:addressForm="addressForm"
+          ></AddressDialogue>
         </el-dialog>
       </div>
 
@@ -122,9 +102,9 @@
              @click="addDeal"
              class="btn-base btn-primary"
           >Pay</a>
-          <el-dialog  :visible.sync="windowVisible" append-to-body>
+          <el-dialog  :visible.sync="payVisible" append-to-body>
             <Pay
-                v-if="windowVisible"
+                v-if="payVisible"
                 v-bind:dealId="dealInfo.dealId"
             ></Pay>
           </el-dialog>
@@ -147,13 +127,15 @@ import Element from "element-ui"
 import store from "@/store"
 import Pay from "@/components/Pay"
 import Charge from "@/components/Charge"
+import AddressDialogue from "@/components/AddressDialogue"
 export default {
   name: "Deal",
-  components: {Pay, Charge},
+  components: {Pay, Charge, AddressDialogue},
   data() {
     return {
       chargeVisible: false,
-      windowVisible: false,
+      payVisible: false,
+      addressVisible: false,
       dealInfo: {
         dealId: '',
         stage: 0,    // 订单状态
@@ -176,22 +158,10 @@ export default {
           number: 1111,  // 购买的商品数
         }
       ],
-      addressVisible: false,
       addressForm: {
-        recipient: '',
-        phoneNumber: '',
-        address: ''
-      },
-      addressFormRules: {
-        recipient: [
-          { required: true, message: 'Please input your name', trigger: 'blur' }
-        ],
-        phoneNumber: [
-          { required: true, message: 'Please input your phone number', trigger: 'blur' }
-        ],
-        address: [
-          { required: true, message: 'Please input your address', trigger: 'blur' }
-        ]
+        recipientName: '',
+        phone: '',
+        addressName: ''
       },
     }
   },
@@ -210,6 +180,10 @@ export default {
     getDealInfo() {
       const goodsId = this.$route.params.goodsId
       if (!goodsId) {
+        Element.Message({
+          message: 'Goods ID not exist!',
+          type: 'error',
+        })
         this.$router.push('/none')
         return
       }
@@ -257,41 +231,26 @@ export default {
       this.$axios({
         method: 'post',
         url: 'http://localhost:8081/deal/addDeal'
-            + "?buyId=" + this.$store.getters.getUser.userId
+            + "?addressId=" + this.dealInfo.confirmAddress
             + "&goodsId=" + this.goodsList[0].goodsId
-            + "&sellerId=" + this.goodsList[0].sellerId
-            + "&stage=" + 0, // status=0: 未支付
       }).then(res => {
         // 提示结算结果
         this.dealInfo.dealId = res.data.data
-        this.windowVisible = true
+        this.payVisible = true
       })
     },
     getTotalPrice() {
       this.total = this.goodsList[0].number * this.goodsList[0].price + this.dealInfo.postage;
       return this.total
     },
-    showAddrBox() {
-      this.addressVisible = true
-    },
     changeVisible(val) {
       this.chargeVisible = val
     },
-    addAddress() {
-      this.$axios({
-        method: 'post',
-        url: 'http://localhost:8081/user/address/'
-            + "?addressNamee=" + this.addressForm.address
-            + "&phone=" + this.addressForm.phoneNumber
-            + "&recipientName=" + this.addressForm.recipient
-      }).then(res => {
-        console.log('res',res)
-        Element.Message({
-          message: 'Success!',
-          type: 'success',
-        })
-        this.addressVisible = false
-      })
+    changeAddressVisible(val) {
+      this.addressVisible = val
+    },
+    changePayVisible(val) {
+      this.payVisible = val
     }
   },
   mounted() {

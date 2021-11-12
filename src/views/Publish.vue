@@ -214,14 +214,6 @@ export default {
           })
         }
       )
-      // this.$axios.post('http://localhost:8081/goods/add', this.goods).then((res) => {
-      //   Element.Message({
-      //     message: 'Publish success!',
-      //     type: 'success',
-      //   })
-      //   this.goodsId = res.data.data
-      //   resolve('done');
-      // })
     },
     uploadPicture() {
       return new Promise(resolve => {
@@ -243,7 +235,7 @@ export default {
             message: 'Upload Picture Success!',
             type: 'success',
           })
-          this.$router.push('/goods/' + goodsId)
+          this.$router.push('/goods/' + this.goodsId)
         })
         resolve('done');
         }

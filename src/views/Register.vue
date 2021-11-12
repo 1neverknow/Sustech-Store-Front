@@ -72,7 +72,7 @@ export default {
   name: "Register",
 
   data() {
-    var validateEmail = (rule, value, callback) => {
+    const validateEmail = (rule, value, callback) => {
       console.log(this)
       console.log(value)
 
@@ -80,18 +80,18 @@ export default {
         callback(new Error('Please input an email address'));
       } else {
         if (value !== '') {
-          var reg=/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-          if(!reg.test(value)){
+          var reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+          if (!reg.test(value)) {
             callback(new Error('Email is invalid'));
           }
         }
         callback();
       }
     };
-    var validatePass = (rule, value, callback) => {
+    const validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('Password is required'));
-      } else if(value.length < 6){
+      } else if (value.length < 6) {
         callback(new Error('Length must be more than 6'));
       } else {
         callback();

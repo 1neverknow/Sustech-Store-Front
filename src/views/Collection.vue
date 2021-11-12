@@ -12,11 +12,27 @@
       </div>
     </div>
 
-    <div class="content">
+    <el-card class="content">
 <!--      有收藏物品-->
-      <div class="goods-list" v-if="collectList.length > 0">
-<!--        <h1>有东西</h1>-->
-        <MyList :list="collectList" :isDelete="true"></MyList>
+      <div v-if="collectList.length > 0">
+        <el-row class="goods-list">
+          <MyList :list="collectList" :isDelete="true"></MyList>
+        </el-row>
+        <el-row>
+          <!-- 分页区域 -->
+          <el-pagination
+              class="pagination"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="queryInfo.pagenum"
+              :page-sizes="[5, 10, 15, 20]"
+              :page-size="queryInfo.pagesize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="queryInfo.total"
+              background
+          >
+          </el-pagination>
+        </el-row>
       </div>
 <!--      收藏列表为空-->
       <div v-else class="collect-empty">
@@ -24,7 +40,7 @@
           <h2>Your Collection is Empty! 😢</h2>
         </div>
       </div>
-    </div>
+    </el-card>
   </div>
 </template>
 
@@ -40,28 +56,68 @@ export default {
             goodsId: 1,
             picture: '',
             title: 'Mana Stone',
-            introduce: 'Help you grow stronger',
+            announcer: {
+              userId: 1,
+              username: 'faust',
+            },
             price: 100000,
           },
         {
           goodsId: 2,
           picture: '',
           title: 'KFC',
-          introduce: '写饿了',
+          announcer: {
+            userId: 1,
+            username: 'faust',
+          },
           price: 30,
         }
-      ]
+      ],
+      queryInfo: {
+        query: '',
+        pagenum: 1,
+        pagesize: 10,
+        total: 0,
+      },
     }
   },
   methods: {
+    activate() {
+      this.getCollectList()
+    },
     getCollectList() {
-      this.$axios({
-        method: 'get',
-        url: 'http://localhost:8081/user/collection',
-      }).then(res => {
-
-      })
-    }
+      console.log('get collection list')
+      this.$axios.get('http://localhost:8081/user/collection')
+          .then(res => {
+            const collection_data = res.data.data
+            this.queryInfo.total = collection_data.length
+            let size = this.queryInfo.pagesize < this.queryInfo.total ? this.queryInfo.pagesize : this.queryInfo.total
+            for (let i=0; i<size; i++) {
+              const item = collection_data[i]
+              this.collectList.push({
+                goodsId: item.goodsId,
+                picture: '',
+                title: item.title,
+                announcer: {
+                  userId: item.announcer.userId,
+                  username: item.announcer.userName,
+                },
+                price: item.price,
+              })
+            }
+          })
+    },
+    handleSizeChange(newSize) {
+      this.queryInfo.pagesize = newSize
+      this.getCollectList()
+    },
+    handleCurrentChange(newPage) {
+      this.queryInfo.pagenum = newPage
+      this.getCollectList()
+    },
+  },
+  mount() {
+    this.activate()
   }
 }
 </script>
@@ -101,10 +157,17 @@ export default {
   padding: 20px 0;
   width: 1225px;
   margin: 0 auto;
+  /*height: 700px;*/
 }
+.collection .content .pagination {
+  float: bottom;
+  margin: auto;
+}
+
 .collection .content .goods-list {
   margin-left: -13.7px;
   overflow: hidden;
+  height: 700px;
 }
 /* 收藏列表为空的时候显示的内容CSS */
 .collection .collect-empty {

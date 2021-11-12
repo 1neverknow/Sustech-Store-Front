@@ -22,12 +22,7 @@
 <script>
 import Element from 'element-ui'
 export default {
-  props: {
-    dealId: {
-      type: String,
-      required: true
-    },
-  },
+  props: ['dealId'],
   data() {
     return {
       rechargeParams: {
@@ -55,21 +50,8 @@ export default {
         this.closeDialog()
       })
     },
-    //微信支付
-    // wechatPay(result) {
-    //   if (result) {
-    //     const orderParams = JSON.parse(result);
-    //     sessionStorage.qrurl = orderParams.qrurl;
-    //     sessionStorage.amt = orderParams.amt;
-    //     sessionStorage.returnUrl = orderParams.returnUrl;
-    //     sessionStorage.order_id = orderParams.order_id;
-    //     this.$router.push({
-    //       name: 'wechatPay'
-    //     })
-    //   }
-    // },
     closeDialog() {
-      this.$emit('changeVisible', false)
+      this.$emit('changePayVisible', false)
     },
   }
 }

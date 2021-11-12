@@ -4,19 +4,10 @@
       <el-header class="page-header">
         <div class="title">
           <p>{{title}}</p>
-<!--          <el-button-->
-<!--              v-if="isAnnouncer"-->
-<!--              type="default"-->
-<!--              icon="el-icon-delete"-->
-<!--              class="edit-btn"-->
-<!--              size="small"-->
-<!--              @click="deleteGoods"-->
-<!--          ></el-button>-->
           <div class="list">
             <ul>
               <li><router-link to="">Contact us </router-link></li>
               <li><router-link to="">About us</router-link></li>
-              <!--        投诉/举报-->
               <li><router-link to="">Complaint</router-link></li>
             </ul>
           </div>
@@ -197,6 +188,10 @@ export default {
     activate() {
       const goodsId = this.$route.params.goodsId
       if (!goodsId) {
+        Element.Message({
+          message: 'Goods ID not exist!',
+          type: 'error',
+        })
         this.$router.push('/none')
         return
       }

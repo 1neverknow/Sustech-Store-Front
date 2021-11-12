@@ -36,11 +36,19 @@ axios.interceptors.response.use(response => {
             message: response.data.message,
             type: 'error',
         })
-        // 商品不存在
-        if (res.code === 4050) {
-            router.push('/none')
+        switch (res.code) {
+            case 4010:
+                // 登陆过期
+                router.push('/login')
+                break
+            case 4050:
+                // 商品不存在
+                router.push
+                ('/none')
+                break
+            default:
+                break
         }
-        // 阻止进入后续逻辑
         return Promise.reject(response.data.message)
     }
 },

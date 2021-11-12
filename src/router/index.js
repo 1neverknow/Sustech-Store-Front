@@ -15,6 +15,7 @@ import Deal from "@/views/Deal"
 import Publish from "@/views/Publish"
 import Order from "@/views/Order"
 import None from "@/views/None"
+import Bought from "@/views/Bought"
 
 import MainPage from "@/views/MainPage";
 import Account from "@/views/Account";
@@ -24,6 +25,7 @@ import PI from "@/views/Modify/PersonInformation";
 import AI from "@/views/Modify/AddressInformation";
 import Search from "@/views/Search"
 import Main from "@/views/Main/Main";
+
 Vue.use(VueRouter)
 // router: 路由 - 页面跳转管理
 
@@ -59,12 +61,20 @@ const routes = [
         component: AI
       },
       {
-        path: '/user/collections',
+        path: '/user/collection',
         name: 'Collection',
         meta: {
           requireAuth: true
         },
         component: Collection
+      },
+      {
+        path: '/user/bought',
+        name: 'Bought',
+        meta: {
+          requireAuth: true
+        },
+        component: Bought
       },
       {
         path: 'search',
