@@ -37,11 +37,15 @@
             </el-form-item>
 
 <!--            验证码-->
-<!--            <el-form-item>-->
-<!--              <el-button @click="getVerifyImg">Get Verify Image</el-button>-->
-<!--              <img src="verify.verifyImg">-->
-<!--              <el-input type="text" v-model="verify.verifycode" style="width: 320px"></el-input>-->
-<!--            </el-form-item>-->
+            <el-form-item label="Verify code" style="margin-bottom: 50px">
+              <el-input type="text" v-model="verify.verifycode" style="width: 250px;"></el-input>
+              <template v-if="verify.verifyImg">
+                <img :src="verify.verifyImg" style="float: right">
+              </template>
+              <template v-else>
+                <el-button @click="getVerifyImg" type="primary" style="width: 80px; float: right">Get</el-button>
+              </template>
+            </el-form-item>
 
             <el-form-item label="" prop="remember">
               <el-checkbox v-model="ruleForm['remember-me']" label="Remember Me"></el-checkbox>
@@ -81,26 +85,25 @@ export default {
   name: "Login",
   // 校验规则
   data() {
-    var validateEmail = (rule, value, callback) => {
+    const validateEmail = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('Please input an email address'));
       } else {
         if (value !== '') {
-          var reg=/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-          if(!reg.test(value)){
+          var reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+          if (!reg.test(value)) {
             callback(new Error('Email is invalid'));
           }
         }
         callback();
       }
-      // callback();
     };
-    var validatePass = (rule, value, callback) => {
+    const validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('Password is required'));
-      } else if(value.length < 6){
+      } else if (value.length < 6) {
         callback(new Error('Length must be more than 6'));
-      }else{
+      } else {
         callback();
       }
     };
@@ -179,8 +182,6 @@ export default {
                 type: 'error',
               })
             }
-
-
           })
           // 认证不通过的情况 -> 全局axios拦截
         } else {
@@ -197,17 +198,24 @@ export default {
       this.invisible = !(value === 'show');
     },    //判断渲染，true:暗文显示，false:明文显示
     getVerifyImg() {
-      this.$axios({
+      const newRequest = axios.create()
+      newRequest({
         method: 'get',
-        url: 'http://localhost:8081/login',
+        url: 'http://localhost:8081/code/image',
+        responseType: "blob"
       }).then(res => {
-        this.verify.verifyImg = 'http://localhost:8081/'+res.data.data
+        console.log(res)
+        if (res.status === 200) {
+          const {data, headers} = res
+          const blob = new Blob([data], {type: headers['content-type']})
+          this.verify.verifyImg = window.URL.createObjectURL(blob)
+        } else {
+          Element.Message({
+            message: res.data.message,
+            type: 'error',
+          })
+        }
       })
-      // this.$axios.get('http://localhost:8081/code/image')
-      //     .then(res => {
-      //       console.log('+++++++++' + res.data + '+++++++++')
-      //       this.verify.verifyImg = 'http://localhost:8081/' + res.data.data
-      // })
     },
     initialInfo() {
       const user = this.$store.getters.getUser
