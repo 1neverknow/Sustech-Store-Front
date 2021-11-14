@@ -2,13 +2,6 @@
   <div>
     <!-- 卡片视图区域 -->
     <el-card class="content">
-      <el-row>
-        <el-col :span="8" class="search">
-          <el-input placeholder="Input ID/ keyword/ status">
-            <el-button slot="append" icon="el-icon-search"></el-button>
-          </el-input>
-        </el-col>
-      </el-row>
       <!-- 订单列表数据 -->
       <el-table :data="orderList" border stripe>
         <el-table-column type="index"></el-table-column>

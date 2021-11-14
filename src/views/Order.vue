@@ -9,47 +9,44 @@
         <router-link to></router-link>
       </div>
     </div>
-    <el-tabs type="card" @tab-click="handleClick">
-      <el-tab-pane label="all"></el-tab-pane>
-      <el-tab-pane label="unpaid"></el-tab-pane>
-      <el-tab-pane label="unshipped"></el-tab-pane>
-      <el-tab-pane label="unreceived"></el-tab-pane>
-      <el-tab-pane label="uncommented"></el-tab-pane>
-      <el-tab-pane label="complete"></el-tab-pane>
-      <el-tab-pane label="refunding"></el-tab-pane>
-      <el-tab-pane label="appealing"></el-tab-pane>
-      <el-tab-pane label="appealed"></el-tab-pane>
-      <el-tab-pane label="closed"></el-tab-pane>
-    </el-tabs>
-    <OrderList
-      v-bind:orderList="orderList"
-      v-bind:total="total"
-      v-bind:stage="this.queryInfo.queryStage"
-    ></OrderList>
-    <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="queryInfo.pagenum"
-        :page-sizes="[5, 10, 15, 20]"
-        :page-size="queryInfo.pagesize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        background
-    >
-    </el-pagination>
-    <!-- 展示物流进度的对话框 -->
-    <el-dialog title="Shipment Progress" :visible.sync="progressVisible" width="50%">
-      <!-- 内容主体区域 时间线 -->
-      <el-timeline>
-        <el-timeline-item
-            v-for="(activity, index) in progressInfo"
-            :key="index"
-            :timestamp="activity.time"
-        >
-          {{ activity.context }}
-        </el-timeline-item>
-      </el-timeline>
-    </el-dialog>
+
+    <div class="content">
+      <el-radio-group v-model="dealType" style="margin-bottom: 30px">
+        <el-radio-button label="buy">Bought</el-radio-button>
+        <el-radio-button label="sell">Sold</el-radio-button>
+      </el-radio-group>
+
+      <el-tabs type="card" @tab-click="handleClick">
+        <el-tab-pane label="all"></el-tab-pane>
+        <el-tab-pane label="unpaid"></el-tab-pane>
+        <el-tab-pane label="unshipped"></el-tab-pane>
+        <el-tab-pane label="unreceived"></el-tab-pane>
+        <el-tab-pane label="uncommented"></el-tab-pane>
+        <el-tab-pane label="complete"></el-tab-pane>
+        <el-tab-pane label="refunding"></el-tab-pane>
+        <el-tab-pane label="appealing"></el-tab-pane>
+        <el-tab-pane label="appealed"></el-tab-pane>
+        <el-tab-pane label="closed"></el-tab-pane>
+      </el-tabs>
+      <OrderList
+          v-bind:orderList="orderList"
+          v-bind:total="total"
+          v-bind:stage="this.queryInfo.queryStage"
+      ></OrderList>
+    </div>
+    <div class="footer">
+      <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="queryInfo.pagenum"
+          :page-sizes="[5, 10, 15, 20]"
+          :page-size="queryInfo.pagesize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+          background
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -60,6 +57,7 @@ export default {
   components: {OrderList},
   data() {
     return {
+      dealType: 'buy',
       queryInfo: {
         queryStage: -1,
         pagenum: 1,
@@ -138,6 +136,13 @@ export default {
       }
     },
     getAllOrder() {
+      if (this.dealType === 'buy') {
+        this.getAllBuyOrder()
+      } else {
+        this.getAllSellOrder()
+      }
+    },
+    getAllBuyOrder() {
       this.$axios({
         method: 'get',
         url: 'http://localhost:8081/user/buyDeal',
@@ -157,11 +162,56 @@ export default {
         }
       })
     },
+    getAllSellOrder() {
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/user/sellDeal',
+      }).then(res => {
+        const orders = res.data.data
+        this.total = orders.length
+        for (let i in orders) {
+          const item = orders[i]
+          this.orderList.push({
+            dealId: item.dealId,
+            time: item.orderTime,
+            goodsPhoto: item.goodsAbbreviation.picturePath,
+            goodsTitle: item.goodsAbbreviation.title,
+            price: item.goodsAbbreviation.price + item.goodsAbbreviation.postage,
+            stage: item.stage,
+          })
+        }
+      })
+    },
     getStageOrder(stage) {
-      console.log(stage)
+      if (this.dealType === 'buy') {
+        this.getBuyStageOrder(stage)
+      } else {
+        this.getSellStageOrder(stage)
+      }
+    },
+    getBuyStageOrder(stage) {
       this.$axios({
         method: 'get',
         url: 'http://localhost:8081/user/buyDeal/' + stage
+      }).then(res => {
+        const orders = res.data.data
+        this.total = orders.length
+        for (let i in orders) {
+          const item = orders[i]
+          this.orderList.push({
+            dealId: item.dealId,
+            goodsPhoto: item.goodsAbbreviation.picturePath,
+            goodsTitle: item.goodsAbbreviation.title,
+            price: item.goodsAbbreviation.price + item.goodsAbbreviation.postage,
+            stage: item.stage,
+          })
+        }
+      })
+    },
+    getSellStageOrder(stage) {
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/user/sellDeal/' + stage
       }).then(res => {
         const orders = res.data.data
         this.total = orders.length
@@ -238,8 +288,8 @@ export default {
 }
 .order .order-header .header-content {
   width: 1225px;
-  margin: 30px auto;
   height: 80px;
+  margin: 30px auto 30px 0;
 }
 .order .order-header .header-content p {
   float: left;
@@ -254,39 +304,15 @@ export default {
   line-height: 80px;
 }
 .order .content {
-  padding: 20px 0;
-  /*width: 1225px;*/
-  width: 90%;
-  /*height: 500px;*/
-  margin: auto;
+  margin-top: -20px;
+  padding: 10px;
+  /*margin: auto;*/
 }
-.order .content .search {
-  margin-bottom: 20px;
-}
-
-.order .content .goods-list {
-  margin-left: -13.7px;
-  overflow: hidden;
+.order .footer {
+  margin-top: 50px;
+  margin-right: 50px;
+  text-align: right;
+  /*float: right;*/
 }
 
-.order .order-empty {
-  width: 1225px;
-  margin: 0 auto;
-}
-.order .order-empty .empty {
-  height: 300px;
-  padding: 0 0 130px 558px;
-  margin: 65px 0 0;
-  background: url(../assets/imgs/liuhan.gif) no-repeat 124px 0;
-  color: #b0b0b0;
-  overflow: hidden;
-}
-.order .order-empty .empty h2 {
-  margin: 130px -100px 0;
-  font-size: 36px;
-}
-.order .order-empty .empty p {
-  margin: 0 0 20px;
-  font-size: 20px;
-}
 </style>

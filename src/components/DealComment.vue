@@ -40,7 +40,7 @@ export default {
     }
     return {
       ruleForm: {
-        dealId: this.dealId,
+        dealId: -1,
         isGood: '',
         content: '',
       },
@@ -61,14 +61,15 @@ export default {
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) =>{
-        console.log(this.$refs[formName])
+        this.ruleForm.dealId = this.dealId
+        // 为什么请求一直失败？
         if (valid) {
-          this.$axios.post('http://localhost:8081/deal/comment/' + this.dealId, this.ruleForm)
+          this.$axios.post('http://localhost:8081/deal/comment', this.ruleForm)
             .then((res)=>{
-            Element.Message({
-              message: 'Success!',
-              type: 'success',
-            })
+              Element.Message({
+                message: 'Success!',
+                type: 'success',
+              })
           })
           this.$emit('changeCommentVisible', false)
         } else {

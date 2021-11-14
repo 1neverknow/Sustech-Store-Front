@@ -15,7 +15,7 @@ import Deal from "@/views/Deal"
 import Publish from "@/views/Publish"
 import Order from "@/views/Order"
 import None from "@/views/None"
-import Bought from "@/views/Bought"
+import Admin from "@/views/Admin"
 
 import MainPage from "@/views/MainPage";
 import Account from "@/views/Account";
@@ -67,14 +67,6 @@ const routes = [
           requireAuth: true
         },
         component: Collection
-      },
-      {
-        path: '/user/bought',
-        name: 'Bought',
-        meta: {
-          requireAuth: true
-        },
-        component: Bought
       },
       {
         path: 'search',
@@ -149,6 +141,14 @@ const routes = [
     path: '/none',
     name: 'none',
     component: None
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    meta: {
+      requireAuth: true
+    },
+    component: Admin
   },
   {
     path: '/user/:userId',

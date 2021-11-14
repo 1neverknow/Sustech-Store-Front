@@ -66,8 +66,16 @@ export default {
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
-        console.log(this.$refs[formName])
         if (valid) {
+          this.$axios.get('http://localhost:8081/deal/appealing/'
+              + this.dealId
+              + '?content=' + this.ruleForm.content)
+            .then((res)=>{
+              Element.Message({
+                message: 'Success!',
+                type: 'success',
+              })
+            })
           this.$emit('changeAppealVisible', false)
         } else {
           Element.Message({
