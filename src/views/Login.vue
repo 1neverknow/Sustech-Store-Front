@@ -1,20 +1,19 @@
 <!--用户登陆界面-->
 
 <template>
-<!--  <div class="login-wrap">-->
-    <div class="ms-login">
+  <div class="login-wrap">
+    <el-card class="ms-login">
       <el-container>
-        <div style="margin: 50px"></div>
-        <el-header style="height: 100px">
-          <router-link to="/user">
+        <el-header class="header" style="height: 100px">
+<!--          <router-link to="/user">-->
             <el-avatar
                 :size="90"
                 src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
                 style="margin: 5px auto; overflow: hidden; border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,.05); position: relative;"
             ></el-avatar>
-          </router-link>
+<!--          </router-link>-->
         </el-header>
-        <el-main>
+        <el-main class="ms-content">
           <el-form
               ref="ruleForm"
               :model="ruleForm"
@@ -22,59 +21,58 @@
               :invisible="invisible"
               :label-position="labelPosition"
               :hide-required-asterisk="true"
-              class="ms-content"
           >
             <el-form-item label="E-Mail Address" prop="email">
               <el-input v-model="ruleForm.email"></el-input>
             </el-form-item>
+
             <el-form-item v-if="this.invisible" label="Password">
-              <el-input type="password" v-model="ruleForm.password" style="width: 320px"></el-input>
-              <el-button type="primary" @click="changePass('show')" style="width: 80px">Show</el-button>
+              <el-input type="password" v-model="ruleForm.password" style="width: 420px"></el-input>
+              <el-button type="primary" @click="changePass('show')" style="width: 100px; float: right">Show</el-button>
             </el-form-item>
             <el-form-item v-else label="Password">
-              <el-input type="text" v-model="ruleForm.password" style="width: 320px"></el-input>
-              <el-button type="default" @click="changePass('hide')" style="width: 80px">Hide</el-button>
+              <el-input type="text" v-model="ruleForm.password" style="width: 420px"></el-input>
+              <el-button type="default" @click="changePass('hide')" style="width: 100px; float: right">Hide</el-button>
             </el-form-item>
 
 <!--            验证码-->
             <el-form-item label="Verify code" style="margin-bottom: 50px">
-              <el-input type="text" v-model="verify.verifycode" style="width: 250px;"></el-input>
+              <el-input type="text" v-model="verify.verifycode" style="width: 420px;"></el-input>
               <template v-if="verify.verifyImg">
                 <img :src="verify.verifyImg" style="float: right">
               </template>
               <template v-else>
-                <el-button @click="getVerifyImg" type="primary" style="width: 80px; float: right">Get</el-button>
+                <el-button @click="getVerifyImg" type="primary" style="width: 100px; float: right">Get</el-button>
               </template>
             </el-form-item>
 
-            <el-form-item label="" prop="remember">
+            <el-form-item label="" prop="remember" style="margin-top: -40px">
               <el-checkbox v-model="ruleForm['remember-me']" label="Remember Me"></el-checkbox>
+              <router-link to="/login/forgot">
+                <el-link type="primary" style="float: right; height: 15px; margin-top: 15px">Forgot Password?</el-link>
+              </router-link>
             </el-form-item>
 
-            <div style="margin-top: -55px; margin-bottom: 50px; margin-left: 280px">
-              <router-link to="/login/forgot">
-                <!--                <el-link type="primary" style="margin-left: 280px; margin-top: -330px">Forgot Password?</el-link>-->
-                <el-link type="primary" style="height: 15px">Forgot Password?</el-link>
-              </router-link>
-            </div>
+            <el-form-item class="login-btn" style="margin-top: 30px">
+              <el-button
+                  type="primary"
+                  @click="submitForm('ruleForm')"
+              >Login</el-button>
+            </el-form-item>
 
-            <div class="login-btn" style="margin-top: -20px">
-              <el-button type="primary" @click="submitForm('ruleForm')">Login</el-button>
-            </div>
-
-            <div style="font-size: 14px">
+            <el-form-item style="margin-top: -30px; font-size: 14px; float: right">
               <!--      跳转到创建账号-->
               Don't have an account?
               <router-link to="/user/register">
                 <el-link type="primary" style="height: 15px; margin-top: -5px">Create One</el-link>
               </router-link>
-            </div>
+            </el-form-item>
 
           </el-form>
         </el-main>
       </el-container>
-    </div>
-<!--  </div>-->
+    </el-card>
+  </div>
 </template>
 
 
@@ -226,44 +224,52 @@ export default {
     }
   },
   mounted: {
-    // initialInfo() {}
   }
 }
 </script>
 
 <style scoped>
-.el-header {
+.login-wrap {
+  background-image: url("../assets/imgs/login-background.jpg");
+  position: fixed;
+  background-size: 100%;
+  width: 100%;
+  height: 100%;
+}
+
+.login-wrap .ms-login {
+  /*background-color: lightgrey;*/
+  margin: 70px auto auto;
+  width: 600px;
+  height: 600px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.8);
+  overflow: hidden;
+  /*overflow: hidden;*/
+}
+
+.login-wrap .ms-login .header {
+  /*margin-top: 40px;*/
   background-color: skyblue;
-  color: var(--el-text-color-primary);
   text-align: center;
   line-height: 100px;
-  margin-top: -50px;
-  height: 100px;
+  width: 100%;
+}
+.login-wrap .ms-login .ms-content {
+  margin-top: 20px;
 }
 
-.ms-content {
-  padding: 30px 30px;
-}
-
-.ms-login {
-  position: absolute;
-  left: 40%;
-  top: 25%;
-  width: 500px;
-  height: 800px;
-  margin: -190px 0 0 -175px;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.3);
-  overflow: hidden;
+.el-form-item {
+  margin-top: -25px;
 }
 
 .login-btn {
-  /*margin-top: -70px;*/
+  margin-top: 5px;
   text-align: center;
 }
 .login-btn button {
   width: 100%;
-  height: 36px;
+  height: 45px;
   margin-bottom: 10px;
 }
 </style>

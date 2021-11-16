@@ -29,16 +29,18 @@
         <el-tab-pane label="closed"></el-tab-pane>
       </el-tabs>
       <OrderList
+          @refresh="refresh"
           v-bind:orderList="orderList"
           v-bind:total="total"
           v-bind:stage="this.queryInfo.queryStage"
+          v-bind:dealType="this.dealType"
       ></OrderList>
     </div>
     <div class="footer">
       <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="queryInfo.pagenum"
+          v-model:current-page="queryInfo.pagenum"
           :page-sizes="[5, 10, 15, 20]"
           :page-size="queryInfo.pagesize"
           layout="total, sizes, prev, pager, next, jumper"
@@ -85,7 +87,7 @@ export default {
   },
   methods: {
     activate() {
-      this.getOrderList()
+      this.getOrderList(-1)
     },
     handleClick(tab) {
       console.log(tab.label)
@@ -268,8 +270,16 @@ export default {
     },
     updateQueryInfo(value) {
       this.queryInfo = value
+    },
+    refresh() {
+      this.getOrderList(this.queryInfo.queryStage)
     }
   },
+  watch: {
+    'dealType': function(newVal, oldVal) {
+      this.refresh()
+    }
+  }
 }
 </script>
 

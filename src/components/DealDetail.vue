@@ -1,12 +1,17 @@
 <template>
   <div class="deal-detail">
+    <img
+        class="goods-photo"
+        :src="'http://localhost:8081/' + this.goodsInfo.goodsPicture"
+        @click="routeGoods"
+    ></img>
     <el-descriptions
-        class="margin-top"
+        class="component"
         title="Deal Information"
         :column="2"
         border
     >
-      <el-descriptions-item label="ID">
+      <el-descriptions-item label="Deal ID">
         {{dealInfo.dealId}}
       </el-descriptions-item>
       <el-descriptions-item label="Stage">
@@ -21,9 +26,9 @@
     </el-descriptions>
 
     <el-descriptions
-        class="margin-top"
+        class="component"
         title="Goods Information"
-        :column="2"
+        :column="3"
     >
       <el-descriptions-item label="goodsId">
         {{goodsInfo.goodsId}}
@@ -31,25 +36,42 @@
       <el-descriptions-item label="Name">
         {{goodsInfo.goodsName}}
       </el-descriptions-item>
-      <el-descriptions-item label="Seller">
-        {{sellerInfo.name}}
+    </el-descriptions>
+
+    <el-descriptions
+        class="component"
+        title="Seller Information"
+        :column="2"
+        border
+    >
+      <el-descriptions-item label="Name">
+        <router-link :to="{path: '/user/' + sellerInfo.sellerId}">
+          <el-link type="primary" style="height: 15px; margin-top: -5px"
+          >{{sellerInfo.name}}
+          </el-link>
+        </router-link>
+      </el-descriptions-item>
+      <el-descriptions-item label="User ID">
+        {{sellerInfo.sellerId}}
       </el-descriptions-item>
     </el-descriptions>
 
     <el-descriptions
-        class="margin-top"
-        title="Address Information"
-        :column="3"
-        border
+        class="component"
+        title="Delivery Information"
+        :column="2"
     >
       <el-descriptions-item label="Receipient">
-        {{addressInfo.recipientName}}
+        {{mailingInfo.recipientName}}
       </el-descriptions-item>
       <el-descriptions-item label="Phone">
-        {{addressInfo.phone}}
+        {{mailingInfo.phone}}
       </el-descriptions-item>
       <el-descriptions-item label="Address">
-        {{addressInfo.addressName}}
+        {{mailingInfo.addressName}}
+      </el-descriptions-item>
+      <el-descriptions-item label="Mailing ID">
+        {{mailingInfo.addressName}}
       </el-descriptions-item>
     </el-descriptions>
   </div>
@@ -77,10 +99,11 @@ export default {
         goodsPicture: '',
         price: '', // 商品单价
       },
-      addressInfo: {
+      mailingInfo: {
         recipientName: '',
         phone: '',
-        addressName: ''
+        addressName: '',
+        mailingNumber: '', // 邮递单号
       },
     }
   },
@@ -99,7 +122,7 @@ export default {
         this.getDealInfo(info)
         this.getGoodsInfo(info.goodsAbbreviation)
         this.getSellerInfo(info.seller)
-        this.getAddressInfo(info.shippingAddress)
+        this.getMailingInfo(info.shippingAddress)
       })
     },
     getDealInfo(info) {
@@ -111,19 +134,22 @@ export default {
     getGoodsInfo(goodsAbbreviation) {
       this.goodsInfo.goodsId = goodsAbbreviation.goodsId
       this.goodsInfo.goodsName = goodsAbbreviation.title
-      this.goodsInfo.goodsPicture = goodsAbbreviation.picturePath[0].path
+      this.goodsInfo.goodsPicture = goodsAbbreviation.picturePath
       this.goodsInfo.price = goodsAbbreviation.price
       this.dealInfo.postage = goodsAbbreviation.postage
     },
     getSellerInfo(seller) {
+      this.sellerInfo.name = seller.userName
       this.sellerInfo.sellerId = seller.userId
-      this.sellerInfo.credit = seller.credit
     },
-    getAddressInfo(confirmAddress) {
-      this.addressInfo.addressName = confirmAddress.addressName
-      this.addressInfo.recipientName = confirmAddress.recipientName
-      this.addressInfo.phone = confirmAddress.phone
-    }
+    getMailingInfo(confirmAddress) {
+      this.mailingInfo.addressName = confirmAddress.addressName
+      this.mailingInfo.recipientName = confirmAddress.recipientName
+      this.mailingInfo.phone = confirmAddress.phone
+    },
+    routeGoods() {
+      this.$router.push('/goods/'+this.goodsInfo.goodsId)
+    },
   },
   mounted() {
     this.activate()
@@ -136,6 +162,14 @@ export default {
   margin-top: -20px;
 }
 
+.deal-detail .goods-photo {
+  margin-left: 40%;
+  width: 100px;
+  height: 100px;
+  border-radius:50%;
+}
+
 .deal-detail .component {
+  margin-top: 20px;
 }
 </style>

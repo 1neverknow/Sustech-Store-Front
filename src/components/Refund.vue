@@ -39,6 +39,7 @@ export default {
             message: 'Success!',
             type: 'success',
           })
+          this.$emit('refresh')
         })
     },
   }

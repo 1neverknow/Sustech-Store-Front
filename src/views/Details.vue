@@ -38,7 +38,6 @@
               </el-tag>
           </div>
 
-
           <!--      右侧内容区-->
             <div class="content">
               <h1 class="name">{{title}}</h1>
@@ -53,7 +52,6 @@
               <div class="price">
                 <span>￥{{price}}</span>
               </div>
-
 <!--              这一部分改成announcer信息-->
 <!--              avatar，信誉分，性别，name，id-->
               <div class="announcer-info">
@@ -249,7 +247,7 @@ export default {
       console.log('get comments')
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/goods/comment?goodsId='
+        url: 'http://localhost:8081/goods/comment/'
             + goodsId,
       }).then(res => {
         if (res.data.data !== null) {

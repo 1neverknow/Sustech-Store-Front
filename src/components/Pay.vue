@@ -47,6 +47,7 @@ export default {
           message: 'Pay Success!',
           type: 'success',
         })
+        this.$emit('refresh')
         this.closeDialog()
       })
     },

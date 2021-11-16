@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import Element from "element-ui"
 export default {
   name: "AppealForm",
   props: ['dealId'],
@@ -75,8 +76,9 @@ export default {
                 message: 'Success!',
                 type: 'success',
               })
+              this.$emit('refresh')
+              this.$emit('changeAppealVisible', false)
             })
-          this.$emit('changeAppealVisible', false)
         } else {
           Element.Message({
             message: 'Please check your input!',

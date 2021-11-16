@@ -62,7 +62,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) =>{
         this.ruleForm.dealId = this.dealId
-        // 为什么请求一直失败？
+        this.ruleForm.isGood = (this.ruleForm.isGood === 'YES')
         if (valid) {
           this.$axios.post('http://localhost:8081/deal/comment', this.ruleForm)
             .then((res)=>{
@@ -71,7 +71,8 @@ export default {
                 type: 'success',
               })
           })
-          this.$emit('changeCommentVisible', false)
+          this.$emit('refresh')
+          this.closeDialog()
         } else {
           Element.Message({
             message: 'Please check your input!',
@@ -84,6 +85,9 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields()
     },
+    closeDialog() {
+      this.$emit('changeCommentVisible', false)
+    }
   },
 }
 </script>

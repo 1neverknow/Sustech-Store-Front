@@ -9,7 +9,7 @@ router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requireAuth)) {
         // token是用于权限检查的字段
         const token = store.getters.getToken
-        console.log("==============" + token + "===================")
+        // console.log("==============" + token + "===================")
         if (token) { // 判断当前token是否存在（登录存入的token）
             if (unauthorized.includes(to.path)) {
             } else {

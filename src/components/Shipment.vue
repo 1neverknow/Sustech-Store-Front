@@ -11,13 +11,15 @@
       </el-timeline-item>
     </el-timeline>
 <!--确认收货-->
-    <el-button
-        style="margin-left: 40%"
-        icon="el-icon-check"
-        type="success"
-        @click="confirmGet"
-        plain
-    >I have received</el-button>
+    <template v-if="queryType==='buy'">
+      <el-button
+          style="margin-left: 40%"
+          icon="el-icon-check"
+          type="success"
+          @click="confirmGet"
+          plain
+      >I have received</el-button>
+    </template>
   </div>
 </template>
 
@@ -25,7 +27,7 @@
 import Element from 'element-ui'
 export default {
   name: "Shipment",
-  props: ['dealId'],
+  props: ['dealId', 'queryType'],
   data() {
     return {
       progressInfo: [],
@@ -39,8 +41,9 @@ export default {
             message: 'Success!',
             type: 'success',
           })
+          this.$emit('refresh')
+          this.closeDialog()
         })
-      this.closeDialog()
     },
     closeDialog() {
       this.$emit('changeShipmentVisible', false)

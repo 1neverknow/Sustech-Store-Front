@@ -38,7 +38,7 @@
               </el-dialog>
             </template>
 
-            <template v-if="stage===0">
+            <template v-if="stage===0 && dealType==='buy'">
               <!--未支付订单列表-->
               <el-button
                   icon="el-icon-check"
@@ -53,17 +53,39 @@
               >
                 <Pay
                     @changePayVisible="changePayVisible"
+                    @refresh="refresh"
                     v-if="payVisible"
                     v-bind:dealId="queryDealId"
                 ></Pay>
               </el-dialog>
             </template>
 
-            <template v-else-if="stage===1">
-              <!--一键退款-->
-              <Refund
-                v-bind:dealId="scope.row.dealId"
-              ></Refund>
+            <template v-else-if="stage===1 && dealType==='buy'">
+                <!--一键退款-->
+                <Refund
+                    @refresh="refresh"
+                    v-bind:dealId="scope.row.dealId"
+                ></Refund>
+            </template>
+
+            <template v-else-if="stage===1 && dealType==='sell'">
+              <el-button
+                  icon="el-icon-location"
+                  size="mini"
+                  type="primary"
+                  @click="setQueryDealId(scope.row.dealId); changeDeliverVisible(true)"
+                  plain
+              >Deliver</el-button>
+              <el-dialog title="Mailing Form"
+                 :visible.sync="deliveryVisible"
+                 width="50%"
+              >
+                <Deliver
+                    @refresh="refresh"
+                    @changeDeliverVisible="changeDeliverVisible"
+                    v-bind:dealId="scope.row.dealId"
+                ></Deliver>
+              </el-dialog>
             </template>
 
             <template v-else-if="stage===2">
@@ -80,10 +102,20 @@
                          width="70%"
               >
                 <Shipment
+                    @refresh="refresh"
                     @changeShipmentVisible="changeShipmentVisible"
                     v-bind:dealId="queryDealId"
+                    v-bind:queryType="dealType"
                 ></Shipment>
               </el-dialog>
+            </template>
+
+            <template v-else-if="stage===2 && dealType==='buy'">
+              <!--一键退款-->
+              <Refund
+                  @refresh="refresh"
+                  v-bind:dealId="scope.row.dealId"
+              ></Refund>
             </template>
 
             <template v-else-if="stage===3">
@@ -100,13 +132,14 @@
                          width="70%"
               >
                 <DealComment
+                    @refresh="refresh"
                     @changeCommentVisible="changeCommentVisible"
                     v-bind:dealId="queryDealId"
                 ></DealComment>
               </el-dialog>
             </template>
 
-            <template v-else-if="stage===6">
+            <template v-else-if="stage===6 && dealType==='buy'">
               <!--取消退款-->
               <el-button
                   icon="el-icon-warning"
@@ -117,7 +150,28 @@
               >Cancel</el-button>
             </template>
 
-            <template v-else-if="stage===7">
+            <template v-else-if="stage===6 && dealType==='sell'">
+              <!--取消退款-->
+              <el-button
+                  icon="el-icon-warning"
+                  size="mini"
+                  type="danger"
+                  @click="setQueryDealId(scope.row.dealId); changeHandleRefundVisible(true)"
+                  plain
+              >Handle</el-button>
+              <el-dialog title="Are you agree to refund?"
+                         :visible.sync="refundHandlerVisible"
+                         width="30%"
+              >
+                <RefundAgree
+                    @refresh="refresh"
+                    @changeHandleRefundVisible="changeHandleRefundVisible"
+                    v-bind:dealId="scope.row.dealId"
+                ></RefundAgree>
+              </el-dialog>
+            </template>
+
+            <template v-else-if="stage===7 && dealType==='buy'">
               <!--取消退款-->
               <el-button
                   icon="el-icon-edit"
@@ -132,6 +186,7 @@
               >
                 <AppealForm
                     @changeAppealVisible="changeAppealVisible"
+                    @refresh="refresh"
                     v-bind:dealId="queryDealId"
                 ></AppealForm>
               </el-dialog>
@@ -152,18 +207,22 @@ import Refund from "@/components/Refund"
 import Shipment from "@/components/Shipment"
 import DealComment from "@/components/DealComment"
 import AppealForm from "@/components/AppealForm"
+import Deliver from "@/components/Deliver"
+import RefundAgree from "@/components/RefundAgree"
+import Element from "element-ui"
 export default {
-  components: {DealDetail, Pay, Refund, Shipment, DealComment, AppealForm},
-  props: ['orderList', 'total', 'stage'],
+  components: {DealDetail, Pay, Refund, Shipment, DealComment, AppealForm, Deliver, RefundAgree},
+  props: ['orderList', 'total', 'stage', 'dealType'],
   data() {
     return {
       queryDealId: -1,
       detailVisible: false,
       payVisible: false,
-      refundVisible: false,
       shipmentVisible: false,
       commentVisible: false,
       appealVisible: false,
+      deliveryVisible: false,
+      refundHandlerVisible: false,
     }
   },
   methods: {
@@ -184,15 +243,25 @@ export default {
     },
     cancelRefund(dealId) {
       this.$axios.put('http://localhost:8081/deal/cancelRefund/' + dealId)
-          .then((res)=>{
-            Element.Message({
-              message: 'Success!',
-              type: 'success',
-            })
-          })
+        .then((res)=>{
+        Element.Message({
+          message: 'Success!',
+          type: 'success',
+        })
+        this.refresh()
+      })
+    },
+    changeHandleRefundVisible(value) {
+      this.refundHandlerVisible = value
     },
     changeAppealVisible(value) {
       this.appealVisible = value
+    },
+    changeDeliverVisible(value) {
+      this.deliveryVisible = value
+    },
+    refresh() {
+      this.$emit('refresh')
     }
   },
 }
