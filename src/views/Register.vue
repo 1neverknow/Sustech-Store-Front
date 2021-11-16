@@ -4,7 +4,6 @@
   <div class="register-wrap">
     <el-card class="ms-register">
       <el-container>
-        <div style="margin: 5px"></div>
         <el-header class="header" style="height: 100px">
           <router-link to="/user">
             <el-avatar
@@ -178,7 +177,7 @@ export default {
 
 .register-wrap .ms-register {
   /*background-color: lightgrey;*/
-  margin: 90px auto auto;
+  margin: 70px auto auto;
   width: 600px;
   height: 600px;
   border-radius: 5px;
