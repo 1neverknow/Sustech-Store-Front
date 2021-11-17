@@ -139,8 +139,10 @@ export default {
         if (valid && this.verify.verifycode !== '') {
           // 更改为调用全局this -> 可以用来获取store里的信息
           const _this = this
-          this.$axios.defaults.withCredentials = true;
-          this.$axios.post('http://localhost:8081/login?checkCode=' + this.verify.verifycode, this.ruleForm)
+          const newRequests = axios.create()
+          newRequests.defaults.withCredentials = true;
+          // this.$axios.defaults.withCredentials = true;
+          newRequests.post('http://localhost:8081/login?checkCode=' + this.verify.verifycode, this.ruleForm)
               .then((res)=> {
             console.log(res)
             // if (res.data.code === 2000) {
