@@ -4,21 +4,22 @@
   <div id="list" class="myList">
     <ul style="list-style: none">
 <!--      productID是商品编号！-->
-      <li v-for="item in list" :key="item.goodsId">
-        <el-popover placement="top">
-          <p>Delete it?</p>
-          <div style="text-align: right; margin: 10px 0 0">
-            <el-button type="primary" size="mini" @click="deleteProduct(item.productID)">
-              YES
-            </el-button>
-          </div>
+      <li v-for="(item,index) in list" :key="index">
+        <el-popconfirm
+            confirm-button-text="OK"
+            cancel-button-text="No, Thanks"
+            icon="el-icon-question"
+            icon-color="red"
+            title="Are you sure to delete this?"
+            @confirm="confirmEvent(index)"
+        >
           <i class="el-icon-close delete" slot="reference" v-show="isDelete"></i>
-        </el-popover>
+        </el-popconfirm>
 <!--        点击后跳转至商品详情-->
-        <router-link :to="{path:'/goods/', parameter: item.goodsId}" class="router-link-active">
-          <img :src="'http://localhost:8081/'+ item.picture" alt/>
+        <router-link :to="{path: '/goods/'+ item.goodsId}" class="router-link-active">
+          <img :src="'http://localhost:8081/'+ item.picture"/>
           <h2>{{item.title}}</h2>
-          <h3>{{item.introduce}}</h3>
+          <h3></h3>
           <p>
             <span>￥{{item.price}}</span>
           </p>
@@ -41,24 +42,18 @@ export default {
     return{}
   },
   methods: {
-    deleteProduct(goodsId) {
-      this.$axios.put('http://localhost:8081/collections/' + userId, {
-        userId: this.$store.getters.getUser.userID,
-        goodsId: goodsId
-      })
-      .then(res => {
-        for (let i=0; i<this.list.length; i++) {
-          if (this.list[i].productID === productID) {
-            this.list.splice(i, 1)
-          }
-        }
-        Element.Message({
-          showClose: true,
-          message: 'Delete the product from collection successfully',
-          type: 'success',
+    confirmEvent(index) {
+      const goodsId = this.list[index].goodsId
+      this.$axios.delete("http://localhost:8081/user/collection?goodsId=" + goodsId)
+          .then(res => {
+            Element.Message({
+              message: 'Remove successfully',
+              type: 'success',
+            })
+            this.list.splice(index, 1)
         })
-      })
-    }
+    },
+
   }
 }
 </script>

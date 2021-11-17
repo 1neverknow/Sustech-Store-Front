@@ -47,7 +47,7 @@
             </el-form-item>
 
             <el-form-item label="" prop="remember" style="margin-top: -40px">
-              <el-checkbox v-model="ruleForm['remember-me']" label="Remember Me"></el-checkbox>
+              <el-checkbox v-model="rememberMe" label="Remember Me"></el-checkbox>
               <router-link to="/login/forgot">
                 <el-link type="primary" style="float: right; height: 15px; margin-top: 15px">Forgot Password?</el-link>
               </router-link>
@@ -106,11 +106,11 @@ export default {
       }
     };
     return {
+      rememberMe: false,
       labelPosition: 'top',
       ruleForm: {
         email: 'c001hewanning@qq.com',
         password: '123',
-        'remember-me': false,
       },
       rules: {
         email: [
@@ -130,32 +130,19 @@ export default {
       verify: {
         verifyImg: '',
         verifycode: '',
-      }
+      },
     }
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
-        if (valid) {
+        if (valid && this.verify.verifycode !== '') {
           // 更改为调用全局this -> 可以用来获取store里的信息
           const _this = this
-          const newRequest = axios.create({
-            baseUrl: "http://localhost:8081"//请求地址
-          });
-          newRequest({
-            method: 'post',
-            url: 'http://localhost:8081/login'
-                + "?email=" + this.ruleForm.email
-                + "&password=" + this.ruleForm.password,
-            data: {
-              email: this.ruleForm.email,
-              password: this.ruleForm.password,
-              'remember-me': this.ruleForm['remember-me']
-            },
-          }).then(res => {
-            // 接收到来自后端的消息
+          // const newRequest = axios.create();
+          this.$axios.post('http://localhost:8081/login?checkCode=' + this.verify.verifycode, this.ruleForm)
+              .then((res)=>{
             console.log(res)
-
             if (res.data.code === 2000) {
               // 接受后端返回的数据
               // 希望全局都可以访问到jwt的内容 -> 使用 /store/index.js
@@ -183,8 +170,10 @@ export default {
           })
           // 认证不通过的情况 -> 全局axios拦截
         } else {
-          console.log('error submit!!')
-          alert('Please check your input')
+          Element.Message({
+            message: 'Please check your input',
+            type: 'error',
+          })
           return false
         }
       })
@@ -230,7 +219,7 @@ export default {
 
 <style scoped>
 .login-wrap {
-  background-image: url("../assets/imgs/login-background.jpg");
+  background-image: url("../assets/imgs/starmaker.jpg");
   position: fixed;
   background-size: 100%;
   width: 100%;

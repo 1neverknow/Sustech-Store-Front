@@ -29,6 +29,7 @@
               :page-size="queryInfo.pagesize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="queryInfo.total"
+              style="float:right;"
               background
           >
           </el-pagination>
@@ -88,24 +89,24 @@ export default {
     getCollectList() {
       console.log('get collection list')
       this.$axios.get('http://localhost:8081/user/collection')
-          .then(res => {
-            const collection_data = res.data.data
-            this.queryInfo.total = collection_data.length
-            let size = this.queryInfo.pagesize < this.queryInfo.total ? this.queryInfo.pagesize : this.queryInfo.total
-            for (let i=0; i<size; i++) {
-              const item = collection_data[i]
-              this.collectList.push({
-                goodsId: item.goodsId,
-                picture: '',
-                title: item.title,
-                announcer: {
-                  userId: item.announcer.userId,
-                  username: item.announcer.userName,
-                },
-                price: item.price,
-              })
-            }
-          })
+        .then(res => {
+          const collection_data = res.data.data
+          this.queryInfo.total = collection_data.length
+          let size = this.queryInfo.pagesize < this.queryInfo.total ? this.queryInfo.pagesize : this.queryInfo.total
+          for (let i=0; i<size; i++) {
+            const item = collection_data[i]
+            this.collectList.push({
+              goodsId: item.goodsId,
+              picture: item.picturePath,
+              title: item.title,
+              announcer: {
+                userId: item.announcer.userId,
+                username: item.announcer.userName,
+              },
+              price: item.price,
+            })
+          }
+        })
     },
     handleSizeChange(newSize) {
       this.queryInfo.pagesize = newSize
@@ -126,12 +127,11 @@ export default {
 <style scoped>
 .collection {
   background-color: #f5f5f5;
-  margin: auto;
+  margin: auto auto auto -200px;
 }
 .collection .collection-header {
   background-color: #fff;
   border-bottom: 2px solid deepskyblue;
-  margin-bottom: 50px;
   margin-top: -100px;
   width: 100%;
 }
@@ -156,8 +156,6 @@ export default {
 .collection .content {
   padding: 20px 0;
   width: 1225px;
-  margin: 0 auto;
-  /*height: 700px;*/
 }
 .collection .content .pagination {
   float: bottom;
