@@ -186,10 +186,10 @@ export default {
       this.invisible = !(value === 'show');
     },    //判断渲染，true:暗文显示，false:明文显示
     getVerifyImg() {
-      const newRequets = axios.create()
-      axios.defaults.withCredentials = true;
+      const newRequests = axios.create()
+      newRequests.defaults.withCredentials = true;
       // this.$axios.set
-      this.$axios({
+      newRequests({
         method: 'get',
         url: 'http://localhost:8081/code/image',
         responseType: "blob"
