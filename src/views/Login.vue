@@ -145,7 +145,7 @@ export default {
           newRequests.post('http://localhost:8081/login?checkCode=' + this.verify.verifycode, this.ruleForm)
               .then((res)=> {
             console.log(res)
-            // if (res.data.code === 2000) {
+            if (res.data.code === 2000) {
               // 接受后端返回的数据
               // 希望全局都可以访问到jwt的内容 -> 使用 /store/index.js
               // header中authorization字段即为用户登录后的权限验证
@@ -163,12 +163,12 @@ export default {
               })
               // 验证成功后，跳转到home page
               _this.$router.push("/")
-            // } else {
-            //   Element.Message({
-            //     message: res.data.message,
-            //     type: 'error',
-            //   })
-            // }
+            } else {
+              Element.Message({
+                message: res.data.message,
+                type: 'error',
+              })
+            }
           })
           // 认证不通过的情况 -> 全局axios拦截
         } else {
