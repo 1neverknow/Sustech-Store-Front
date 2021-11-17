@@ -26,31 +26,31 @@ axios.interceptors.response.use(response => {
     let res = response.data
 
     console.log(res)
-    if (res.code === 200 || res.code === 2000 || res.code === 2001 || res.code === 2002) {
-        // 请求成功
-        return response
-    } else {
-        // element-ui 错误弹窗
-        Element.Message({
-            showClose: true,
-            message: response.data.message,
-            type: 'error',
-        })
-        switch (res.code) {
-            case 4010:
-                // 登陆过期
-                router.push('/login')
-                break
-            case 4050:
-                // 商品不存在
-                router.push
-                ('/none')
-                break
-            default:
-                break
-        }
-        return Promise.reject(response.data.message)
-    }
+    // if (res.code === 200 || res.code === 2000 || res.code === 2001 || res.code === 2002) {
+    //     // 请求成功
+    //     return response
+    // } else {
+    //     // element-ui 错误弹窗
+    //     Element.Message({
+    //         showClose: true,
+    //         message: response.data.message,
+    //         type: 'error',
+    //     })
+    //     switch (res.code) {
+    //         case 4010:
+    //             // 登陆过期
+    //             router.push('/login')
+    //             break
+    //         case 4050:
+    //             // 商品不存在
+    //             router.push
+    //             ('/none')
+    //             break
+    //         default:
+    //             break
+    //     }
+    //     return Promise.reject(response.data.message)
+    // }
 },
     error => {
         console.log(error)

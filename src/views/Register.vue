@@ -131,17 +131,15 @@ export default {
           const _this = this
 
           const newRequest = axios.create();
-          newRequest.post('http://localhost:8081/user/register', this.ruleForm).then((res)=>{
-            const token = res.headers['authorization']
-            _this.$store.commit('SET_TOKEN', token)
-            _this.$store.commit('SET_USERINFO', res.data.data)
+          newRequest.post('http://localhost:8081/user/register', this.ruleForm)
+              .then((res)=>{
             // 验证成功后，弹窗提示前往邮箱查看，并跳转到register页面
             Element.Message({
               showClose: true,
               message: 'Register success! Please check your email for activation message',
               type: 'success',
             })
-            _this.$router.push("/register")
+            _this.$router.push("/login")
           })
         } else if (!this.accept) {
           Element.Message({
@@ -168,7 +166,7 @@ export default {
 
 <style scoped>
 .register-wrap {
-  background-image: url("../assets/imgs/register-background.jpg");
+  background-image: url("../assets/imgs/cosmic.jpg");
   position: fixed;
   background-size: 100%;
   width: 100%;

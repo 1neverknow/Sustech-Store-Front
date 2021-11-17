@@ -76,8 +76,29 @@
 
               <!--      内容区底部按钮-->
               <div class="button">
-                <el-button class="buy" icon="el-icon-goods" :disabled="state" @click="wantIt">I Want This</el-button>
-                <el-button class="like" icon="el-icon-star-off" @click="addCollect">Add to Collection</el-button>
+                <el-button
+                    class="buy"
+                    icon="el-icon-goods"
+                    :disabled="state"
+                    @click="wantIt"
+                >I Want This
+                </el-button>
+                <template v-if="!inCollection">
+                  <el-button
+                      class="like"
+                      icon="el-icon-star-off"
+                      @click="addCollect"
+                  >Add to Collection
+                  </el-button>
+                </template>
+                <template v-else>
+                  <el-button
+                      class="like"
+                      icon="el-icon-star-on"
+                      @click="removeFromCollection"
+                  >Remove from Collection
+                  </el-button>
+                </template>
               </div>
               <div class="pro-policy">
                 <ul>
@@ -99,37 +120,12 @@
               <h2 style="margin-right: 10px">Comments </h2>
               <i class="header-icon el-icon-info"></i>
             </template>
-
-            <transition name="fade">
-              <div class="input-wrapper">
-                <el-input class="gray-bg-input"
-                          v-model="commentForm.content"
-                          type="textarea"
-                          :rows="3"
-                          autofocus
-                          placeholder="Write down your comment...">
-                </el-input>
-                <div class="btn-control">
-                  <el-button class="btn" type="success" round @click="commitComment">Submit</el-button>
-                </div>
-              </div>
-            </transition>
-
-            <div class="comment" v-for="(item, index) in comments">
-              <div class="info">
-                <el-avatar :size="50" fit="cover" :src="item"></el-avatar>
-                <div class="right">
-                  <div class="username">{{item.username}}</div>
-                  <div class="date">{{item.date}}</div>
-                </div>
-              </div>
-              <div class="commentContent">{{item.content}}</div>
-<!--              <template v-if="canDelete(item.userId)">-->
-<!--                <el-button type="text" size="small" @click="handleDelete(index)">Delete</el-button>-->
-<!--              </template>-->
-            </div>
-
+            <GoodsComment
+                v-bind:goodsId="goodsId"
+                v-bind:comments="comments"
+            ></GoodsComment>
           </el-collapse-item>
+
           <el-collapse-item name="2">
             <template #title>
               <h2 style="margin-right: 10px">More </h2>
@@ -145,12 +141,12 @@
 
 
 <script>
+import GoodsComment from "@/components/GoodsComment"
 import Element from "element-ui";
-import MyList from "@/components/MyList"
 
 export default {
   name: "Details",
-  components: {MyList},
+  components: {GoodsComment},
   data() {
     return {
       state: false, // 是否可以购买（售出后打上已售出标签，除非卖家撤下，商品详情依然存在）
@@ -174,11 +170,7 @@ export default {
       view: '',
       stage: 0,
       activeNames: '1',
-
-      commentForm: {
-        content: '',
-        goodsId: '',
-      }
+      inCollection: false,
     }
   },
   methods: {
@@ -194,7 +186,6 @@ export default {
         return
       }
       this.goodsId = goodsId
-      this.commentForm.goodsId = goodsId
       this.getDetails()
     },
     // 获取商品详情
@@ -216,6 +207,7 @@ export default {
         this.want = productDetails.want
         this.announceTime = productDetails.announceTime
         this.getComments(this.goodsId)
+        this.checkCollection(this.goodsId)
       })
     },
     getPicture(picturePaths) {
@@ -294,50 +286,33 @@ export default {
           message: 'Add product to collection successfully',
           type: 'success',
         })
+        this.inCollection = true
       })
     },
-    // 提交评论
-    commitComment() {
-      // 需要先验证用户是否已经登陆
-      if (!this.$store.getters.getToken) {
-        Element.Message({
-          message: 'Please login first',
-          type: 'error',
+    removeFromCollection() {
+      this.$axios.delete("http://localhost:8081/user/collection?goodsId=" + this.goodsId)
+        .then(res => {
+          Element.Message({
+            message: 'Remove successfully',
+            type: 'success',
+          })
+          this.inCollection = false
         })
-        return
-      }
-      if (this.commentForm.content === '') {
-        Element.Message({
-          message: 'Your input cannot be null',
-          type: 'error',
-        })
-        return
-      }
-
-      this.$axios.post('http://localhost:8081/goods/comment', this.commentForm).then((res)=>{
-        Element.Message({
-          showClose: true,
-          message: 'Comment success!',
-          type: 'success',
-        })
-        let d = new Date()
-        let now = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate()
-        console.log(now)
-        console.log(this.$store.getters.getUser)
-        this.comments.push({
-          userId: this.$store.getters.getUser.userId,
-          username: 'ME',
-          content: this.commentForm.content,
-          picturePath: '',
-          date: now
-        })
-      })
     },
-
+    checkCollection(goodsId) {
+      if (!this.$store.getters.getUser) {
+        return
+      }
+      this.$axios.put("http://localhost:8081/user/checkCollection?goodsId=" + goodsId)
+          .then(res => {
+            console.log('in collection?', res.data.data)
+            this.inCollection = res.data.data
+      })
+    }
   },
   mounted() {
     this.activate()
-  }
+  },
 }
 </script>
 
@@ -360,11 +335,6 @@ export default {
   font-size: 25px;
   font-weight: 400;
   color: #212121;
-}
-#details .page-header .title .edit-btn {
-  margin-left: 30px;
-  margin-top: 40px;
-  margin-right: -15px;
 }
 #details .page-header .title p {
   float: left;
@@ -390,16 +360,12 @@ export default {
 /* 主要内容CSS */
 #details .main {
   width: 100%;
-  /*width: 1225px;*/
-  /*height: 560px;*/
-  /*margin: 0 auto;*/
   margin-top: -30px;
 }
 #details .main .block {
   float: left;
-  margin-left: 100px;
+  margin-left: 150px;
   margin-top: 50px;
-  /*margin-right: -100px;*/
   width: 560px;
   height: 560px;
 }
@@ -418,7 +384,7 @@ export default {
 
 #details .main .content {
   float: right;
-  margin-right: 50px;
+  margin-right: 150px;
   margin-top: 50px;
   width: 640px;
 }
@@ -539,55 +505,5 @@ export default {
 
 #details .main .collapse {
   margin-top: 50px;
-}
-#details .main .collapse .input-wrapper {
-  padding: 10px;
-  width: 60%;
-}
-#details .main .collapse .input-wrapper .gray-bg-input {
-  background-color: lightgrey;
-}
-#details .main .collapse .input-wrapper .btn-control {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding-top: 10px;
-}
-#details .main .collapse .comment {
-  /*padding: 0 10px;*/
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  margin-top: 10px;
-  /*border-bottom: 1px solid $border-fourth;*/
-}
-#details .main .collapse .comment .info {
-  display: flex;
-  align-items: center;
-}
-#details .main .collapse .comment .info .right {
-  display: flex;
-  flex-direction: column;
-  margin-left: 20px;
-  margin-top: 10px;
-}
-#details .main .collapse .comment .info .right .username {
-  font-size: 16px;
-  color: black;
-  margin-bottom: 5px;
-  font-weight: 500;
-}
-#details .main .collapse .comment .info .right .date {
-  font-size: 12px;
-  color: grey;
-}
-#details .main .collapse .comment .commentContent {
-  font-size: 16px;
-  color: black;
-  line-height: 20px;
-  padding: 10px 0;
-  margin-top: 10px;
-  margin-left: 10px;
 }
 </style>
