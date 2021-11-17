@@ -139,12 +139,11 @@ export default {
         if (valid && this.verify.verifycode !== '') {
           // 更改为调用全局this -> 可以用来获取store里的信息
           const _this = this
-          // let newRequest = axios.create();
-          axios.defaults.withCredentials = true;
+          this.$axios.defaults.withCredentials = true;
           this.$axios.post('http://localhost:8081/login?checkCode=' + this.verify.verifycode, this.ruleForm)
-              .then((res)=>{
+              .then((res)=> {
             console.log(res)
-            if (res.data.code === 2000) {
+            // if (res.data.code === 2000) {
               // 接受后端返回的数据
               // 希望全局都可以访问到jwt的内容 -> 使用 /store/index.js
               // header中authorization字段即为用户登录后的权限验证
@@ -162,12 +161,12 @@ export default {
               })
               // 验证成功后，跳转到home page
               _this.$router.push("/")
-            } else {
-              Element.Message({
-                message: res.data.message,
-                type: 'error',
-              })
-            }
+            // } else {
+            //   Element.Message({
+            //     message: res.data.message,
+            //     type: 'error',
+            //   })
+            // }
           })
           // 认证不通过的情况 -> 全局axios拦截
         } else {
@@ -188,31 +187,14 @@ export default {
     getVerifyImg() {
       const newRequests = axios.create()
       newRequests.defaults.withCredentials = true;
-      // this.$axios.set
       newRequests({
         method: 'get',
         url: 'http://localhost:8081/code/image',
         responseType: "blob"
       }).then(res => {
-        console.log(res.data)
-        console.log('get blob')
         const {data, headers} = res
-        console.log(data)
         const blob = new Blob([data], {type: headers['content-type']})
         this.verify.verifyImg = window.URL.createObjectURL(blob)
-
-        // if (res.status === 200) {
-        //   console.log('get blob')
-        //   const {data, headers} = res
-        //   console.log(data)
-        //   const blob = new Blob([data], {type: headers['content-type']})
-        //   this.verify.verifyImg = window.URL.createObjectURL(blob)
-        // } else {
-        //   Element.Message({
-        //     message: res.data.message,
-        //     type: 'error',
-        //   })
-        // }
       })
     },
     initialInfo() {
