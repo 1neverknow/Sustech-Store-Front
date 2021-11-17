@@ -16,14 +16,14 @@
         <div class="address-body">
           <ul>
             <li
-                :class="item.id === dealInfo.confirmAddress ? 'in-section' : ''"
+                :class="item.addressId === dealInfo.confirmAddress ? 'in-section' : ''"
                 v-for="item in userInfo.addresses"
-                :key="item.id"
-                @click="dealInfo.confirmAddress = item.id"
+                :key="item.addressId"
+                @click="dealInfo.confirmAddress = item.addressId"
             >
-              <h2>{{item.name}}</h2>
+              <h2>{{item.recipientName}}</h2>
               <p class="phone">{{item.phone}}</p>
-              <p class="address">{{item.address}}</p>
+              <p class="address">{{item.addressName}}</p>
             </li>
             <li class="add-address">
               <i class="el-icon-circle-plus-outline" @click="changeAddressVisible(true)"></i>
@@ -39,6 +39,8 @@
         >
           <AddressDialogue
               v-if="addressVisible"
+              @refresh="refresh"
+              @changeAddressVisible="changeAddressVisible"
               v-bind:addressForm="addressForm"
           ></AddressDialogue>
         </el-dialog>
@@ -51,9 +53,8 @@
             <li v-for="item in goodsList" :key="item.id">
               <img :src="'http://localhost:8081/' + item.goodsPicture" />
               <span class="pro-name">{{item.goodsName}}</span>
-              <span class="pro-price">￥ {{item.price}} × {{item.number}}</span>
               <span class="pro-status"></span>
-              <span class="pro-total">￥ {{item.price * item.number}}</span>
+              <span class="pro-total">￥ {{item.price}}</span>
             </li>
           </ul>
         </div>
@@ -66,31 +67,26 @@
 
       <!--      结算列表-->
       <div class="section-count">
-        <div>
-          <ul class="money-box">
-            <li>
-              <span class="title">Number: </span>
-              <span class="value">{{this.goodsList[0].number}}</span>
-            </li>
-            <li>
-              <span class="title">Postage: </span>
-              <span class="value">{{this.dealInfo.postage}}</span>
-            </li>
-            <li>
-              <span class="title">Total:</span>
-              <span class="value">
-                <span class="total-price">{{getTotalPrice()}}</span>
-              </span>
-            </li>
-          </ul>
-        </div>
+        <ul class="money-box">
+          <li>
+            <span class="title">Postage: </span>
+            <span class="value">{{this.dealInfo.postage}}</span>
+          </li>
+          <li>
+            <span class="total">Total:</span>
+            <span class="value">
+              <span class="total-price">{{getTotalPrice()}}</span>
+            </span>
+          </li>
+        </ul>
       </div>
 
       <!--      结算导航-->
       <div class="section-bar">
         <el-button type="primary"
-                   @click="chargeVisible = true"
-                   style="float: left"
+           @click="chargeVisible = true"
+           style="float: left; width: 150px"
+           plain
         >Charge</el-button>
 
         <div class="btn">
@@ -174,7 +170,7 @@ export default {
         this.$router.push({ path: "/login" })
       }
       this.getDealInfo()
-      this.getUserInfo()
+      this.getAddressInfo()
       this.userInfo.buyId = buyId
     },
     getDealInfo() {
@@ -205,26 +201,11 @@ export default {
       this.goodsList[0].number = 1
       this.dealInfo.postage = goodsAbbreviation.postage
     },
-    getUserInfo() {
+    getAddressInfo() {
       this.$axios.get('http://localhost:8081/user/address/')
       .then(res => {
-        const addresses = res.data.data
-        for (let i in addresses) {
-          let a = addresses[i]
-          console.log(a)
-          let id = a.addressId
-          let address = a.addressName
-          let name = a.recipientName
-          let phone = a.phone
-          this.userInfo.addresses.push(
-              {
-                id: id,
-                name: name,
-                phone: phone,
-                address: address
-              }
-          )
-        }
+        // const addresses = res.data.data
+        this.userInfo.addresses = res.data.data
       })
     },
     addDeal() {
@@ -251,6 +232,9 @@ export default {
     },
     changePayVisible(val) {
       this.payVisible = val
+    },
+    refresh() {
+      this.getAddressInfo()
     }
   },
   mounted() {
@@ -442,7 +426,6 @@ export default {
 }
 .confirmOrder .content .section-count {
   margin: 0 150px;
-  padding: 0 0;
   overflow: hidden;
 }
 .confirmOrder .content .section-count .money-box {
@@ -455,18 +438,30 @@ export default {
 .confirmOrder .content .section-count .money-box .title {
   float: left;
   width: 126px;
-  height: 30px;
+  height: 50px;
   display: block;
   line-height: 30px;
   color: #757575;
+  margin-bottom: 20px;
+  margin-left: -30%;
+}
+.confirmOrder .content .section-count .money-box .total {
+  /*float: left;*/
+  width: 126px;
+  height: 50px;
+  display: block;
+  line-height: 30px;
+  color: #757575;
+  margin-left: -30%;
 }
 .confirmOrder .content .section-count .money-box .value {
-  float: left;
+  float: right;
   min-width: 105px;
   height: 30px;
   display: block;
   line-height: 30px;
   color: #ff6700;
+  /*margin-right: -20%;*/
 }
 .confirmOrder .content .section-count .money-box .total .title {
   padding-top: 15px;

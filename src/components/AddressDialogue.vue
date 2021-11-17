@@ -59,11 +59,15 @@ export default {
             type: 'success',
           })
           this.closeDialog()
+          this.refresh()
       })
     },
     closeDialog() {
       this.$emit('changeAddressVisible', false)
     },
+    refresh() {
+      this.$emit('refresh')
+    }
   }
 }
 </script>
