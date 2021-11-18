@@ -2,6 +2,9 @@
   <div>
     <!-- 内容主体区域 时间线 -->
     <el-timeline>
+      <el-timeline-item>
+        卖家已发货
+      </el-timeline-item>
       <el-timeline-item
           v-for="(activity, index) in progressInfo"
           :key="index"

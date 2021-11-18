@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 卡片视图区域 -->
-    <el-card class="content">
+    <div class="content">
       <!-- 订单列表数据 -->
       <el-table :data="orderList" border stripe>
         <el-table-column type="index"></el-table-column>
@@ -29,7 +29,7 @@
               <el-dialog
                   @changeDetailVisible="changeDetailVisible"
                   :visible.sync="detailVisible"
-                  width="70%"
+                  width="50%"
               >
                 <DealDetail
                     v-if="detailVisible"
@@ -49,7 +49,7 @@
               >Pay</el-button>
               <el-dialog
                 :visible.sync="payVisible"
-                width="70%"
+                width="50%"
               >
                 <Pay
                     @changePayVisible="changePayVisible"
@@ -195,8 +195,7 @@
           </template>
         </el-table-column>
       </el-table>
-    </el-card>
-
+    </div>
   </div>
 </template>
 
@@ -268,5 +267,7 @@ export default {
 </script>
 
 <style scoped>
-
+.content {
+  margin-top: -32px;
+}
 </style>

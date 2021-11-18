@@ -39,7 +39,7 @@
         >
           <AddressDialogue
               v-if="addressVisible"
-              @refresh="refresh"
+              @refresh="refreshAddress"
               @changeAddressVisible="changeAddressVisible"
               v-bind:addressForm="addressForm"
           ></AddressDialogue>
@@ -47,19 +47,18 @@
       </div>
 
       <div class="section-goods">
-        <p class="title">Buying List</p>
+        <p class="title">Goods Info</p>
         <div class="goods-list">
-          <ul>
-            <li v-for="item in goodsList" :key="item.id">
-              <img :src="'http://localhost:8081/' + item.goodsPicture" />
-              <span class="pro-name">{{item.goodsName}}</span>
-              <span class="pro-status"></span>
-              <span class="pro-total">￥ {{item.price}}</span>
-            </li>
-          </ul>
+          <li
+              v-for="item in goodsList"
+              :key="item.id"
+          >
+            <img :src="'http://localhost:8081/' + item.goodsPicture" />
+            <span class="pro-name">{{item.goodsName}}</span>
+            <span class="pro-total">￥ {{item.price}}</span>
+          </li>
         </div>
       </div>
-
       <div class="section-shipment">
         <p class="title">Postage</p>
         <p class="shipment">￥{{this.dealInfo.postage}}</p>
@@ -83,12 +82,11 @@
 
       <!--      结算导航-->
       <div class="section-bar">
-        <el-button type="primary"
-           @click="chargeVisible = true"
-           style="float: left; width: 150px"
-           plain
-        >Charge</el-button>
-
+<!--        <el-button type="primary"-->
+<!--           @click="chargeVisible = true"-->
+<!--           style="float: left; width: 150px"-->
+<!--           plain-->
+<!--        >Charge</el-button>-->
         <div class="btn">
           <router-link
               :to="{path: '/goods/' + this.goodsList[0].goodsId}"
@@ -100,17 +98,19 @@
           >Pay</a>
           <el-dialog  :visible.sync="payVisible" append-to-body>
             <Pay
+                @changePayVisible="changePayVisible"
+                @refresh="dealSuccess"
                 v-if="payVisible"
                 v-bind:dealId="dealInfo.dealId"
             ></Pay>
           </el-dialog>
-          <el-dialog  :visible.sync="chargeVisible" append-to-body>
-            <Charge
-                v-if="chargeVisible"
-                @changeVisible="changeVisible"
-                v-bind:dealId="dealInfo.dealId"
-            ></Charge>
-          </el-dialog>
+<!--          <el-dialog  :visible.sync="chargeVisible" append-to-body>-->
+<!--            <Charge-->
+<!--                v-if="chargeVisible"-->
+<!--                @changeVisible="changeVisible"-->
+<!--                v-bind:dealId="dealInfo.dealId"-->
+<!--            ></Charge>-->
+<!--          </el-dialog>-->
         </div>
       </div>
 
@@ -233,8 +233,11 @@ export default {
     changePayVisible(val) {
       this.payVisible = val
     },
-    refresh() {
+    refreshAddress() {
       this.getAddressInfo()
+    },
+    dealSuccess() {
+      this.$router.push('/goods/' + this.goodsList[0].goodsId)
     }
   },
   mounted() {
@@ -348,9 +351,10 @@ export default {
 }
 .confirmOrder .content .section-goods .goods-list li {
   padding: 10px 0;
+  margin-top: 10px;
   color: #424242;
   overflow: hidden;
-  /*white-space:nowrap;*/
+  list-style: none;
 }
 .confirmOrder .content .section-goods .goods-list li img {
   float: left;
@@ -378,9 +382,8 @@ export default {
   line-height: 30px;
 }
 .confirmOrder .content .section-goods .goods-list li .pro-total {
-  float: left;
+  float: right;
   width: 190px;
-  text-align: center;
   color: #ff6700;
   line-height: 30px;
 }
@@ -399,10 +402,10 @@ export default {
   line-height: 20px;
 }
 .confirmOrder .content .section-shipment .shipment {
-  float: left;
-  line-height: 20px;
-  font-size: 16px;
+  float: right;
+  width: 190px;
   color: #ff6700;
+  line-height: 30px;
 }
 .confirmOrder .content .section-invoice {
   margin: 0 48px;

@@ -15,7 +15,7 @@
       </div>
     </transition>
     <div class="comment-body">
-      <div class="comment-item" v-for="(item, index) in comments">
+      <div class="comment-item" v-for="item in comments" :key="item.commentId">
         <div class="info">
           <el-avatar :size="50" fit="cover" :src="item"></el-avatar>
           <div class="right">
@@ -26,10 +26,9 @@
         <div class="content">
           {{item.content}}
         </div>
-
         <div class="control">
           <template v-if="item.userId===$store.getters.getUser.userId">
-            <el-button type="text" @click="handleDelete(index)">Delete</el-button>
+            <el-button type="text" @click="deleteComment(item.commentId)">Delete</el-button>
           </template>
         </div>
       </div>
@@ -71,26 +70,26 @@ export default {
       this.commentForm.goodsId = this.goodsId
       this.$axios.post('http://localhost:8081/goods/comment', this.commentForm)
           .then((res)=>{
-        Element.Message({
-          showClose: true,
-          message: 'Comment success!',
-          type: 'success',
-        })
-        let d = new Date()
-        let now = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate()
-        console.log(now)
-        console.log(this.$store.getters.getUser)
-        this.comments.push({
-          userId: this.$store.getters.getUser.userId,
-          username: 'ME',
-          content: this.commentForm.content,
-          picturePath: '',
-          date: now
-        })
+            Element.Message({
+              message: 'Comment success!',
+              type: 'success',
+            })
+            this.refresh()
       })
     },
-    deleteComment() {
-
+    deleteComment(commentId) {
+      console.log(commentId)
+      this.$axios.delete('http://localhost:8081/goods/comment?commentId=' + commentId)
+          .then((res)=>{
+            Element.Message({
+              message: 'Delete success!',
+              type: 'success',
+            })
+            this.refresh()
+          })
+    },
+    refresh() {
+      this.$emit('refresh')
     }
   }
 }
@@ -116,7 +115,7 @@ export default {
 
 .comment-body .comment-item {
   padding: 0 10px;
-  box-sizing: border-box;
+  /*box-sizing: border-box;*/
   display: flex;
   flex-direction: column;
   /*padding: 10px;*/

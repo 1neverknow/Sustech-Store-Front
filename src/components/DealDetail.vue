@@ -1,10 +1,12 @@
 <template>
   <div class="deal-detail">
-    <img
-        class="goods-photo"
-        :src="'http://localhost:8081/' + this.goodsInfo.goodsPicture"
-        @click="routeGoods"
-    ></img>
+    <div class="header">
+      <img
+          class="goods-photo"
+          :src="'http://localhost:8081/' + this.goodsInfo.goodsPicture"
+          @click="routeGoods"
+      ></img>
+    </div>
     <el-descriptions
         class="component"
         title="Deal Information"
@@ -34,7 +36,11 @@
         {{goodsInfo.goodsId}}
       </el-descriptions-item>
       <el-descriptions-item label="Name">
-        {{goodsInfo.goodsName}}
+        <router-link :to="{path: '/goods/' + goodsInfo.goodsId}">
+          <el-link type="primary" style="height: 15px; margin-top: -5px"
+          >{{goodsInfo.goodsName}}
+          </el-link>
+        </router-link>
       </el-descriptions-item>
     </el-descriptions>
 
@@ -44,15 +50,15 @@
         :column="2"
         border
     >
+      <el-descriptions-item label="User ID">
+        {{sellerInfo.sellerId}}
+      </el-descriptions-item>
       <el-descriptions-item label="Name">
         <router-link :to="{path: '/user/' + sellerInfo.sellerId}">
           <el-link type="primary" style="height: 15px; margin-top: -5px"
           >{{sellerInfo.name}}
           </el-link>
         </router-link>
-      </el-descriptions-item>
-      <el-descriptions-item label="User ID">
-        {{sellerInfo.sellerId}}
       </el-descriptions-item>
     </el-descriptions>
 
@@ -162,8 +168,11 @@ export default {
   margin-top: -20px;
 }
 
-.deal-detail .goods-photo {
+.deal-detail .header {
   margin-left: 40%;
+}
+
+.deal-detail .header .goods-photo {
   width: 100px;
   height: 100px;
   border-radius:50%;

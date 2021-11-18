@@ -11,12 +11,12 @@
     </div>
 
     <div class="content">
-      <el-radio-group v-model="dealType" style="margin-bottom: 30px">
+      <el-radio-group v-model="dealType" style="margin-bottom: 30px; margin-top: -10px">
         <el-radio-button label="buy">Bought</el-radio-button>
         <el-radio-button label="sell">Sold</el-radio-button>
       </el-radio-group>
 
-      <el-tabs type="card" @tab-click="handleClick">
+      <el-tabs type="border-card" @tab-click="handleClick">
         <el-tab-pane label="all"></el-tab-pane>
         <el-tab-pane label="unpaid"></el-tab-pane>
         <el-tab-pane label="unshipped"></el-tab-pane>

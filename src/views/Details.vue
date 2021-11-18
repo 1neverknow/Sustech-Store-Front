@@ -6,9 +6,29 @@
           <p>{{title}}</p>
           <div class="list">
             <ul>
-              <li><router-link to="">Contact us </router-link></li>
-              <li><router-link to="">About us</router-link></li>
-              <li><router-link to="">Complaint</router-link></li>
+              <li><router-link to="/">Homepage</router-link></li>
+              <li><el-button
+                type="text"
+                class="route-btn"
+                @click="toUserpage($store.getters.getUser.userId)"
+              >User Page
+              </el-button></li>
+              <li><el-button
+                  type="text"
+                  class="route-btn"
+                  @click="changeComplainVisible(true)"
+              >Complain this goods
+              </el-button></li>
+              <el-dialog
+                  title="Complain"
+                  :visible.sync="complainVisible"
+                  width="50%"
+              >
+                <ComplainGoods
+                    @changeComplainVisible="changeComplainVisible"
+                    v-bind:goodsId="goodsId"
+                ></ComplainGoods>
+              </el-dialog>
             </ul>
           </div>
         </div>
@@ -18,11 +38,13 @@
         <el-row>
           <!--左侧商品图-->
             <div class="block">
-            <el-carousel height="560px">
+            <el-carousel height="560px" style="margin-left: 30px; ">
               <el-carousel-item v-for="item in picturePath" :key="item.id">
-                <img
-                    style="height: 500px; margin-top: 50px; margin-left: 30px"
-                    :src="'http://localhost:8081/' + item"/>
+                <el-image
+                    style="height: 500px; margin-top: 50px;"
+                    :src="'http://localhost:8081/' + item"
+                    fit="contain"
+                ></el-image>
               </el-carousel-item>
             </el-carousel>
 
@@ -57,7 +79,7 @@
               <div class="announcer-info">
                 <el-avatar class="announcer-avatar" :size="40" :src="'http://localhost:8081/' + announcer.avatar"></el-avatar>
                 <span>
-                  <router-link class="announcer-name" :to="{path: '/user/'+ announcer.userId}">{{announcer.userName}}</router-link>
+                  <router-link class="announcer-name" :to="{path: '/user/' + announcer.userId}">{{announcer.userName}}</router-link>
                 </span>
                 <span class="gender">
                   {{announcer.gender}}
@@ -72,8 +94,6 @@
                   " {{announcer.sign}} "
                 </div>
               </div>
-
-
               <!--      内容区底部按钮-->
               <div class="button">
                 <el-button
@@ -113,7 +133,6 @@
             </div>
         </el-row>
 
-
         <el-collapse v-model="activeNames" class="collapse">
           <el-collapse-item name="1">
             <template #title>
@@ -121,6 +140,7 @@
               <i class="header-icon el-icon-info"></i>
             </template>
             <GoodsComment
+                @refresh="refreshComment"
                 v-bind:goodsId="goodsId"
                 v-bind:comments="comments"
             ></GoodsComment>
@@ -142,11 +162,12 @@
 
 <script>
 import GoodsComment from "@/components/GoodsComment"
+import ComplainGoods from "@/components/ComplainGoods"
 import Element from "element-ui";
 
 export default {
   name: "Details",
-  components: {GoodsComment},
+  components: {GoodsComment, ComplainGoods},
   data() {
     return {
       state: false, // 是否可以购买（售出后打上已售出标签，除非卖家撤下，商品详情依然存在）
@@ -156,14 +177,7 @@ export default {
       picturePath: [], // 商品展示图（轮播图）=> 数组
       labels: [],
       introduce: 'you would be stronger after eating it',
-      announcer: {
-        userId: 1,
-        userName: 'mithra',
-        avatar: '',
-        credits: '良好',
-        gender: '♂',
-        sign: '!!!!!!!!!!!!!!!!!!!'
-      },
+      announcer: {},
       comments: [],
       want: '',  // “我想要”的人数,
       announceTime: '',
@@ -171,6 +185,7 @@ export default {
       stage: 0,
       activeNames: '1',
       inCollection: false,
+      complainVisible: false,
     }
   },
   methods: {
@@ -273,7 +288,6 @@ export default {
       // 需要先验证用户是否已经登陆
       if (!this.$store.getters.getUser) {
         Element.Message({
-          showClose: true,
           message: 'Please login first',
           type: 'error',
         })
@@ -282,7 +296,6 @@ export default {
       this.$axios.put("http://localhost:8081/user/collection?goodsId="
           + this.goodsId).then(res => {
         Element.Message({
-          showClose: true,
           message: 'Add product to collection successfully',
           type: 'success',
         })
@@ -308,7 +321,20 @@ export default {
             console.log('in collection?', res.data.data)
             this.inCollection = res.data.data
       })
-    }
+    },
+    refreshComment() {
+        this.getComments(this.goodsId)
+    },
+    changeComplainVisible(value) {
+        this.complainVisible = value
+    },
+    toUserpage(userId) {
+      if (userId === null) {
+        this.$router.push('/login')
+      } else {
+        this.$router.push('/user/' + userId)
+      }
+    },
   },
   mounted() {
     this.activate()
@@ -340,9 +366,11 @@ export default {
   float: left;
 }
 #details .page-header .title .list {
+  margin-right: -20%;
   height: 64px;
   float: right;
 }
+
 #details .page-header .title .list li {
   float: left;
   margin-left: 50px;
@@ -355,6 +383,18 @@ export default {
   font-size: 14px;
   color: #ff6700;
 }
+
+#details .page-header .title .list li .route-btn {
+  font-size: 14px;
+  color: #616161;
+  text-decoration: underline
+}
+#details .page-header .title .list .li .route-btn:hover {
+  font-size: 14px;
+  color: #ff6700;
+  text-decoration: underline
+}
+
 /* 头部CSS END */
 
 /* 主要内容CSS */

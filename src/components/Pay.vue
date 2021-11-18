@@ -5,7 +5,6 @@
         <h2>Pay</h2>
       </li>
       <li>
-        <h4 style="margin-bottom: 15px;">Payment Method</h4>
         <el-radio-group v-model="rechargeParams.paymentType" @change="paymentTypeChange">
           <el-radio border :label="''+ 0">Wechat Pay</el-radio>
           <el-radio border :label="''+ 1">Ali-Pay</el-radio>
@@ -14,22 +13,42 @@
       </li>
     </ul>
     <div style="text-align: center; margin-top: 30px;">
-      <el-button type="primary" @click="getPay">Confirm</el-button>
+      <el-button type="primary" @click="getPay" style="width: 140px">Confirm</el-button>
+      <el-button @click="closeDialog" style="width: 140px">Cancel</el-button>
+    </div>
+    <div style="margin-top: -30px; font-size: 14px; float: right">
+      <!--      跳转到创建账号-->
+      Don't have money?
+      <el-button
+          @click="changeChargeVisible(true)"
+          style="height: 15px; margin-top: -5px; text-decoration: underline"
+          type="text"
+      >Charge</el-button>
+      <el-dialog  :visible.sync="chargeVisible" append-to-body>
+        <Charge
+            v-if="chargeVisible"
+            @changeVisible="changeChargeVisible"
+            v-bind:dealId="dealId"
+        ></Charge>
+      </el-dialog>
     </div>
   </el-card>
 </template>
 
 <script>
+import Charge from "@/components/Charge"
 import Element from 'element-ui'
 export default {
   props: ['dealId'],
+  components: {Charge},
   data() {
     return {
       rechargeParams: {
         "totalAmt": '', //金额
         "paymentType": "0", //支付方式[0:微信,1:支付宝,2:余额,3:活动]
         "transType": "0" //交易类型[0:充值,1:消费]
-      }
+      },
+      chargeVisible: false,
     }
   },
   methods: {
@@ -39,6 +58,13 @@ export default {
     },
     //确认支付
     getPay() {
+      if (this.rechargeParams.paymentType !== '2') {
+        Element.Message({
+          message: 'You can only pay by account balance...',
+          type: 'error',
+        })
+        return
+      }
       this.$axios({
         method: 'put',
         url: 'http://localhost:8081/deal/pay/' + this.dealId
@@ -50,6 +76,9 @@ export default {
         this.$emit('refresh')
         this.closeDialog()
       })
+    },
+    changeChargeVisible(value) {
+      this.chargeVisible = value
     },
     closeDialog() {
       this.$emit('changePayVisible', false)

@@ -7,7 +7,7 @@
         label-width="120px"
     >
       <el-form-item label="Reason" prop="content">
-        <el-input v-model="ruleForm.content" type="textarea"></el-input>
+        <el-input v-model="ruleForm.content" type="textarea" style="width: 70%"></el-input>
       </el-form-item>
       <el-form-item label="Photo" prop="photo">
         <el-upload
@@ -27,22 +27,23 @@
           </template>
         </el-upload>
       </el-form-item>
-
-      <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')"
-        >Submit</el-button
-        >
-        <el-button @click="resetForm('ruleForm')">Reset</el-button>
-      </el-form-item>
     </el-form>
+    <div  style="margin-left: 75%">
+      <el-button
+          type="primary"
+          @click="submitForm('ruleForm')"
+      >Submit</el-button
+      >
+      <el-button @click="resetForm('ruleForm')">Reset</el-button>
+    </div>
   </div>
 </template>
 
 <script>
 import Element from "element-ui"
 export default {
-  name: "AppealForm",
-  props: ['dealId'],
+  name: "ComplainGoods",
+  props: ['goodsId'],
   data() {
     const validateContent = (rule, value, callback) => {
       if (value === '') {
@@ -53,7 +54,7 @@ export default {
     }
     return {
       ruleForm: {
-        dealId: this.dealId,
+        goodsId: this.goodsId,
         content: '',
       },
       photo: '',
@@ -68,17 +69,26 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$axios.get('http://localhost:8081/deal/appealing/'
-              + this.dealId
-              + '?content=' + this.ruleForm.content)
-            .then((res)=>{
-              Element.Message({
-                message: 'Success!',
-                type: 'success',
-              })
-              this.$emit('refresh')
-              this.$emit('changeAppealVisible', false)
+          let photoData = new FormData();
+          photoData.append('photos', this.photos)
+          const newRequest = axios.create();
+          newRequest({
+            method: "POST",
+            url: 'http://localhost:8081/goods/complain?'
+                + 'content=' + this.ruleForm.content
+                + '&goodsId=' + this.goodsId,
+            data: photoData,
+            headers: {
+              "Content-Type": "multipart/form-data",
+              'Authorization': store.getters.getToken
+            }
+          }).then(res => {
+            Element.Message({
+              message: 'Success',
+              type: 'success',
             })
+            this.closeDialog()
+          })
         } else {
           Element.Message({
             message: 'Please check your input!',
@@ -91,10 +101,12 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields()
     },
+    closeDialog() {
+      this.$emit('changeComplainVisible', false)
+    }
   },
 }
 </script>
 
 <style scoped>
-
 </style>

@@ -139,12 +139,12 @@ const routes = [
   },
   {
     path: '/none',
-    name: 'none',
+    name: 'None',
     component: None
   },
   {
     path: '/admin',
-    name: 'admin',
+    name: 'Admin',
     meta: {
       requireAuth: true
     },
@@ -158,6 +158,14 @@ const routes = [
     },
     component: User
   },
+  // {
+  //   path: '/user/collection',
+  //   name: 'Collection',
+  //   meta: {
+  //     requireAuth: true
+  //   },
+  //   component: Collection
+  // },
 ]
 
 const router = new VueRouter({

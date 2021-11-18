@@ -1,34 +1,27 @@
 <template>
-  <el-card class="box-card">
-    <ul class="msg-box">
-      <li style="margin-top: -50px">
+  <div>
+    <el-card class="box-card">
+      <ul class="msg-box">
         <h2>Charge</h2>
-      </li>
-      <li>
-        <h4 style="margin-bottom: 15px;">Amount</h4>
-        <el-radio-group v-model="amount" @change="amountChange">
-          <el-radio border :label="''+ 500">￥500</el-radio>
-          <el-radio border :label="''+ 1000">￥1000</el-radio>
-          <el-radio border :label="''+ 5000">￥5000</el-radio>
-          <el-radio border :label="''">Customize</el-radio>
-        </el-radio-group>
-      </li>
-      <li>
-        <!--        <h4 style="margin-bottom: 15px;"></h4>-->
-        <el-input :disabled="disabled" clearable v-model="rechargeParams.totalAmt" placeholder="Charging Amount" style="width: 200px;"></el-input>
-      </li>
-      <li>
-        <h4 style="margin-bottom: 15px;">Payment Method</h4>
-        <el-radio-group v-model="rechargeParams.paymentType" @change="paymentTypeChange">
-          <el-radio border :label="''+ 0">Wechat Pay</el-radio>
-          <el-radio border :label="''+ 1">Ali-Pay</el-radio>
-        </el-radio-group>
-      </li>
-    </ul>
-    <div style="text-align: center; margin-top: 30px;">
-      <el-button type="primary" @click="surePay">Confirm</el-button>
-    </div>
-  </el-card>
+        <li>
+          <!--        <h4 style="margin-bottom: 15px;">Amount</h4>-->
+          <el-radio-group v-model="amount" @change="amountChange">
+            <el-radio border :label="''+ 500">￥500</el-radio>
+            <el-radio border :label="''+ 1000">￥1000</el-radio>
+            <el-radio border :label="''+ 5000">￥5000</el-radio>
+            <el-radio border :label="''">Customize</el-radio>
+          </el-radio-group>
+        </li>
+        <li>
+          <h4 style="margin-bottom: 15px;"></h4>
+          <el-input :disabled="disabled" clearable v-model="rechargeParams.totalAmt" placeholder="Charging Amount" style="width: 200px;"></el-input>
+        </li>
+      </ul>
+      <div style="text-align: center; margin-top: 30px;">
+        <el-button type="primary" @click="handleCharge" style="width: 100%">Confirm</el-button>
+      </div>
+    </el-card>
+  </div>
 </template>
 
 <script>
@@ -56,8 +49,8 @@ export default {
     paymentTypeChange(val) {
       this.rechargeParams.paymentType = val
     },
-    //确认支付
-    surePay() {
+    //充值
+    handleCharge() {
       if (this.rechargeParams.totalAmt === '') {
         Element.Message({
           message: 'Please input a price!',
@@ -74,57 +67,8 @@ export default {
           message: 'Success!',
           type: 'success',
         })
-        // if (res.data.code === 200) {
-        //   if (this.rechargeParams.paymentType === '0') {
-        //     Element.Message({
-        //       message: '微信支付',
-        //       type: 'success',
-        //     })
-        //     this.wechatPay(result);
-        //   } else if (this.rechargeParams.paymentType === '1') {
-        //     Element.Message({
-        //       message: '支付宝支付',
-        //       type: 'success',
-        //     })
-        //     const payDiv = document.getElementById('payDiv');
-        //     if (payDiv) {
-        //       document.body.removeChild(payDiv);
-        //     }
-        //     const div = document.createElement('div');
-        //     div.id = 'payDiv';
-        //     div.innerHTML = result;
-        //     document.body.appendChild(div);
-        //     document.getElementById('payDiv').getElementsByTagName('form')[0].submit();
-        //   } else if (this.rechargeParams.paymentType === '2') {
-        //     Element.Message({
-        //       message: '余额支付成功',
-        //       type: 'success',
-        //     })
-        //     // this.$router.push({
-        //     //   name: 'order'
-        //     // })
-        //   } else {
-        //     Element.Message({
-        //       message: '活动支付',
-        //       type: 'success',
-        //     })
-        //   }
-        // }
       })
       this.closeDialog()
-    },
-    //微信支付
-    wechatPay(result) {
-      if (result) {
-        const orderParams = JSON.parse(result);
-        sessionStorage.qrurl = orderParams.qrurl;
-        sessionStorage.amt = orderParams.amt;
-        sessionStorage.returnUrl = orderParams.returnUrl;
-        sessionStorage.order_id = orderParams.order_id;
-        this.$router.push({
-          name: 'wechatPay'
-        })
-      }
     },
     closeDialog() {
       this.$emit('changeVisible', false)

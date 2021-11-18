@@ -6,12 +6,12 @@
         <p>
           <i class="el-icon-circle-plus"></i>
         </p>
-        <p>Publish New Goods</p>
+        <p>Publish Goods</p>
         <router-link to></router-link>
       </div>
     </div>
 
-    <div class="content">
+    <el-card class="content">
       <el-form
           ref="goods"
           :model="goods"
@@ -22,7 +22,7 @@
           size="medium"
       >
         <el-row>
-          <el-col class="form-body" :span="9" :offset="1">
+          <el-col class="form-body" :span="9" :offset="2">
             <el-form-item label="Title" prop="name">
               <el-input v-model="goods.title"></el-input>
             </el-form-item>
@@ -52,19 +52,18 @@
               ></el-input>
             </el-form-item>
           </el-col>
-
+          <el-divider direction="vertical"></el-divider>
           <el-col :span="10" :offset="2" class="img-uploader">
-            <span
+            <h4
                 style="color: grey; line-height: 60px; font-size: 14px"
-            >Upload your goods' photos
-            </span>
+            >Upload your photos here
+            </h4>
             <el-alert
                 title="Tips：Click '+' to upload your image. You can only upload .jpg or .png image"
                 type="warning"
-                style="width: 300px"
+                style="width: 300px; margin-top: -20px"
                 :closable="false">
             </el-alert>
-
             <el-form class="avatar-uploader">
               <el-upload
                   action="https://jsonplaceholder.typicode.com/posts/"
@@ -88,7 +87,7 @@
         </el-row>
 
         <el-row>
-          <el-col :span="10" :offset="1">
+          <el-col :span="10" :offset="2">
             <el-form-item label="Labels" prop="label">
               <TagInput v-bind:dynamicTags="goods.labels"></TagInput>
             </el-form-item>
@@ -96,13 +95,16 @@
         </el-row>
 
         <div>
-          <el-button type="primary" style="float: left;width: 30%; margin-top: 30px ;margin-left: 300px;"
-                     @click="submitForm('goods')"
+          <el-button
+              type="primary"
+              style="float: left; width: 50%; margin-top: 70px; margin-left: 15%"
+              @click="submitForm('goods')"
+              round
           >Publish</el-button
           >
         </div>
       </el-form>
-    </div>
+    </el-card>
   </div>
 </template>
 
@@ -278,8 +280,8 @@ export default {
 .publish .content {
   padding: 20px 0;
   width: 1225px;
-  margin: 0 auto;
-  height: 800px;
+  /*margin: 0 auto;*/
+  height: 650px;
 }
 .publish .content .form-body {
   margin-top: 70px;
