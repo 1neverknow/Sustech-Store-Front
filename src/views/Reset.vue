@@ -151,23 +151,20 @@ export default {
 }
 
 .ms-content {
-  padding: 30px 30px;
+  /*padding: 30px 30px;*/
 }
 
 .ms-reset {
-  position: absolute;
-  left: 40%;
-  top: 30%;
+  margin: 70px auto auto;
   width: 600px;
-  height: 550px;
-  margin: -190px 0 0 -175px;
+  height: 500px;
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.8);
   overflow: hidden;
 }
 
 .submit-btn {
-  margin-top: 60px;
+  margin-top: 50px;
   text-align: center;
 }
 .submit-btn button {

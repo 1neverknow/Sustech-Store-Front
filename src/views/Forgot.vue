@@ -174,12 +174,9 @@ export default {
   height: 100%;
 }
 .ms-forgot {
-  position: absolute;
-  left: 40%;
-  top: 30%;
+  margin: 70px auto auto;
   width: 600px;
-  height: 550px;
-  margin: -190px 0 0 -175px;
+  height: 500px;
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.8);
   overflow: hidden;
@@ -193,7 +190,7 @@ export default {
   height: 100px;
 }
 .ms-content {
-  padding: 30px 30px;
+  /*padding: 30px 30px;*/
 }
 .reset-btn {
   text-align: center;
