@@ -39,7 +39,7 @@
             <el-form-item label="Verify code" style="margin-bottom: 50px">
               <el-input type="text" v-model="verify.verifycode" style="width: 420px;"></el-input>
               <template v-if="verify.verifyImg">
-                <img :src="verify.verifyImg" style="float: right">
+                <img @click="getVerifyImg" :src="verify.verifyImg" style="float: right">
               </template>
               <template v-else>
                 <el-button @click="getVerifyImg" type="primary" style="width: 100px; float: right">Get</el-button>

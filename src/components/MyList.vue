@@ -10,7 +10,7 @@
             cancel-button-text="No, Thanks"
             icon="el-icon-question"
             icon-color="red"
-            title="Are you sure to delete this?"
+            title="Are you sure to remove this goods?"
             @confirm="confirmEvent(index)"
         >
           <i class="el-icon-close delete" slot="reference" v-show="true"></i>
@@ -36,21 +36,33 @@ import Element from "element-ui";
 export default {
   name: "MyList",
   // list为父组件传来的列表
-  props: ['list'],
+  props: ['type', 'list'],
   data() {
     return{}
   },
   methods: {
     confirmEvent(index) {
       const goodsId = this.list[index].goodsId
-      this.$axios.delete("http://localhost:8081/user/collection?goodsId=" + goodsId)
-          .then(res => {
-            Element.Message({
-              message: 'Remove successfully',
-              type: 'success',
+      if (this.type === 'collection') {
+        this.$axios.delete("http://localhost:8081/user/collection?goodsId=" + goodsId)
+            .then(res => {
+              Element.Message({
+                message: 'Remove successfully',
+                type: 'success',
+              })
+              this.list.splice(index, 1)
             })
-            this.list.splice(index, 1)
-        })
+      } else if (this.type === 'announcement') {
+        this.$axios.delete("http://localhost:8081/goods/delete?goodsId=" + goodsId)
+            .then(res => {
+              Element.Message({
+                message: 'Remove successfully',
+                type: 'success',
+              })
+              this.list.splice(index, 1)
+            })
+      }
+
     },
 
   }

@@ -16,6 +16,7 @@ import Publish from "@/views/Publish"
 import Order from "@/views/Order"
 import None from "@/views/None"
 import Admin from "@/views/Admin"
+import Announced from "@/views/Announced"
 
 import MainPage from "@/views/MainPage";
 import Account from "@/views/Account";
@@ -80,6 +81,14 @@ const routes = [
           requireAuth: true
         },
         component: Order
+      },
+      {
+        path: '/user/announced',
+        name: 'Announced',
+        meta: {
+          requireAuth: true
+        },
+        component: Announced
       },
     ]
   },
