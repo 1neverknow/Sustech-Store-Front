@@ -1,45 +1,45 @@
 <!--忘记密码 - 输入邮箱 - 邮箱验证-->
 
 <template>
-  <div class="ms-forgot">
-    <el-container>
-      <div style="margin: 50px"></div>
-      <el-header style="height: 100px">
-        <router-link to="/user">
-          <el-avatar
-              :size="90"
-              src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-              style="margin: 5px auto; overflow: hidden; border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,.05); position: relative;"
-          ></el-avatar>
-        </router-link>
-      </el-header>
-      <el-main>
-        <el-form
-            ref="ruleForm"
-            :model="ruleForm"
-            :rules="rules"
-            :label-position="labelPosition"
-            label-width="0px"
-            class="ms-content"
-        >
-          <el-form-item label="E-Mail Address" prop="email">
-            <el-input v-model="ruleForm.email" style="width: 320px"></el-input>
-<!--            倒计时按钮-->
-            <el-button type="primary" :disabled="verify.disable" @click="resetForm('ruleForm')">{{verify.getCode}}</el-button>
-<!--            <el-button type="primary" :disabled="verify.disable" @click="getVerifyCode">{{verify.getCode}}</el-button>-->
-          </el-form-item>
+  <div class="forgot-wrap">
+    <el-card class="ms-forgot">
+      <el-container>
+        <div style="margin: 50px"></div>
+        <el-header style="height: 100px">
+          <router-link to="/user">
+            <el-avatar
+                :size="90"
+                src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+                style="margin: 5px auto; overflow: hidden; border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,.05); position: relative;"
+            ></el-avatar>
+          </router-link>
+        </el-header>
+        <el-main>
+          <el-form
+              ref="ruleForm"
+              :model="ruleForm"
+              :rules="rules"
+              :label-position="labelPosition"
+              label-width="0px"
+              class="ms-content"
+          >
+            <el-form-item label="E-Mail Address" prop="email">
+              <el-input v-model="ruleForm.email" style="width: 384px"></el-input>
+              <el-button type="primary" :disabled="verify.disable" @click="resetForm('ruleForm')">{{verify.getCode}}</el-button>
+            </el-form-item>
 
-          <el-form-item label="Varify Code" prop="varifycode">
-            <el-input v-model="ruleForm.varifycode"></el-input>
-          </el-form-item>
+            <el-form-item label="Varify Code" prop="varifycode">
+              <el-input v-model="ruleForm.varifycode"></el-input>
+            </el-form-item>
 
-          <div class="reset-btn">
-            <el-button type="primary" style="margin-top: 30px" @click="submitForm('ruleForm')">Reset</el-button>
-          </div>
+            <div class="reset-btn">
+              <el-button type="primary" style="margin-top: 30px" @click="submitForm('ruleForm')">Reset</el-button>
+            </div>
 
-        </el-form>
-      </el-main>
-    </el-container>
+          </el-form>
+        </el-main>
+      </el-container>
+    </el-card>
   </div>
 </template>
 
@@ -166,35 +166,38 @@ export default {
 </script>
 
 <style scoped>
-.el-header {
-  background-color: skyblue;
-  color: var(--el-text-color-primary);
-  text-align: center;
-  line-height: 100px;
-  /*margin-top: -50px;*/
-  /*margin-bottom: -30px;*/
-  height: 100px;
+.forgot-wrap {
+  background-image: url("../assets/imgs/new-dimension.jpg");
+  position: fixed;
+  background-size: 100%;
+  width: 100%;
+  height: 100%;
 }
-
-.ms-content {
-  padding: 30px 30px;
-}
-
 .ms-forgot {
   position: absolute;
   left: 40%;
   top: 30%;
-  width: 500px;
-  height: 800px;
+  width: 600px;
+  height: 550px;
   margin: -190px 0 0 -175px;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.8);
   overflow: hidden;
 }
-
+.el-header {
+  margin-top: -90px;
+  background-color: skyblue;
+  /*color: var(--el-text-color-primary);*/
+  text-align: center;
+  line-height: 100px;
+  height: 100px;
+}
+.ms-content {
+  padding: 30px 30px;
+}
 .reset-btn {
   text-align: center;
-  margin-top: -10px;
+  margin-top: 50px;
 }
 .reset-btn button {
   width: 100%;
