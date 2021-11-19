@@ -88,7 +88,7 @@
 
         <el-row>
           <el-col :span="10" :offset="2">
-            <el-form-item label="Labels" prop="label">
+            <el-form-item label="Labels" prop="labels">
               <TagInput v-bind:dynamicTags="goods.labels"></TagInput>
             </el-form-item>
           </el-col>
@@ -98,7 +98,7 @@
           <el-button
               type="primary"
               style="float: left; width: 50%; margin-top: 70px; margin-left: 15%"
-              @click="submitForm('goods')"
+              @click="validateInfo('goods')"
               round
           >Publish</el-button
           >
@@ -126,7 +126,8 @@ export default {
       }
     }
     const validateLabel = (rule, value, callback) => {
-      if (this.goods.labels.length === 0) {
+      console.log(value.length)
+      if (value.length === 0) {
         callback(new Error('Label is needed'))
       } else {
         callback()
@@ -134,7 +135,6 @@ export default {
     }
     return {
       labelPosition: 'left',
-      photolist: [],
       freeDelivery: true, // 是否包邮
       goods: {
         introduce: 'aaaaaaaaaa',
@@ -142,7 +142,6 @@ export default {
         labels: [],
         price: '333333333333333',
         title: '300 Mana Stone',
-        // photos: [],
         postage: 0,
       },
       goodsId: -1,
@@ -154,13 +153,10 @@ export default {
         introduce: [
           { required: true, message: 'Price is required' },
         ],
-        photolist: [
-          {required: true, trigger: 'blur',},
-        ],
         postage: [
           {validator: validatePostage, trigger: 'blur',}
         ],
-        label: [
+        labels: [
           {validator: validateLabel, trigger: 'blur',},
         ]
       },
@@ -173,7 +169,14 @@ export default {
       this.goods.tags = tags
     },
     handleRemove(file, fileList) {
+      for (let i in fileList) {
+        if (fileList[i] === file) {
+          fileList = fileList.splice(i, 1)
+          break
+        }
+      }
       console.log(file, fileList)
+      this.photos = fileList
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
@@ -200,17 +203,34 @@ export default {
         return false
       }
     },
+    validateInfo(formName) {
+      if (this.photos.length === 0) {
+        Element.Message({
+          message: 'Photo is needed',
+          type: 'error',
+        })
+        return
+      }
+      this.$refs[formName].validate((valid) => {
+        console.log(valid)
+        if (!valid) {
+          Element.Message({
+            message: 'Please check your input',
+            type: 'error',
+          })
+        } else {
+          this.submitForm(formName)
+        }
+      })
+    },
     async submitForm(formName) {
       await this.submitInfo()
       await this.uploadPicture()
     },
     submitInfo() {
       return new Promise(resolve => {
-          this.$axios.post('http://localhost:8081/goods/add', this.goods).then((res) => {
-            Element.Message({
-              message: 'Publish success!',
-              type: 'success',
-            })
+          this.$axios.post('http://localhost:8081/goods/add', this.goods)
+              .then((res) => {
             this.goodsId = res.data.data
             resolve('done');
           })
@@ -234,7 +254,7 @@ export default {
           }
         }).then(res => {
           Element.Message({
-            message: 'Upload Picture Success!',
+            message: 'Success!',
             type: 'success',
           })
           this.$router.push('/goods/' + this.goodsId)
@@ -281,7 +301,7 @@ export default {
   padding: 20px 0;
   width: 1225px;
   /*margin: 0 auto;*/
-  height: 650px;
+  height: 800px;
 }
 .publish .content .form-body {
   margin-top: 70px;

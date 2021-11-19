@@ -20,7 +20,7 @@
         >
           <el-icon class="el-icon-upload"><upload-filled /></el-icon>
           <div class="el-upload__text">
-            Drop file here or <em>click to upload</em>
+            Drop file here or <em>click to upload</em> (optional)
           </div>
           <template #tip>
             <div class="el-upload__tip">

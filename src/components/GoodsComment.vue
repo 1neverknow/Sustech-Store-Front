@@ -17,7 +17,7 @@
     <div class="comment-body">
       <div class="comment-item" v-for="item in comments" :key="item.commentId">
         <div class="info">
-          <el-avatar :size="50" fit="cover" :src="item"></el-avatar>
+          <el-avatar :size="50" fit="cover" :src="item.picturePath"></el-avatar>
           <div class="right">
             <div class="username">{{item.username}}</div>
             <div class="date">{{item.commentDate}}</div>

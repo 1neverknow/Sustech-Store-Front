@@ -262,6 +262,19 @@ export default {
         } else {
           this.comments = []
         }
+        // const commentList = res.data.data
+        // this.comments = []
+        // for (let i in commentList) {
+        //   const c = commentList[i]
+        //   this.comments.push({
+        //     commentDate: c.commentDate,
+        //     commentId: c.commentId,
+        //     content: c.content,
+        //     picturePath: c.picturePath,
+        //     userId: c.userId,
+        //     username: c.username
+        //   })
+        // }
       })
     },
     // 点击我想要联系卖家
