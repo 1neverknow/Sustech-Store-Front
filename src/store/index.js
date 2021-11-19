@@ -16,9 +16,13 @@ export default new Vuex.Store({
         // 后端发送过来的用户信息
         // userInfo: JSON.parse(localStorage.getItem('userInfo')),
         userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
-        name : 'user1',
-        message : 1,
-        modify_pos: '#test',
+        default_address:{
+            receiver: '',
+            telephone: '',
+            address: '',
+        },
+        basic_info: JSON.parse(sessionStorage.getItem('basic_info')),
+
 
         // token: "",
         isShowExpression: false,
@@ -35,22 +39,30 @@ export default new Vuex.Store({
             id: "p0",
             avatar: user,
             nickname: "你自己",
-            gender: "",
-            alias: "",
-            region: ""
+            // gender: "",
+            // alias: "",
+            // region: ""
+        },
+        other: {
+            id: "p1",
+            avatar: user,
+            nickname: "我自己",
+            // gender: "",
+            // alias: "",
+            // region: ""
         },
         chats: [
             {
                 chatId: 0,
                 linkmanIndex: 1,
-                // isMute: false,
-                // isOnTop: false,
+                isMute: false,
+                isOnTop: false,
                 messages: [
                     {
                         avatar,
                         ctn: "你好",
                         nickname: "用户一",
-                        sender: "p1",
+                        sender: false,
                         time: new Date("2011-01-11 11:11:11"),
                         type: "chat"
                     },
@@ -58,7 +70,7 @@ export default new Vuex.Store({
                         avatar,
                         ctn: "你好",
                         nickname: "用户一",
-                        sender: "p5",
+                        sender: true,
                         time: new Date("2011-01-11 10:11:14"),
                         type: "chat"
                     }
@@ -76,25 +88,25 @@ export default new Vuex.Store({
                 region: "这是地区",
                 avatar: group
             },
-            {
-                id: "p1",
-                type: "A",
-                nickname: "用户一",
-                gender: "",
-                alias: "",
-                region: "这是地区",
-                avatar
-            },
-            {
-                id: "p2",
-                type: "B",
-                nickname: "用户二",
-                gender: "",
-                alias: "这是备注",
-
-                region: "这是地区",
-                avatar
-            }
+            // {
+            //     id: "p1",
+            //     type: "A",
+            //     nickname: "用户一",
+            //     gender: "",
+            //     alias: "",
+            //     region: "这是地区",
+            //     avatar
+            // },
+            // {
+            //     id: "p2",
+            //     type: "B",
+            //     nickname: "用户二",
+            //     gender: "",
+            //     alias: "这是备注",
+            //
+            //     region: "这是地区",
+            //     avatar
+            // }
         ],
         currentChatId: -1
 
@@ -118,7 +130,20 @@ export default new Vuex.Store({
             // localStorage.setItem('userInfo', JSON.stringify(userInfo))
             sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
         },
+        SET_Default_Address: (state, address) => {
+            state.default_address.receiver = address.receiver
+            state.default_address.telephone = address.telephone
+            state.default_address.address = address.address
 
+            // 登录之后，一次会话期间，保留登陆状态
+            // localStorage.setItem('userInfo', JSON.stringify(userInfo))
+            sessionStorage.setItem('default_address', JSON.stringify(address))
+        },
+
+        SET_Basic_Info: (state, basic) => {
+            state.basic_info = basic
+            sessionStorage.setItem('basic_info',JSON.stringify(basic))
+        },
         REMOVE_INFO: () => {
             // 清除token和userInfo的值
             this.state.token = ''
@@ -223,40 +248,82 @@ export default new Vuex.Store({
 
             state.chatCount += 1;
         },
-        setInitialChatList(state,chatList){
+        setInitialChatList(state, chatList) {
             console.log(chatList.length)
             for (let i = 0; i < chatList.length; i++) {
-                console.log('fuck')
-                let history = chatList[i];
-                let chatId=history.chatId;
+                // console.log('fuck')
+                let list = chatList[i];
+                // let chatId=list.chatId;
                 // state.currentTabIndex = 0;
                 // state.currentRight = 0;
-                console.log(history)
-                for (let i = 0; i < state.chats.length; i++) {
-                    let chat = state.chats[i];
-                    let temp=chat.messages;
-                    if (chat.chatId === chatId) {
-                        console.log(chat.messages)
-                        chat.messages.push(history.messages)
-                        console.log(chat.messages)
-                        // chat.messages.push();
-                        // state.chats = [chat].concat(state.chats);
-                        state.currentChatId=chatId;
-                        break;
-                    }
-                }
-                state.chats = [history].concat(state.chats);
-                state.currentChatId=chatId;
+                // console.log(list)
+                // for (let i = 0; i < state.chats.length; i++) {
+                //     let chat = state.chats[i];
+                //     // let temp=chat.messages;
+                //     if (chat.chatId === chatId) {
+                //         // console.log(chat.messages)
+                //         chat.messages.push(list.messages)
+                //         // console.log(chat.messages)
+                //         // chat.messages.push();
+                //         // state.chats = [chat].concat(state.chats);
+                //         // state.currentChatId=chatId;
+                //         break;
+                //     }
+                // }
+                state.chats = [list].concat(state.chats);
+                // state.currentChatId=chatId;
                 // console.log(state.chats)
+            }
+        },
+        setInitialHistory(state, subscribeMsg) {
+
+            console.log("History")
+            console.log(subscribeMsg);
+            for (let chat of state.chats) {
+                if (chat.chatId === state.currentChatId) {
+                    for (let msg of subscribeMsg) {
+                        chat.messages = [msg].concat(chat.messages);
+                    }
+                    // chat.messages.push(msg);
+                    break;
+                }
+            }
+        },
+        setMyself(state, myInformation) {
+            state.myself.id=myInformation.id;
+            state.myself.avatar=myInformation.avatar;
+            state.myself.nickname=myInformation.nickname;
+        },
+        setOther(state, yourInformation) {
+            state.other.id=yourInformation.id;
+            state.other.avatar=yourInformation.avatar;
+            state.other.nickname=yourInformation.nickname;
+        },
+        addMessage(state,userMsg){
+            let temp = {
+                avatar:state.other.avatar,
+                ctn: userMsg,
+                nickname: state.other.nickname,
+                sender: false,
+                time: new Date(),
+                type: "chat"
+            }
+            for (let chat of state.chats) {
+                if (chat.chatId === state.currentChatId) {
+                    // chat.messages = [temp].concat(chat.messages);
+                    chat.messages.push(temp);
+                    break;
+                }
             }
         },
         logout (state) {
             state.token = null
             state.userInfo = null
+            state.basic_info = {}
             localStorage.removeItem('token')
-            // localStorage.removeItem('userInfo')
-            sessoinStorage.removeItem('userInfo')
-        },
+            sessionStorage.removeItem('userInfo')
+            sessionStorage.removeItem('basic_info')
+            },
     },
     getters: {
         // get
@@ -266,6 +333,12 @@ export default new Vuex.Store({
         },
         getToken: state =>{
             return state.token
+        },
+        getDefault_Address: state =>{
+            return state.default_address
+        },
+        getBasic_Info: state =>{
+            return state.basic_info
         }
         // user: state => state
     },
@@ -273,4 +346,5 @@ export default new Vuex.Store({
     },
     modules: {
     },
+
 })

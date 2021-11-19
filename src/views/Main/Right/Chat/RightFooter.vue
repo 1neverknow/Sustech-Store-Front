@@ -1,36 +1,36 @@
 <template>
   <div class="wrap" :style="{ visibility: isNoChat ? 'hidden' : 'visible' }">
     <div
-      class="expression-wrap"
-      :class="{ 'expression-wrap-hidden': !isShowExpression }"
-      @click.stop=""
+        class="expression-wrap"
+        :class="{ 'expression-wrap-hidden': !isShowExpression }"
+        @click.stop=""
     >
       <div class="expression-header">
         <div
-          v-for="(expression, index) in expressions"
-          :key="'expression' + index"
-          class="expression-item"
-          :class="{ 'expression-item-selected': expressionIndex === index }"
-          @click.stop="expressionIndex = index"
+            v-for="(expression, index) in expressions"
+            :key="'expression' + index"
+            class="expression-item"
+            :class="{ 'expression-item-selected': expressionIndex === index }"
+            @click.stop="expressionIndex = index"
         >
           {{ expression.title }}
         </div>
       </div>
       <div class="expression-content list-wrap">
         <div
-          v-for="(row, rIndex) in expressions[expressionIndex].items"
-          :key="'eRow' + rIndex"
-          class="expression-row"
+            v-for="(row, rIndex) in expressions[expressionIndex].items"
+            :key="'eRow' + rIndex"
+            class="expression-row"
         >
           <a
-            v-for="(col, cIndex) in row"
-            :key="'eCol' + cIndex"
-            :title="col.title"
-            class="expression-icon"
-            :style="{
+              v-for="(col, cIndex) in row"
+              :key="'eCol' + cIndex"
+              :title="col.title"
+              class="expression-icon"
+              :style="{
               background: `url(${expressions[expressionIndex].img}) ${col.y}px ${col.x}px`
             }"
-            @click="handleAddExpression(rIndex, cIndex)"
+              @click="handleAddExpression(rIndex, cIndex)"
           ></a>
         </div>
       </div>
@@ -47,18 +47,24 @@
       </div>
     </div>
     <pre
-      id="content-input"
-      class="content-input list-wrap"
-      contenteditable="true"
-      @paste="handleCopy"
-      @keypress.enter.exact.prevent.stop="handleSend"
-      @keydown.ctrl.enter.prevent.stop="handleLineFeed"
-      @click="handleEditorFocus"
-      @keyup="handleEditorFocus"
+        id="content-input"
+        class="content-input list-wrap"
+        contenteditable="true"
+        @paste="handleCopy"
+        @keypress.enter.exact.prevent.stop="handleSend"
+        @keydown.ctrl.enter.prevent.stop="handleLineFeed"
+        @click="handleEditorFocus"
+        @keyup="handleEditorFocus"
     ></pre>
     <div class="action">
       <div class="action-txt">按 Ctrl+Enter 进行换行</div>
+      <!--      <button id="connect">连接</button>-->
+      <!--      <button id="disconnect" disabled="disabled">断开</button>-->
       <button class="action-btn" @click="handleSend">发送</button>
+      <!--      <div>-->
+      <!--        <h3>订阅形式</h3>-->
+      <!--        <label>订阅消息：</label><input id="subscribeMsg" >-->
+      <!--      </div>-->
     </div>
   </div>
 </template>
@@ -70,6 +76,48 @@ import emoji from "@/assets/emoji.png";
 import emojiSmall from "@/assets/emoji-small.png";
 import avatar from "@/assets/default.png";
 import spacer from "@/assets/spacer.gif";
+import {toDate} from "element-ui/src/utils/date-util";
+// import "../../../../util/jquery.js"
+// import "../../../../util/sockjs.min.js"
+// import "../../../../util/stomp.js"
+
+
+// const stomp = null;
+// $("#connect").click(function () {
+//   var url = "http://localhost:8081/webSocket"
+//   var socket = new SockJS(url);
+//   stomp = Stomp.over(socket);
+//   //连接
+//   stomp.connect(
+//       {"Authorization":'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyODQ5OTQ4NTEyQHFxLmNvbSIsImNydCI6MTYzNDc5ODk0MzU4OCwiZXhwIjoxNjM0ODAyNTQzfQ.JiWIAamPfMHmVFWDhJF40nMzP6CSANZxEsnREWjQoHqOv92hv-b0sk_5DEvTaZ9B3b0K_Exa7ci9_omj2oCHVA',
+//         "chatId":1}
+//       , function (frame) {
+//         //用户模式
+//         stomp.subscribe("/user/queue", function (res) {
+//           $("#userMsg").val(res.body);
+//         });
+//         stomp.subscribe("/app/subscribe/chat", function (res) {
+//           $("#subscribeMsg").val(res.body);
+//         });
+//         setConnect(true);
+//       });
+// });
+// $("#disconnect").click(function () {
+//   if (stomp != null) {
+//     stomp.disconnect();
+//   }
+//   setConnect(false);
+// });
+//设置按钮
+// function setConnect(connectStatus) {
+//   $("#connect").attr("disabled", connectStatus);
+//   $("#disconnect").attr("disabled", !connectStatus);
+// }
+//
+//发送用户消息
+// $("#action-btn").click(function () {
+//   stomp.send("/app/chat", {}, JSON.stringify({"body":$("#userText").val()}))
+// });
 
 function handleMessage(ctnInput) {
   let ctn = [];
@@ -81,7 +129,7 @@ function handleMessage(ctnInput) {
       if (node.nodeName.toUpperCase() === "IMG") {
         const dataset = node.dataset;
         ctn.push(
-          `<img src="${spacer}" class="expression-icon-small" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle; background: url(${dataset.url}) ${dataset.y}px ${dataset.x}px" />`
+            `<img src="${spacer}" class="expression-icon-small" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle; background: url(${dataset.url}) ${dataset.y}px ${dataset.x}px" />`
         );
         //let img = `[${dataset.type} ${dataset.x} ${dataset.y}]`;
         //ctn.push(img);
@@ -94,6 +142,9 @@ function handleMessage(ctnInput) {
   return ctn.join("");
 }
 
+let subscribeMsg = [];
+let myInformation;
+// let stomp = null;
 export default {
   name: "RightFooter",
   data() {
@@ -103,6 +154,9 @@ export default {
       lastEditRange: null
     };
   },
+  // mounted() {
+  //   this.initWebSocket();
+  // },
   created() {
     let items = [];
     for (let i = 0; i < 7; i++) {
@@ -157,7 +211,99 @@ export default {
     }
   },
   methods: {
+    initWebSocket() {
+      let url = "http://localhost:8081/webSocket"
+      let socket = new SockJS(url);
+      this.$websocket.stomp = Stomp.over(socket);
+      // stomp = Stomp.over(socket);
+      console.log(this.chatId)
+      this.$websocket.stomp.connect(
+          // stomp.connect(
+          {
+            "Authorization": this.$store.getters.getToken,
+            "chatId": 1
+          }
+          , function (frame) {
+            //用户模式
+            this.$websocket.stomp.subscribe("/user/queue", function (res) {
+              // stomp.subscribe("/user/queue", function (res) {
+              document.querySelector("#content-input").val(res.body);
+            });
+            this.$websocket.stomp.subscribe("/app/subscribe/chat", function (res) {
+              // stomp.subscribe("/app/subscribe/chat", function (res) {
+              // console.log(res.data())
+              subscribeMsg = [];
+              let data = JSON.parse(res.body);
+              console.log(data);
+              // console.log(res.body.length)
+              // let count = data.length - 1;
+              // console.log(count)
+              let myId = data.speakUserId;
+              let myName = data.speakUserName;
+              let yourName = data.otherUserName;
+              let myPicture = data.speakUserPicturePath;
+              let yourPicture = data.otherUserPicturePath;
+              console.log(myId);
+              console.log(myName);
+              console.log(myPicture);
+              for (let item of data.chatContents) {
+                // console.log(item);
+                let msg;
+                if (item.isSpeakUser) {
+                  msg = {
+                    avatar: myPicture,
+                    ctn: item.content,
+                    nickname: myName,
+                    sender: item.isSpeakUser,
+                    time: toDate(item.date),
+                    type: "chat"
+                  }
+                } else {
+                  msg = {
+                    avatar: yourPicture,
+                    ctn: item.content,
+                    nickname: yourName,
+                    sender: item.isSpeakUser,
+                    time: toDate(item.date),
+                    type: "chat"
+                  }
+                }
+                subscribeMsg = [msg].concat(subscribeMsg);
+              }
+
+              myInformation = {
+                id: myId,
+                avatar: myPicture,
+                nickname: myName.toString(),
+                // gender: "",
+                // alias: "",
+                // region: ""
+              }
+              console.log(subscribeMsg);
+              console.log(myInformation);
+              // this.$store.commit("setInitialHistory", subscribeMsg);
+              // this.$store.commit("setMyself", myInformation);
+            })
+            //   , function (res) {
+            // document.querySelector("#subscribeMsg").val(res.body);
+            // });
+            // setConnect(true);
+          }
+      );
+      this.$store.commit("setInitialHistory", subscribeMsg);
+      this.$store.commit("setMyself", myInformation);
+      // this.commit();
+    },
+
+
+    commit(){
+      this.$store.commit("setInitialHistory", subscribeMsg);
+      this.$store.commit("setMyself", myInformation);
+    },
+
     handleShowExpression() {
+      // this.$store.commit("setInitialHistory", subscribeMsg);
+      // this.$store.commit("setMyself", myInformation);
       this.$store.commit("setMembers", false);
       this.$store.commit("setMemberInfo", false);
       this.$store.commit("setExpression", !this.$store.state.isShowExpression);
@@ -189,13 +335,13 @@ export default {
         type = "emoji";
       }
       document.execCommand(
-        "insertHTML",
-        false,
-        `<img src="${spacer}" data-url="${
-          this.expressions[this.expressionIndex].smallImg
-        }" data-x="${sx}" data-y="${sy}" class="expression-icon-small" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle; background: url(${
-          this.expressions[this.expressionIndex].smallImg
-        }) ${sy}px ${sx}px" />`
+          "insertHTML",
+          false,
+          `<img src="${spacer}" data-url="${
+              this.expressions[this.expressionIndex].smallImg
+          }" data-x="${sx}" data-y="${sy}" class="expression-icon-small" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle; background: url(${
+              this.expressions[this.expressionIndex].smallImg
+          }) ${sy}px ${sx}px" />`
       );
 
       this.lastEditRange = selection.getRangeAt(0);
@@ -214,8 +360,11 @@ export default {
       document.execCommand("insertText", false, ctn);
     },
     handleSend() {
+      // stomp.send("/app/chat", {}, JSON.stringify({"body":document.querySelector("#content-input")}));
       const ctnInput = document.querySelector("#content-input");
       let ctn = handleMessage(ctnInput).trim();
+      stomp.send("/app/chat", {}, JSON.stringify({"body": document.querySelector("#content-input").innerHTML}));
+      // stomp.send("/app/chat", {}, JSON.stringify({"body": document.querySelector("#content-input").innerHTML}));
 
       if (ctn === "") {
         return;
@@ -237,7 +386,8 @@ export default {
       this.$store.commit("sendMessage", {
         type: "chat",
         time: new Date(),
-        sender: myself.id,
+        // sender: myself.id,
+        sender: true,
         nickname: myself.nickname,
         avatar: myself.avatar,
         ctn

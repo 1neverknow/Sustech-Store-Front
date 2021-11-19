@@ -26,6 +26,8 @@ import PI from "@/views/Modify/PersonInformation";
 import AI from "@/views/Modify/AddressInformation";
 import Search from "@/views/Search"
 import Main from "@/views/Main/Main";
+import ST from "@/views/test"
+import SHP from '@/views/SearchHomePage'
 
 Vue.use(VueRouter)
 // router: 路由 - 页面跳转管理
@@ -91,6 +93,16 @@ const routes = [
         component: Announced
       },
     ]
+  },
+  {
+    path: '/s',
+    name: 'Search',
+    component: ST
+  },
+  {
+    path: '/sh',
+    name: 'SHP',
+    component: SHP
   },
   {
     path: '/login',
