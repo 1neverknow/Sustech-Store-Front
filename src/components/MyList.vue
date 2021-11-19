@@ -13,7 +13,7 @@
             title="Are you sure to delete this?"
             @confirm="confirmEvent(index)"
         >
-          <i class="el-icon-close delete" slot="reference" v-show="isDelete"></i>
+          <i class="el-icon-close delete" slot="reference" v-show="true"></i>
         </el-popconfirm>
 <!--        点击后跳转至商品详情-->
         <router-link :to="{path: '/goods/'+ item.goodsId}" class="router-link-active">
@@ -35,9 +35,8 @@ import Element from "element-ui";
 
 export default {
   name: "MyList",
-  // list为父组件传来的商品列表
-  // isMore为是否显示“浏览更多”
-  props: ['list', 'isMore', 'isDelete'],
+  // list为父组件传来的列表
+  props: ['list'],
   data() {
     return{}
   },

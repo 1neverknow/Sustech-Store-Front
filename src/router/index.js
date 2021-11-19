@@ -72,7 +72,15 @@ const routes = [
         path: 'search',
         name: 'Search',
         component: Search
-      }
+      },
+      {
+        path: '/user/order',
+        name: 'Order',
+        meta: {
+          requireAuth: true
+        },
+        component: Order
+      },
     ]
   },
   {
@@ -129,14 +137,14 @@ const routes = [
     },
     component: Publish
   },
-  {
-    path: '/user/order',
-    name: 'Order',
-    meta: {
-      requireAuth: true
-    },
-    component: Order
-  },
+  // {
+  //   path: '/user/order',
+  //   name: 'Order',
+  //   meta: {
+  //     requireAuth: true
+  //   },
+  //   component: Order
+  // },
   {
     path: '/none',
     name: 'None',
@@ -150,14 +158,6 @@ const routes = [
     },
     component: Admin
   },
-  {
-    path: '/user/:userId',
-    name: 'User',
-    meta: {
-      requireAuth: true
-    },
-    component: User
-  },
   // {
   //   path: '/user/collection',
   //   name: 'Collection',
@@ -166,6 +166,14 @@ const routes = [
   //   },
   //   component: Collection
   // },
+  {
+    path: '/user/:userId',
+    name: 'User',
+    meta: {
+      requireAuth: true
+    },
+    component: User
+  },
 ]
 
 const router = new VueRouter({

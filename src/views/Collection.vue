@@ -5,7 +5,7 @@
     <div class="collection-header">
       <div class="header-content">
         <p>
-          <i class="el-icon-star-on" style="color: gold"></i>
+          <i class="el-icon-star-on" style="color: gold; margin-right: 20px"></i>
         </p>
         <p>My Collections</p>
         <router-link to></router-link>
@@ -16,7 +16,9 @@
 <!--      有收藏物品-->
       <div v-if="collectList.length > 0">
         <el-row class="goods-list">
-          <MyList :list="collectList" :isDelete="true"></MyList>
+          <MyList
+              v-bind:list="collectList"
+          ></MyList>
         </el-row>
         <el-row>
           <!-- 分页区域 -->
@@ -52,28 +54,7 @@ export default {
   components: {MyList},
   data() {
     return {
-      collectList: [
-          {
-            goodsId: 1,
-            picture: '',
-            title: 'Mana Stone',
-            announcer: {
-              userId: 1,
-              username: 'faust',
-            },
-            price: 100000,
-          },
-        {
-          goodsId: 2,
-          picture: '',
-          title: 'KFC',
-          announcer: {
-            userId: 1,
-            username: 'faust',
-          },
-          price: 30,
-        }
-      ],
+      collectList: [],
       queryInfo: {
         query: '',
         pagenum: 1,
@@ -117,7 +98,8 @@ export default {
       this.getCollectList()
     },
   },
-  mount() {
+  mounted() {
+    console.log('mount')
     this.activate()
   }
 }
@@ -145,16 +127,19 @@ export default {
   font-size: 28px;
   line-height: 80px;
   color: #424242;
-  margin-right: 20px;
+  /*margin-right: 20px;*/
 }
 .collection .collection-header .header-content p i {
   font-size: 45px;
   color: deepskyblue;
   line-height: 80px;
 }
-
 .collection .content {
   padding: 20px 0;
+  margin-top: 50px;
+  margin-left: 18%;
+  /*margin-left: 400px;*/
+  /*text-align: center;*/
   width: 1225px;
 }
 .collection .content .pagination {

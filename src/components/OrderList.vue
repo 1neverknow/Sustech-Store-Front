@@ -99,7 +99,7 @@
               >Shipment</el-button>
               <el-dialog title="Shipment Progress"
                          :visible.sync="shipmentVisible"
-                         width="70%"
+                         width="50%"
               >
                 <Shipment
                     @refresh="refresh"
@@ -129,7 +129,7 @@
               >Comment</el-button>
               <el-dialog title="Comment Deal"
                          :visible.sync="commentVisible"
-                         width="70%"
+                         width="50%"
               >
                 <DealComment
                     @refresh="refresh"
@@ -182,13 +182,14 @@
               >Appeal</el-button>
               <el-dialog title="Appeal Form"
                          :visible.sync="appealVisible"
-                         width="70%"
+                         width="50%"
               >
-                <AppealForm
-                    @changeAppealVisible="changeAppealVisible"
+                <ComplaintForm
+                    @changeVisible="changeAppealVisible"
                     @refresh="refresh"
-                    v-bind:dealId="queryDealId"
-                ></AppealForm>
+                    v-bind:type="'deal'"
+                    v-bind:id="queryDealId"
+                ></ComplaintForm>
               </el-dialog>
             </template>
 
@@ -205,12 +206,12 @@ import Pay from "@/components/Pay"
 import Refund from "@/components/Refund"
 import Shipment from "@/components/Shipment"
 import DealComment from "@/components/DealComment"
-import AppealForm from "@/components/AppealForm"
+import ComplaintForm from "@/components/ComplaintForm"
 import Deliver from "@/components/Deliver"
 import RefundAgree from "@/components/RefundAgree"
 import Element from "element-ui"
 export default {
-  components: {DealDetail, Pay, Refund, Shipment, DealComment, AppealForm, Deliver, RefundAgree},
+  components: {DealDetail, Pay, Refund, Shipment, DealComment, ComplaintForm, Deliver, RefundAgree},
   props: ['orderList', 'total', 'stage', 'dealType'],
   data() {
     return {

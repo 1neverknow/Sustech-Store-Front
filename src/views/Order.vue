@@ -279,6 +279,9 @@ export default {
     'dealType': function(newVal, oldVal) {
       this.refresh()
     }
+  },
+  mounted() {
+    this.activate()
   }
 }
 </script>
@@ -286,14 +289,14 @@ export default {
 <style scoped>
 .order {
   background-color: #f5f5f5;
-  margin: 0 auto;
-  /*height: 800px;*/
+  margin: auto auto auto -10px;
+  height: 800px;
 }
 .order .order-header {
   background-color: #fff;
   border-bottom: 2px solid deepskyblue;
   margin-bottom: 50px;
-  margin-top: -50px;
+  margin-top: -98px;
   width: 100%;
 }
 .order .order-header .header-content {
@@ -319,8 +322,9 @@ export default {
   /*margin: auto;*/
 }
 .order .footer {
-  margin-top: 50px;
+  /*margin-top: 50px;*/
   margin-right: 50px;
+  margin-bottom: 100px;
   text-align: right;
   /*float: right;*/
 }

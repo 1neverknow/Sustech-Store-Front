@@ -12,6 +12,8 @@
       <el-form-item label="Photo" prop="photo">
         <el-upload
             class="upload-demo"
+            :on-success="handleSuccess"
+            :before-upload="beforeUpload"
             drag
             action="https://jsonplaceholder.typicode.com/posts/"
             multiple
@@ -41,9 +43,10 @@
 
 <script>
 import Element from "element-ui"
+import axios from "axios"
 export default {
-  name: "ComplainGoods",
-  props: ['goodsId'],
+  name: "Complain",
+  props: ['type', 'id'],
   data() {
     const validateContent = (rule, value, callback) => {
       if (value === '') {
@@ -54,7 +57,6 @@ export default {
     }
     return {
       ruleForm: {
-        goodsId: this.goodsId,
         content: '',
       },
       photo: '',
@@ -66,21 +68,52 @@ export default {
     }
   },
   methods: {
+    beforeUpload(file) {
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
+      if (!isJPG) {
+        Element.Message({
+          message: 'File must be JPG/PNG format!',
+          type: 'error',
+        })
+        return false
+      }
+      if (!isLt2M) {
+        Element.Message({
+          message: 'Picture size can not exceed 2MB!',
+          type: 'error',
+        })
+        return false
+      }
+    },
+    handleSuccess(res, file) {
+      this.photo = file.raw
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let photoData = new FormData();
-          photoData.append('photos', this.photos)
+          photoData.append('picture', this.photo)
           const newRequest = axios.create();
+          let url = ''
+          let method = 'POST'
+          if (this.type === 'goods') {
+            url = 'http://localhost:8081/goods/complain?'
+                    + 'content=' + this.ruleForm.content
+                    + '&goodsId=' + this.id
+          } else if(this.type === 'deal') {
+            url = 'http://localhost:8081/deal/appealing/'
+                + this.id
+                + '?content=' + this.ruleForm.content
+            method = 'GET'
+          }
           newRequest({
-            method: "POST",
-            url: 'http://localhost:8081/goods/complain?'
-                + 'content=' + this.ruleForm.content
-                + '&goodsId=' + this.goodsId,
+            method: method,
+            url: url,
             data: photoData,
             headers: {
               "Content-Type": "multipart/form-data",
-              'Authorization': store.getters.getToken
+              'Authorization': this.$store.getters.getToken
             }
           }).then(res => {
             Element.Message({
@@ -88,6 +121,9 @@ export default {
               type: 'success',
             })
             this.closeDialog()
+            if (this.type === 'deal') {
+              this.refresh()
+            }
           })
         } else {
           Element.Message({
@@ -102,7 +138,10 @@ export default {
       this.$refs[formName].resetFields()
     },
     closeDialog() {
-      this.$emit('changeComplainVisible', false)
+      this.$emit('changeVisible', false)
+    },
+    refresh() {
+      this.$emit('refresh')
     }
   },
 }

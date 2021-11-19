@@ -19,21 +19,21 @@
                   @click="changeComplainVisible(true)"
               >Complain this goods
               </el-button></li>
-              <el-dialog
-                  title="Complain"
-                  :visible.sync="complainVisible"
-                  width="50%"
-              >
-                <ComplainGoods
-                    @changeComplainVisible="changeComplainVisible"
-                    v-bind:goodsId="goodsId"
-                ></ComplainGoods>
-              </el-dialog>
             </ul>
           </div>
         </div>
       </el-header>
-
+      <el-dialog
+          title="Complain"
+          :visible.sync="complainVisible"
+          width="50%"
+      >
+        <ComplaintForm
+            @changeVisible="changeComplainVisible"
+            v-bind:type="'goods'"
+            v-bind:id="goodsId"
+        ></ComplaintForm>
+      </el-dialog>
       <el-main class="main">
         <el-row>
           <!--左侧商品图-->
@@ -162,12 +162,12 @@
 
 <script>
 import GoodsComment from "@/components/GoodsComment"
-import ComplainGoods from "@/components/ComplainGoods"
+import ComplaintForm from "@/components/ComplaintForm"
 import Element from "element-ui";
 
 export default {
   name: "Details",
-  components: {GoodsComment, ComplainGoods},
+  components: {GoodsComment, ComplaintForm},
   data() {
     return {
       state: false, // 是否可以购买（售出后打上已售出标签，除非卖家撤下，商品详情依然存在）
