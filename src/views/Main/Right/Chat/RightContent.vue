@@ -1,13 +1,14 @@
 <template>
   <div id="content" class="wrap list-wrap">
     <info-block
-      :visible="isShowChatterInfo"
-      :memberInfo="chatterInfo"
-      :infoPosition="infoPosition"
+        :visible="isShowChatterInfo"
+        :memberInfo="chatterInfo"
+        :infoPosition="infoPosition"
     ></info-block>
     <div class="no-chat-wrap" v-if="isNoChat">
       <i class="icon icon-logo"></i>
-      <div class="no-chat-text">未选择聊天</div>
+      <el-empty description="未选择聊天"></el-empty>
+      <!--      <div class="no-chat-text">未选择聊天</div>-->
     </div>
     <div v-else>
       <div class="no-new-message" v-if="isNoMessage">暂时没有新消息</div>
@@ -21,22 +22,22 @@
             <div class="msg-main-right" v-if="isMyself(msg.sender)">
               <div class="msg-right-wrap">
                 <pre
-                  class="msg-ctn"
-                  style="background-color: #b2e281;"
-                  v-html="msg.ctn"
+                    class="msg-ctn"
+                    style="background-color: #b2e281;"
+                    v-html="msg.ctn"
                 ></pre>
               </div>
               <img
-                :src="msg.avatar"
-                class="msg-avatar msg-avatar-right"
-                @click.stop="handleShowChatterInfo($event, index)"
+                  :src="msg.avatar"
+                  class="msg-avatar msg-avatar-right"
+                  @click.stop="handleShowChatterInfo($event, index)"
               />
             </div>
             <div class="msg-main" v-else>
               <img
-                :src="msg.avatar"
-                class="msg-avatar"
-                @click.stop="handleShowChatterInfo($event, index)"
+                  :src="msg.avatar"
+                  class="msg-avatar"
+                  @click.stop="handleShowChatterInfo($event, index)"
               />
               <div class="msg-right-wrap">
                 <div class="msg-nickname">{{ msg.nickname }}</div>
@@ -53,7 +54,9 @@
 <script>
 import InfoBlock from "@/components/InfoBlock";
 import avatar from "@/assets/user.jpeg";
+import SockJS from "sockjs-client";
 
+// let stomp = null;
 export default {
   name: "RightContent",
   components: {
@@ -105,6 +108,30 @@ export default {
     }
   },
   methods: {
+    // initWebSocket() {
+    //   let url = "http://localhost:8081/webSocket"
+    //   let socket = new SockJS(url);
+    //   stomp = Stomp.over(socket);
+    //   stomp.connect(
+    //       {"Authorization":this.$store.getters.getToken,
+    //         "chatId":this.chatId}
+    //       , function (frame) {
+    //           //用户模式
+    //           stomp.subscribe("/user/queue", function (res) {
+    //               $("#userMsg").val(res.body);
+    //           });
+    //           stomp.subscribe("/app/subscribe/chat", function (res) {
+    //               $("#subscribeMsg").val(res.body);
+    //           });
+    //           // setConnect(true);
+    //       }
+    //   );
+    // },
+    // disconnect() {
+    //   if (stomp != null) {
+    //     stomp.disconnect();
+    //   }
+    // },
     isShowTime(index) {
       const messages = this.messages;
 
@@ -115,13 +142,13 @@ export default {
       return messages[index].time - messages[index - 1].time >= 120000;
     },
     isMyself(sender) {
-      return this.$store.state.myself.id === sender;
+      return sender;
     },
     time(date) {
       const d = new Date(date);
       const h = d.getHours() < 10 ? "0" + d.getHours() : d.getHours();
       const m = d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes();
-      return `${h}:${m}`;
+      return `${d}`;
     },
     handleShowChatterInfo(event, index) {
       const { clientX: x, clientY: y } = event;

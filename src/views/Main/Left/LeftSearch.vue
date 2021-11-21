@@ -2,23 +2,25 @@
   <div class="left-search-wrap">
     <div class="left-search-input-wrap" @click.stop="">
       <i class="left-search"></i>
+      <!--      <i class="el-icon-search"></i>-->
+      <!--      <el-input v-model="searchText" placeholder="搜索"></el-input>-->
       <input
-        class="left-search-input"
-        placeholder="搜索"
-        v-model="searchText"
+          class="left-search-input"
+          placeholder="搜索"
+          v-model="searchText"
       />
     </div>
     <div
-      class="search-result-wrap list-wrap"
-      v-if="isShowSearch"
-      @click.stop=""
+        class="search-result-wrap list-wrap"
+        v-if="isShowSearch"
+        @click.stop=""
     >
       <div class="search-result-title" v-if="friends.length !== 0">好友</div>
       <div
-        v-for="(friend, index) in friends"
-        :key="'friend' + index"
-        class="search-result-friend"
-        @click="handleNewChat(index, 0)"
+          v-for="(friend, index) in friends"
+          :key="'friend' + index"
+          class="search-result-friend"
+          @click="handleNewChat(index, 0)"
       >
         <img class="search-result-avatar" :src="friend.avatar" />
         <div class="search-result-text">
@@ -26,17 +28,17 @@
         </div>
       </div>
       <div
-        class="search-result-title"
-        style="margin-top: 10px;"
-        v-if="groups.length !== 0"
+          class="search-result-title"
+          style="margin-top: 10px;"
+          v-if="groups.length !== 0"
       >
         群组
       </div>
       <div
-        v-for="(group, index) in groups"
-        :key="'group' + index"
-        class="search-result-friend"
-        @click="handleNewChat(index, 1)"
+          v-for="(group, index) in groups"
+          :key="'group' + index"
+          class="search-result-friend"
+          @click="handleNewChat(index, 1)"
       >
         <img class="search-result-avatar" :src="group.avatar" />
         <div class="search-result-text">{{ group.nickname }}</div>
@@ -54,7 +56,7 @@ export default {
     return {
       searchText: "",
       friends: [],
-      groups: []
+      groups: [],
     };
   },
   watch: {

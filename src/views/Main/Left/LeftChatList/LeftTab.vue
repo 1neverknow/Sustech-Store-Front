@@ -1,6 +1,15 @@
 <template>
   <div class="left-chat-list-wrap">
-    <div class="left-chat-list-tab">
+    <div >
+      <!--      <el-table-->
+      <!--          :data="tab"-->
+      <!--          style="width: 100%">-->
+      <!--        <el-table-column-->
+      <!--            prop="date"-->
+      <!--&lt;!&ndash;            label="日期"&ndash;&gt;-->
+      <!--            width="180">-->
+      <!--        </el-table-column>-->
+      <!--      </el-table>-->
       <a
           v-for="(nav, index) in navs"
           :key="'nav' + index"
@@ -8,10 +17,10 @@
           :title="nav.title"
           @click="handleChangeTab(index)"
       >
-        <i
-            class="left-chat-list-tab-icon"
-            :class="nav.icon + (index === currentNav ? '-selected' : '')"
-        ></i>
+        <!--        <i-->
+        <!--            class="left-chat-list-tab-icon"-->
+        <!--            :class="nav.icon + (index === currentNav ? '-selected' : '')"-->
+        <!--        ></i>-->
       </a>
       <!--      <b :data="chats"></b>-->
     </div>
@@ -37,23 +46,23 @@ export default {
   name: "LeftTab",
   components: {
     TabChat,
-    TabLinkman,
-    TabArticle,
+    // TabLinkman,
+    // TabArticle,
     // ChatList
   },
   data() {
     return {
       navs: [
         {
-          title: "聊天",
-          icon: "left-chat-list-tab-chat",
+          // title: "聊天",
+          // icon: "left-chat-list-tab-chat",
           tab: TabChat
         },
-        {
-          title: "通讯录",
-          icon: "left-chat-list-tab-linkman",
-          tab: TabLinkman
-        },
+        // {
+        //   title: "通讯录",
+        //   icon: "left-chat-list-tab-linkman",
+        //   tab: TabLinkman
+        // },
         // {
         //   title: "文章",
         //   icon: "left-chat-list-tab-article",
@@ -89,21 +98,23 @@ export default {
           return ret.substring(0, ret.length - 1)
         }]
       }).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.code === 2000) {
           const data = res.data.data
           console.log(data)
           let list=[]
-          console.log(data)
+          // console.log(toDate(data))
           data.forEach((item) => {
+            console.log(item.lastMessageDate)
+            console.log( toDate(item.lastMessageDate))
             let chatList = {
-              chatId: item.dealId,
-              linkmanIndex: 1,
+              chatId: item.chatId,
+              linkmanIndex: item.otherUserId,
               // isMute: false,
               // isOnTop: false,
               messages: [
                 {
                   avatar: item.otherUserPicturePath,
-                  nickname: item.otherUserName,
+                  nickname: item.otherUserName.toString(),
                   ctn: item.lastMessageContent,
                   time: toDate(item.lastMessageDate),
                   type: "chat"
