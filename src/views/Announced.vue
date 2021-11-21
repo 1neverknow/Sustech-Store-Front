@@ -9,9 +9,7 @@
         <router-link to></router-link>
       </div>
     </div>
-
     <el-card class="content">
-      <!--      有收藏物品-->
       <div v-if="announceList.length > 0">
         <el-row class="goods-list">
           <MyList
@@ -53,6 +51,7 @@ export default {
   components: {MyList},
   data() {
     return {
+      goodsState: '0',
       announceList: [],
       queryInfo: {
         query: '',

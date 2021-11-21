@@ -225,7 +225,9 @@ export default {
     },
     async submitForm(formName) {
       await this.submitInfo()
-      await this.uploadPicture()
+      for (let i in this.photos) {
+        await this.uploadPicture(i)
+      }
     },
     submitInfo() {
       return new Promise(resolve => {
@@ -237,11 +239,11 @@ export default {
         }
       )
     },
-    uploadPicture() {
+    uploadPicture(i) {
       return new Promise(resolve => {
         // 上传商品图片
         let photoData = new FormData();
-        photoData.append('photos', this.photos[0])
+        photoData.append('photos', this.photos[i])
         const newRequest = axios.create();
         newRequest({
           method: "POST",

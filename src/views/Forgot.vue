@@ -24,8 +24,20 @@
               class="ms-content"
           >
             <el-form-item label="E-Mail Address" prop="email">
-              <el-input v-model="ruleForm.email" style="width: 384px"></el-input>
-              <el-button type="primary" :disabled="verify.disable" @click="resetForm('ruleForm')">{{verify.getCode}}</el-button>
+              <el-input v-model="ruleForm.email" style="width: 420px;"></el-input>
+<!--              <el-button-->
+<!--                  type="primary"-->
+<!--                  :disabled="verify.disable"-->
+<!--                  @click="sendCode('ruleForm')"-->
+<!--                  style="width: 100px;"-->
+<!--              >{{verify.getCode}}</el-button>-->
+              <el-button
+                  type="primary"
+                  :disabled="disable"
+                  :class="{ codeGetting:isGeting }"
+                  @click="sendCode('ruleForm')"
+                  style="width: 100px;"
+              >{{getCode}}</el-button>
             </el-form-item>
 
             <el-form-item label="Varify Code" prop="varifycode">
@@ -63,23 +75,10 @@ export default {
         callback();
       }
     };
-    const countdown = setInterval(() => {
-      if (this.count < 1) {
-        this.isGeting = false
-        this.disable = false
-        this.getCode = 'Send'
-        this.count = 30
-        clearInterval(countDown)
-      } else {
-        this.isGeting = true
-        this.disable = true
-        this.getCode = this.count-- + 's'
-      }
-    }, 1000);
     return {
       labelPosition: 'top',
       ruleForm: {
-        email: '111111@qq.com',
+        email: 'c001hewanning@qq.com',
         varifycode: '',
       },
       rules: {
@@ -88,12 +87,10 @@ export default {
         ],
         varifycode: {trigger: 'blur',}
       },
-      verify: {
-        isGeting: false,
-        getCode: 'Send',
-        disable: false,
-        time_out: 0
-      }
+      getCode: 'Send',
+      isGeting: false,
+      count: 30,
+      disable: false
     }
   },
   methods: {
@@ -101,34 +98,23 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          // 更改为调用全局this -> 可以用来获取store里的信息
-          const _this = this
           this.$axios({
-            method: 'post',
-            url: 'http://localhost:8081/login/reset'
-                + "?email=" + this.ruleForm.email
-                + "&verifycode=" + this.ruleForm.varifycode,
-            data: {
-              email: this.ruleForm.email,
-              password: this.ruleForm.password,
-            },
-            transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
-              var ret = '';
-              for (var it in data) {
-                // 如果要发送中文 编码
-                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-              }
-              return ret.substring(0,ret.length-1)
-            }],
+            method: 'get',
+            url: 'http://localhost:8081/user/checkEmail?'
+                + "checkCode=" + this.ruleForm.varifycode
+                + "&email=" + this.ruleForm.email,
           }).then(res => {
+            Element.Message({
+              message: 'Verify Success!',
+              type: 'success',
+            })
             // 验证成功后，跳转到reset页面
-            _this.$router.push("/login/reset")
+            this.$router.push("/login/reset")
           })
         } else {
           console.log('error submit!!')
           Element.Message({
-            showClose: true,
-            message: 'Please check your input',
+            message: 'Please check your code',
             type: 'error',
           })
           return false
@@ -136,27 +122,32 @@ export default {
       })
     },
     // 提交获取验证码的表单（未填写验证码）
-    resetForm(formName) {
+    sendCode(formName) {
       this.$refs[formName].validateField("email", error => {
         if (!error) {
-            var countdown = setInterval(() => {
-              if (this.verify.time_out < 1) {
-                console.log("send verify code")
-                this.verify.isGeting = false
-                this.verify.disable = false
-                this.verify.getCode = 'Send'
-                this.verify.time_out = 30
-                clearInterval(countdown)
+          this.$axios({
+            method: 'get',
+            url: 'http://localhost:8081/user/sendCode?email=' + this.ruleForm.email,
+          }).then(res => {
+            var countDown = setInterval(() => {
+              if (this.count < 1) {
+                this.isGeting = false
+                this.disable = false
+                this.getCode = 'Send'
+                this.count = 6
+                clearInterval(countDown)
               } else {
-                console.log("sending")
-                this.verify.isGeting = true
-                this.verify.disable = true
-                this.verify.getCode = --this.verify.time_out + 's'
+                this.isGeting = true
+                this.disable = true
+                this.getCode = this.count-- + 's'
               }
-            }, 1000);
-          // })
+            }, 1000)
+          })
         } else {
-          console.log('error submit!!')
+          Element.Message({
+            message: 'Please check your email',
+            type: 'error',
+          })
           return false
         }
       })
@@ -199,5 +190,9 @@ export default {
 .reset-btn button {
   width: 100%;
   height: 36px;
+}
+.codeGetting{
+  background: #cdcdcd;
+  border-color: #cdcdcd;
 }
 </style>
