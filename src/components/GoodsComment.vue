@@ -97,6 +97,7 @@ export default {
 
 <style scoped>
 .input-wrapper {
+  margin-left: 10%;
   padding: 10px;
   width: 60%;
 }
@@ -111,6 +112,7 @@ export default {
 }
 
 .comment-body {
+  margin-left: 10%;
 }
 
 .comment-body .comment-item {

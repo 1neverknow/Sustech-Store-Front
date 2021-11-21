@@ -134,8 +134,8 @@
         </el-row>
 
         <el-collapse v-model="activeNames" class="collapse">
-          <el-collapse-item name="1">
-            <template #title>
+          <el-collapse-item name="1" style="margin-left: 10%;">
+            <template #title >
               <h2 style="margin-right: 10px">Comments </h2>
               <i class="header-icon el-icon-info"></i>
             </template>
@@ -145,8 +145,7 @@
                 v-bind:comments="comments"
             ></GoodsComment>
           </el-collapse-item>
-
-          <el-collapse-item name="2">
+          <el-collapse-item name="2" style="margin-left: 10%;">
             <template #title>
               <h2 style="margin-right: 10px">More </h2>
               <i class="header-icon el-icon-search"></i>
