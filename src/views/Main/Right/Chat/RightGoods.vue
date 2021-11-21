@@ -18,7 +18,10 @@
         </div></el-col>
         <el-col :span="9"><div >
           <div class="button">
-            <el-button class="confirm-to-buy" >Confirm to buy!</el-button>
+            <el-button
+                class="confirm-to-buy"
+                @click="handleClick"
+            >Confirm to buy!</el-button>
           </div>
         </div></el-col>
       </el-row>
@@ -55,6 +58,10 @@ export default {
     // }
   },
   methods: {
+    handleClick() {
+      const goodsId = this.$store.goods.id
+      this.$route.push('/deal/' + goodsId)
+    }
     // // 通过路由获取商品id
     // activate() {
     //   console.log(this.$route.params.goodsId)

@@ -294,6 +294,7 @@ export default {
         })
         return
       }
+      this.$route.push('/message')
       // this.addDeal()
     },
     // 添加到收藏夹

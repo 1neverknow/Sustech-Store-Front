@@ -24,7 +24,7 @@
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
               :current-page="queryInfo.pagenum"
-              :page-sizes="[5, 10, 15, 20]"
+              :page-sizes="[4, 8, 12, 16]"
               :page-size="queryInfo.pagesize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="queryInfo.total"
@@ -46,9 +46,20 @@
 
 <script>
 import MyList from "@/components/MyList"
+import { ref } from 'vue'
 export default {
   name: "Announced",
   components: {MyList},
+  setup() {
+    const count = ref(0)
+    const load = () => {
+      count.value += 2
+    }
+    return {
+      count,
+      load,
+    }
+  },
   data() {
     return {
       goodsState: '0',
@@ -72,6 +83,8 @@ export default {
             const announcement_data = res.data.data
             this.queryInfo.total = announcement_data.length
             // let size = this.queryInfo.pagesize < this.queryInfo.total ? this.queryInfo.pagesize : this.queryInfo.total
+            let size = this.queryInfo.pagesize
+            // if r
             for (let i in announcement_data) {
               const item = announcement_data[i]
               this.announceList.push({
