@@ -15,9 +15,10 @@ import Deal from "@/views/Deal"
 import Publish from "@/views/Publish"
 import Order from "@/views/Order"
 import None from "@/views/None"
-import Admin from "@/views/Admin"
+import AdminAppealing from "@/views/AdminAppealing"
+import AdminComplainGoods from "@/views/AdminComplainGoods"
+import AdminComplainUser from "@/views/AdminComplainUser"
 import Announced from "@/views/Announced"
-
 import MainPage from "@/views/MainPage";
 import Account from "@/views/Account";
 import HomePage from "@/views/HomePage";
@@ -160,13 +161,34 @@ const routes = [
     component: None
   },
   {
-    path: '/admin',
-    name: 'Admin',
+    path: '/adminAppealing',
+    name: 'AdminAppealing',
     meta: {
       requireAuth: true
     },
-    component: Admin
+    component: AdminAppealing
   },
+  {
+    path: '/adminComplainUser',
+    name: 'AdminComplainUser',
+    meta: {
+      requireAuth: true
+    },
+    component: AdminComplainUser
+  },
+  {
+    path: '/adminComplainGoods',
+    name: 'AdminComplainGoods',
+    meta: {
+      requireAuth: true
+    },
+    component: AdminComplainGoods
+  },
+
+
+
+
+
   // {
   //   path: '/user/collection',
   //   name: 'Collection',
