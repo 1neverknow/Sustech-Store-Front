@@ -262,19 +262,6 @@ export default {
         } else {
           this.comments = []
         }
-        // const commentList = res.data.data
-        // this.comments = []
-        // for (let i in commentList) {
-        //   const c = commentList[i]
-        //   this.comments.push({
-        //     commentDate: c.commentDate,
-        //     commentId: c.commentId,
-        //     content: c.content,
-        //     picturePath: c.picturePath,
-        //     userId: c.userId,
-        //     username: c.username
-        //   })
-        // }
       })
     },
     // 点击我想要联系卖家
@@ -294,7 +281,14 @@ export default {
         })
         return
       }
-      this.$route.push('/message')
+      this.$axios.post('http://localhost:8081/chat/want?goodsId=' + this.goodsId)
+          .then(res => {
+            Element.Message({
+              message: 'Success',
+              type: 'success',
+            })
+      })
+      this.$router.push('/message')
       // this.addDeal()
     },
     // 添加到收藏夹
