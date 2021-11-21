@@ -1,3 +1,4 @@
+<!-- 问题 default是假的>-->
 <template>
   <div>
     <el-breadcrumb separator="/">
@@ -154,6 +155,7 @@ export default {
     },
 
     handleEdit(row,rowIndex) {
+      console.log(rowIndex)
       let oldOne = {
         receiver: this.tableData[rowIndex].receiver,
         telephone: this.tableData[rowIndex].telephone,
@@ -191,15 +193,20 @@ export default {
     },
 
     handleCancel() {
-      if(this.current_type==='edit'){
+      if(this.current_type ==='edit'){
+        let index= 0
         this.edit_list.forEach((item) => {
+          console.log(item)
+          console.log(index)
           this.tableData[item].edit_ornot = false
-          this.tableData[item].address = this.oldData[item].address
-          this.tableData[item].telephone = this.oldData[item].telephone
-          this.tableData[item].receiver= this.oldData[item].receiver
-          this.tableData[item].type = this.oldData[item].type
+          this.tableData[item].address = this.oldData[index].address
+          this.tableData[item].telephone = this.oldData[index].telephone
+          this.tableData[item].receiver= this.oldData[index].receiver
+          this.tableData[item].type = this.oldData[index].type
+          index++
         })
         this.edit_list=[]
+        this.oldData = []
       }else {
         this.tableData.pop()
         this.add_ornot = false
@@ -207,10 +214,6 @@ export default {
 
       this.save_disable = false
       this.current_type = ''
-      this.$message({
-        type: 'info',
-        message: 'You have Cancel the operation'
-      });
     },
 
     change(index){
@@ -230,11 +233,13 @@ export default {
     // "phone": 17796370472,
     // "isDefault": null
     initial(){
-      console.log(this.$store.getters.getToken)
       this.$axios({
         method: 'get',
         url: 'http://localhost:8081/user/address',
-        headers : {'authorization' :this.$store.getters.getToken},
+        headers : {
+          'Content-Type': 'application/json',
+          'authorization' :this.$store.getters.getToken
+        },
         transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
           var ret = '';
           for (var it in data) {
@@ -244,8 +249,10 @@ export default {
           return ret.substring(0,ret.length-1)
         }]
       }).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.code === 2000) {
           const data = res.data.data
+          console.log("test 1")
+          let de_index = 0
           data.forEach((item)=> {
             let address_info = {
               database_id: item.addressId,
@@ -254,7 +261,11 @@ export default {
               telephone: item.phone,
               address: item.addressName,
               edit_ornot: false,
-              type:item.isDefault==='null'?'Normal':'Default'
+              type:de_index === 0?'Default':'Normal',
+            }
+            if(de_index===0) {
+              this.$store.commit("SET_Default_Address",address_info)
+              de_index=1
             }
             this.tableData.push(address_info)
           })
@@ -268,58 +279,91 @@ export default {
 
     handleSave(){
       if(this.current_type==='edit'){
+        let index = 0
         this.edit_list.forEach((item) => {
-          this.deleteRequest(item)
-          this.addRequest(item)
+          this.editRequest(item,index)
+          index++
         })
-        this.edit_list=[]
       }else {
         this.addRequest(this.tableData.length-1)
-        this.add_ornot = false
       }
 
-      this.$message({
-        type: 'success',
-        message: 'You have successfully save your operation'
-      });
-      this.save_disable = false
     },
 
+    // 方法有问题
+    editRequest(item,index){
+      let address = {
+        addressId : this.tableData[item].database_id,
+        addressName :this.tableData[item].address,
+        phone:this.tableData[item].telephone,
+        recipientName :this.tableData[item].receiver,
+        belongToUserId : 0
+      }
+
+      this.$axios({
+        method: 'put',
+        url: 'http://localhost:8081/user/address',
+        headers : {
+          'Content-Type': 'application/json',
+        },
+        data: JSON.stringify(address),
+      }).then(res => {
+        if (res.data.code === 2000) {
+          this.$message({
+            type: 'success',
+            message: 'You have successfully edit address'
+          });
+          this.edit_list.splice(index,1)
+          this.oldData.splice(index,1)
+        } else {
+          this.$message({
+            type: 'info',
+            message: 'You have failed with the'+ index+' address update'
+          });
+        }
+      })
+    },
+    // 返回一个id 用于后续修改
     addRequest(position){
-      let judge = this.tableData[position].type==='Default'?'true':'false'
+      let address = {
+        addressId : 0,
+        addressName :this.tableData[position].address,
+        phone:this.tableData[position].telephone,
+        recipientName :this.tableData[position].receiver,
+        belongToUserId : 0
+      }
       this.$axios({
         method: 'post',
-        headers : {'authorization' :this.$store.getters.getToken},
-        url: 'http://localhost:8081/user/address'
-            +'?addressName='+this.tableData[position].address
-            +'&isDefault=' + judge
-            +'&phone=' +this.tableData[position].telephone
-            +'&recipientName='+this.tableData[position].receiver,
-        data:{
-          addressName :this.tableData[position].address,
-          isDefault  :judge,
-          phone:this.tableData[position].telephone,
-          recipientName :this.tableData[position].receiver,
+        headers : {
+          'Content-Type': 'application/json',
         },
-        transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
-          var ret = '';
-          for (var it in data) {
-            // 如果要发送中文 编码
-            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-          }
-          return ret.substring(0,ret.length-1)
-        }],
+        url: 'http://localhost:8081/user/address',
+        data:JSON.stringify(address),
+        // transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
+        //   var ret = '';
+        //   for (var it in data) {
+        //     // 如果要发送中文 编码
+        //     ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        //   }
+        //   return ret.substring(0,ret.length-1)
+        // }],
       }).then(res => {
-        console.log('add')
-        if (res.data.code === 200) {
+        if (res.data.code === 2000) {
           // this.tableData[position].database_id = data.addressID
           this.tableData[position].edit_ornot = false
-
+          this.$message({
+            type: 'success',
+            message: 'You have successfully add one address'
+          });
+          this.add_ornot = false
+          this.save_disable = false
         } else {
-          this.handleCancel()
-          this.$alert(res.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
+          // this.handleCancel()
+          this.$message({
+            type: 'info',
+            message: 'Please check your new address'
+          });
+          this.save_disable = false
         }
       })
     },
@@ -331,12 +375,8 @@ export default {
         cancelButtonText: 'Cancel',
         type: 'warning'
       }).then(() => {
-        this.tableData.splice(index, 1);
         this.deleteRequest(index)
-        this.$message({
-          type: 'success',
-          message: 'Successfully Delete!'
-        });
+        this.tableData.splice(index, 1);
         for (let i = index; i < this.tableData.length; i++) {
           this.tableData[i].id -= 1
         }
@@ -352,7 +392,9 @@ export default {
       this.$axios({
         method: 'delete',
         url: 'http://localhost:8081/user/address?addressId='+ this.tableData[index].database_id,
-        headers : {'authorization' :this.$store.getters.getToken},
+        headers : {
+          'Content-Type': 'application/json',
+        },
         data:{addressId:this.tableData[index].database_id},
         transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
           var ret = '';
@@ -363,20 +405,11 @@ export default {
           return ret.substring(0,ret.length-1)
         }]
       }).then(res => {
-        if (res.data.code === 200) {
-          const data = res.data.data
-          data.forEach((item)=> {
-            let address_info = {
-              database_id: item.addressId,
-              id: this.tableData.length+1,
-              receiver: item.recipientName,
-              telephone: item.phone,
-              address: item.addressName,
-              edit_ornot: false,
-              type:item.isDefault==='null'?'Normal':'Default'
-            }
-            this.tableData.push(address_info)
-          })
+        if (res.data.code === 2000) {
+          this.$message({
+            type: 'success',
+            message: 'You have successfully delete this address'
+          });
         } else {
           this.handleCancel()
           this.$alert(res.data.message, 'Tip', {

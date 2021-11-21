@@ -11,11 +11,11 @@
           <span class="btn-bell-badge" v-if=this.$store.state.message></span>
         </div>
         <div class="user-avator-header">
-          <img :src="picture" />
+          <img v-bind:src="imageUrl" />
         </div>
         <el-dropdown class="user-name" trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
-                        {{this.$store.getters.getUser.userId}}
+                        {{this.$store.getters.getBasic_Info.userName}}
                         <i class="el-icon-caret-bottom"></i>
                     </span>
           <template #dropdown>
@@ -35,17 +35,20 @@
 
 <script>
 
-import picture from '../assets/img.jpg'
 
 export default {
   name: "Header",
+  mounted() {
+    console.log("test3")
+    console.log(this.$store.getters.getBasic_Info)
+    this.imageUrl = 'http://localhost:8081/' + this.$store.getters.getBasic_Info.picturePath
+  },
   data () {
     return {
-      picture
+      imageUrl : ''
     }
   },
   methods (){
-
   }
 }
 </script>

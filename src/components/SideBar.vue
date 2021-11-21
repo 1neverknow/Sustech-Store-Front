@@ -11,8 +11,8 @@
                :collapse="isCollapse" style="height: 100%"
                @open="handleOpen" @close="handleClose"
                @select="handleSelect"
-               >
-        <router-link to="/login" style="text-decoration: none">
+      >
+        <router-link to="/sh" style="text-decoration: none">
           <el-menu-item id="title" index="SS">
             <i style="margin-top: -10px">
               <img :src="logo" alt="logo" style="width: 40px; margin-left: -13px; padding-bottom: 6px"/>
@@ -48,18 +48,13 @@
           <el-menu-item index="AI">Address information</el-menu-item>
         </el-submenu>
 
-        <el-submenu index="@4" >
+        <el-menu-item index="Order" >
           <template slot = "title">
             <i class="el-icon-bell"></i>
             <span v-if="!isCollapse" slot="title">Order</span>
             <span v-if="isCollapse" slot="title"></span>
           </template>
-
-          <el-menu-item index="AO">All Orders</el-menu-item>
-          <el-menu-item index="PP">Pending payment</el-menu-item>
-          <el-menu-item index="PR">Pending receive</el-menu-item>
-          <el-menu-item index="PE">Pending evaluated</el-menu-item>
-        </el-submenu>
+        </el-menu-item>
 
 
         <el-menu-item index="StuEvent" >
@@ -74,10 +69,10 @@
         </el-menu-item>
 
 
-        <el-menu-item index="Search">
-          <i class="el-icon-search"></i>
-          <span slot="title">Search</span>
-        </el-menu-item>
+<!--        <el-menu-item index="Search">-->
+<!--          <i class="el-icon-search"></i>-->
+<!--          <span slot="title">Search</span>-->
+<!--        </el-menu-item>-->
 
         <el-menu-item index="MR">
           <i class="el-icon-s-release"></i>
@@ -89,28 +84,28 @@
           <span slot="title">Log Out</span>
         </el-menu-item>
 
-<!--                <el-menu-item-group v-if="this.$store.state.proj.projId != null" id="proj-items">-->
-<!--                </el-menu-item-group>-->
-<!--        <div  style="padding-top: 10px">-->
-<!--          <el-menu-item index="ProjOverview">-->
-<!--            <i class="el-icon-s-promotion"></i>-->
-<!--            <span slot="title">Overview</span>-->
-<!--          </el-menu-item>-->
+        <!--                <el-menu-item-group v-if="this.$store.state.proj.projId != null" id="proj-items">-->
+        <!--                </el-menu-item-group>-->
+        <!--        <div  style="padding-top: 10px">-->
+        <!--          <el-menu-item index="ProjOverview">-->
+        <!--            <i class="el-icon-s-promotion"></i>-->
+        <!--            <span slot="title">Overview</span>-->
+        <!--          </el-menu-item>-->
 
-<!--          <el-menu-item index="ResourcesStu">-->
-<!--            <i class="el-icon-folder-opened"></i>-->
-<!--            <span slot="title">Resources</span>-->
-<!--          </el-menu-item>-->
-<!--          <el-menu-item index="SubmissionStu">-->
-<!--            <i class="el-icon-document"></i>-->
-<!--            <span slot="title">Submissions</span>-->
-<!--          </el-menu-item>-->
-<!--          <el-menu-item index="Gradebook">-->
-<!--            <i class="el-icon-collection"></i>-->
-<!--            <span slot="title">Gradebook</span>-->
-<!--          </el-menu-item>-->
-<!--          <div style="height: 70px"></div>-->
-<!--        </div>-->
+        <!--          <el-menu-item index="ResourcesStu">-->
+        <!--            <i class="el-icon-folder-opened"></i>-->
+        <!--            <span slot="title">Resources</span>-->
+        <!--          </el-menu-item>-->
+        <!--          <el-menu-item index="SubmissionStu">-->
+        <!--            <i class="el-icon-document"></i>-->
+        <!--            <span slot="title">Submissions</span>-->
+        <!--          </el-menu-item>-->
+        <!--          <el-menu-item index="Gradebook">-->
+        <!--            <i class="el-icon-collection"></i>-->
+        <!--            <span slot="title">Gradebook</span>-->
+        <!--          </el-menu-item>-->
+        <!--          <div style="height: 70px"></div>-->
+        <!--        </div>-->
 
       </el-menu>
       <el-radio-group v-model="isCollapse">
@@ -229,3 +224,5 @@ export default {
   height: 100%;
 }
 </style>
+
+

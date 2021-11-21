@@ -16,10 +16,15 @@ export default new Vuex.Store({
         // 后端发送过来的用户信息
         // userInfo: JSON.parse(localStorage.getItem('userInfo')),
         userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
-        name : 'user1',
-        message : 1,
-        modify_pos: '#test',
-
+        search_content : sessionStorage.getItem('search_content'),
+        default_address:{
+            receiver: '',
+            telephone: '',
+            address: '',
+        },
+        // state:'未搜索',
+        query_good_list:JSON.parse(sessionStorage.getItem('query_good_list')),
+        basic_info: JSON.parse(sessionStorage.getItem('basic_info')),
         // token: "",
         isShowExpression: false,
         isShowMembers: false,
@@ -147,6 +152,34 @@ export default new Vuex.Store({
             // localStorage.setItem('userInfo', JSON.stringify(userInfo))
             sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
         },
+
+        SET_Default_Address: (state, address) => {
+            state.default_address.receiver = address.receiver
+            state.default_address.telephone = address.telephone
+            state.default_address.address = address.address
+
+            // 登录之后，一次会话期间，保留登陆状态
+            // localStorage.setItem('userInfo', JSON.stringify(userInfo))
+            sessionStorage.setItem('default_address', JSON.stringify(address))
+        },
+
+        SET_Basic_Info: (state, basic) => {
+            state.basic_info = basic
+            sessionStorage.setItem('basic_info',JSON.stringify(basic))
+        },
+        SET_Good_List: (state, list) => {
+            state.query_good_list = list
+            sessionStorage.setItem('query_good_list',JSON.stringify(list))
+        },
+        SET_SEARCH_CONTENT: (state, content) => {
+            state.search_content = content
+            sessionStorage.setItem('search_content',content)
+        },
+        // SET_State: (state) => {
+        //     state.state = '已搜索'
+        //     sessionStorage.setItem('state','已搜索')
+        // },
+
 
         REMOVE_INFO: () => {
             // 清除token和userInfo的值
@@ -331,9 +364,14 @@ export default new Vuex.Store({
         logout (state) {
             state.token = null
             state.userInfo = null
+            state.basic_info = {}
+            state.query_good_list = []
+            state.search_content = []
             localStorage.removeItem('token')
-            // localStorage.removeItem('userInfo')
-            sessoinStorage.removeItem('userInfo')
+            sessionStorage.removeItem('userInfo')
+            sessionStorage.removeItem('basic_info')
+            sessionStorage.removeItem('query_good_list')
+            sessionStorage.removeItem('search_content')
         },
     },
     getters: {
@@ -344,7 +382,22 @@ export default new Vuex.Store({
         },
         getToken: state =>{
             return state.token
-        }
+        },
+        getDefault_Address: state =>{
+            return state.default_address
+        },
+        getBasic_Info: state =>{
+            return state.basic_info
+        },
+        getGood_list: state =>{
+            return state.query_good_list
+        },
+        getContent : state =>{
+            return state.search_content
+        },
+        // getState: state =>{
+        //     return state.state
+        // }
         // user: state => state
     },
     actions: {

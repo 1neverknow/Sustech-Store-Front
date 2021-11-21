@@ -1,18 +1,24 @@
 <template>
   <div>
-    <div class="modifyImage">
-      <img src="@/assets/img.jpg" class="user-avator-pi" @click="EditImage()"  />
-      <el-alert
-          center
-          title="Tips：Click image to modify your image. You can only upload .jpg or .png image"
-          type="warning"
-          :closable="false">
-      </el-alert>
-    </div>
 
+    <el-upload
+        class="avatar-uploader_image"
+        action="https://jsonplaceholder.typicode.com/posts/"
+        :show-file-list="false"
+        :on-success="handleAvatarSuccess"
+        :before-upload="beforeAvatarUpload">
+      <img v-if="imageUrl" :src="imageUrl" class="avatar">
+      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+    </el-upload>
 
+    <el-alert
+        center
+        title="Tips：Click image to modify your image. You can only upload .jpg or .png image"
+        type="warning"
+        :closable="false">
+    </el-alert>
 
-    <el-card id = "test" class="box-card" shadow="always" style="margin-top: 10px">
+    <el-card id="test" class="box-card" shadow="always" style="margin-top: 10px">
       <div slot="header" class="clearfix">
         <span>Basic information</span>
       </div>
@@ -23,14 +29,15 @@
 
         <el-form-item label="Gender" prop="gender">
           <el-select v-model="BI_form.gender" placeholder="Please select your gender" style="width: 14%;">
-            <el-option label="Man" value="Man"></el-option>
-            <el-option label="Woman" value="Woman"></el-option>
+            <el-option label="Man" value="0"></el-option>
+            <el-option label="Woman" value="1"></el-option>
+            <el-option label="Secret" value="2"></el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="Birthday" required>
           <el-date-picker type="date" placeholder="Please select your birthday"
-                          v-model="BI_form.birthday"></el-date-picker>
+                          v-model="BI_form.birthday" value-format="yyyy-MM-dd"></el-date-picker>
         </el-form-item>
 
         <el-form-item label="Credit" required>
@@ -41,10 +48,15 @@
           <el-input type="textarea" v-model="BI_form.PersonalitySignature"></el-input>
         </el-form-item>
 
+        <el-form-item label="goodsImg" prop="goodsImg" hidden>
+          <el-input v-model="BI_form.image_path" clearable></el-input>
+        </el-form-item>
+
         <el-form-item>
-          <el-button type="primary" @click="submitForm('BIForm')">Modify</el-button>
+          <el-button type="primary" @click="submitBIForm('BIForm')">Modify</el-button>
           <el-button @click="resetForm('BIForm')">Reset</el-button>
         </el-form-item>
+
       </el-form>
     </el-card>
 
@@ -55,42 +67,49 @@
       <el-form :model="MP_form" :rules="MP_rules" ref="MPForm" label-width="100px" class="demo-ruleForm">
 
         <el-form-item v-if="!this.old_invisible" label="Old Password" label-width="160px" prop="old_password">
-          <el-input placeholder = "Please input your old password" type="password" v-model="MP_form.old_password" style="width: 320px"></el-input>
+          <el-input placeholder="Please input your old password" type="password" v-model="MP_form.old_password"
+                    style="width: 320px"></el-input>
           <el-checkbox v-model="old_invisible" style="margin-left: 5px">show password</el-checkbox>
         </el-form-item>
         <el-form-item v-else label="Old Password" prop="old_password" label-width="160px">
-          <el-input placeholder = "Please input your old password" type="text" v-model="MP_form.old_password" style="width: 320px"></el-input>
+          <el-input placeholder="Please input your old password" type="text" v-model="MP_form.old_password"
+                    style="width: 320px"></el-input>
           <el-checkbox v-model="old_invisible" style="margin-left: 5px">show password</el-checkbox>
         </el-form-item>
 
         <el-form-item v-if="!this.new_invisible" label="New Password" prop="new_password" label-width="160px">
-          <el-input placeholder = "Please input your new password" type="password" v-model="MP_form.new_password" style="width: 320px"></el-input>
+          <el-input placeholder="Please input your new password" type="password" v-model="MP_form.new_password"
+                    style="width: 320px"></el-input>
           <el-checkbox v-model="new_invisible" style="margin-left: 5px">show password</el-checkbox>
         </el-form-item>
-        <el-form-item v-else  label="New Password" prop="new_password" label-width="160px">
-          <el-input placeholder = "Please input your new password" type="text" v-model="MP_form.new_password" style="width: 320px"></el-input>
+        <el-form-item v-else label="New Password" prop="new_password" label-width="160px">
+          <el-input placeholder="Please input your new password" type="text" v-model="MP_form.new_password"
+                    style="width: 320px"></el-input>
           <el-checkbox v-model="new_invisible" style="margin-left: 5px">show password</el-checkbox>
         </el-form-item>
 
-        <el-form-item v-if="!this.new_yes_invisible" label="New Password Again" prop="new_yes_password" label-width="160px">
-          <el-input placeholder = "Please input your new password again" type="password" v-model="MP_form.new_yes_password" style="width: 320px"></el-input>
+        <el-form-item v-if="!this.new_yes_invisible" label="New Password Again" prop="new_yes_password"
+                      label-width="160px">
+          <el-input placeholder="Please input your new password again" type="password"
+                    v-model="MP_form.new_yes_password" style="width: 320px"></el-input>
           <el-checkbox v-model="new_yes_invisible" style="margin-left: 5px">show password</el-checkbox>
         </el-form-item>
         <el-form-item v-else label="New Password Again" prop="new_yes_password" label-width="160px">
-          <el-input placeholder = "Please input your new password again" type="text" v-model="MP_form.new_yes_password" style="width: 320px"></el-input>
+          <el-input placeholder="Please input your new password again" type="text" v-model="MP_form.new_yes_password"
+                    style="width: 320px"></el-input>
           <el-checkbox v-model="new_yes_invisible" style="margin-left: 5px">show password</el-checkbox>
         </el-form-item>
 
 
         <el-form-item>
-          <el-button type="primary" @click="submitForm('MPForm')">Modify</el-button>
+          <el-button type="primary" @click="submitMPForm('MPForm')">Modify</el-button>
           <el-button @click="resetForm('MPForm')">Reset</el-button>
         </el-form-item>
 
       </el-form>
     </el-card>
 
-    <el-card  style="margin-top: 20px">
+    <el-card style="margin-top: 20px">
       <div slot="header" class="clearfix">
         <span>Modify Email</span>
       </div>
@@ -101,54 +120,48 @@
         </el-form-item>
 
         <el-form-item label-width="150px" label="New E-Mail Address" prop="new_email">
-          <el-input placeholder="Please input your new email"  v-model="ME_form.new_email" style="width: 320px"></el-input>
+          <el-input placeholder="Please input your new email" v-model="ME_form.new_email"
+                    style="width: 320px"></el-input>
           <!--            倒计时按钮-->
-          <el-button type="primary" :disabled="verify.disable" @click="Down('ruleForm')">{{verify.getCode}}</el-button>
+          <el-button type="primary" :disabled="verify.disable" @click="Down('ruleForm')">{{ verify.getCode }}
+          </el-button>
           <!--            <el-button type="primary" :disabled="verify.disable" @click="getVerifyCode">{{verify.getCode}}</el-button>-->
         </el-form-item>
 
-        <el-form-item label="Varify Code" prop="varifycode"  label-width="150px">
-          <el-input placeholder="Please input the varify code in your new email address" v-model="ME_form.varifycode" style="width: 25%"></el-input>
+        <el-form-item label="Varify Code" prop="varifycode" label-width="150px">
+          <el-input placeholder="Please input the varify code in your new email address" v-model="ME_form.varifycode"
+                    style="width: 25%"></el-input>
         </el-form-item>
 
         <el-form-item>
-        <el-button type="primary" @click="submitForm('MEForm')">Modify</el-button>
-        <el-button @click="resetForm('MEForm')">Reset</el-button>
+          <el-button type="primary" @click="submitForm('MEForm')">Modify</el-button>
+          <el-button @click="resetForm('MEForm')">Reset</el-button>
         </el-form-item>
+
 
       </el-form>
 
     </el-card>
 
-
-    <el-dialog title="收货地址" :visible.sync="edit_image">
-      <el-upload
-          class="avatar-uploader"
-          action="lei"
-          :on-change="handleChange"
-          :show-file-list="false"
-          :http-request="httpRequest"><!--覆盖默认上传-->
-        <template >
-          <i class="el-icon-plus avatar-uploader-icon"></i>
-        </template>
-      </el-upload>
-    </el-dialog>
-
-
   </div>
 </template>
 <script>
+import {Element} from "element-ui";
+import axios from "axios";
+import store from "@/store";
+
 export default {
   name: 'PI',
   mounted() {
     console.log(this.$store.state.modify_pos)
     this.$el.querySelector(this.$store.state.modify_pos).scrollIntoView()
+    this.initial()
   },
   data() {
     var validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('Password is required'));
-      } else if(value.length < 6){
+      } else if (value.length < 6) {
         callback(new Error('Length must be more than 6'));
       } else {
         callback();
@@ -156,24 +169,25 @@ export default {
     };
 
     return {
-      old_invisible : false,
-      new_invisible : false,
-      new_yes_invisible : false,
-      edit_image:false,
-      imageUrl: '',
-
+      old_invisible: false,
+      new_invisible: false,
+      new_yes_invisible: false,
+      edit_image: false,
+      dialogImageUrl: '',
+      dialogVisible: false,
+      imageUrl : 'http://localhost:8081/' + this.$store.getters.getBasic_Info.picturePath,
 
       ME_form: {
         old_email: '208347209@qq.com',
-        new_email:'',
+        new_email: '',
         varifycode: '',
       },
       ME_rules: {
         new_email: [
-          {required: true, message: '请输入邮箱地址', trigger: 'blur' },
-          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+          {required: true, message: '请输入邮箱地址', trigger: 'blur'},
+          {type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change']}
         ],
-        varifycode: {required:true, trigger: 'blur',}
+        varifycode: {required: true, trigger: 'blur',}
       },
       verify: {
         isGeting: false,
@@ -183,17 +197,17 @@ export default {
       },
 
       BI_form: {
-        user_name: 'admin',
-        picture: '',
-        email: 'xxxxxxxx@sustech.edu.cn',
-        gender: '',
-        birthday: '2001-01-01',
-        credit: 100,
-        id_card: 'xxxxxxxxxxxxxx',
-        money: 500.0,
-        phone: 17796370472,
-        PersonalitySignature: 'asd',
-        image_path:'@/assets/img.jpg'
+        user_name: this.$store.getters.getBasic_Info.userName,
+        picture: this.$store.getters.getBasic_Info.picturePath,
+        email: this.$store.getters.getBasic_Info.email,
+        gender: this.$store.getters.getBasic_Info.gender,
+        birthday: this.$store.getters.getBasic_Info.birthday,
+        credit: this.$store.getters.getBasic_Info.credit,
+        id_card: this.$store.getters.getBasic_Info.id_card,
+        money: this.$store.getters.getBasic_Info.money,
+        phone: this.$store.getters.getBasic_Info.phone,
+        PersonalitySignature: this.$store.getters.getBasic_Info.sign,
+        image_path: ''
       },
       BI_rules: {
         user_name: [
@@ -212,7 +226,7 @@ export default {
         new_password: '',
         new_yes_password: ''
       },
-      MP_rules:{
+      MP_rules: {
         old_password: [
           {validator: validatePass, trigger: 'blur',},
           {required: true}
@@ -229,114 +243,107 @@ export default {
     };
   },
   methods: {
-    handleChange(file, fileList) {
-      this.tempUrl = URL.createObjectURL(file.raw);
-    },
-//实现图片上传功能
-    httpRequest(item) {
-      //验证图片格式大小信息
-      const isJPG = item.file.type === 'image/jpeg' || item.file.type === 'image/png';
-      const isLt2M = item.file.size / 1024 / 1024 < 2;
-      if (!isJPG) {
-        this.$message.error('上传图片只能是 JPG 或 PNG 格式!');
-      }
-      if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 2MB!');
-      }
-      //图片格式大小信息没问题 执行上传图片的方法
-      if (isJPG && isLt2M === true) {
-        // post上传图片
-        let App = this;
-        //定义FormData对象 存储文件
-        let mf = new FormData();
-        //将图片文件放入mf
-        mf.append('file', item.file);
-        App.$Api.fileUpload(mf, function (result) {
-          if (result.result === "true") {
-            App.$notify.success({
-              title: '温馨提示：',
-              message: result.message,
-            });
-            //将临时文件路径赋值给显示图片路径（前端显示的图片）
-            App.imageUrl = App.tempUrl;
-            //将后台传来的数据库图片路径赋值给car对象的图片路径
-            App.car.carImg = result.imgUrl;
-          } else {
-            App.$notify.error({
-              title: '温馨提示：',
-              message: result.message,
-            });
-          }
-        })
-      }
-    },
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!');
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
-      });
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
-    EditImage(){
-      this.edit_image = true;
-    },
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw);
+      this.BI_form.image_path = file.raw;
 
-    Down(formName) {
-      this.$refs[formName].validateField("email", error => {
-        if (!error) {
-          this.$axios.post('http://localhost:8081/login/forgot', this.ME_form.email).then(res => {
-            if(res.data.code!==200){
-              console.log('error submit!!')
-              return false
-            }
-            var countdown = setInterval(() => {
-              if (this.verify.time_out < 1) {
-                console.log("send verify code")
-                this.verify.isGeting = false
-                this.verify.disable = false
-                this.verify.getCode = 'Send'
-                this.verify.time_out = 6
-                clearInterval(countdown)
-              } else {
-                console.log("sending")
-                this.verify.isGeting = true
-                this.verify.disable = true
-                this.verify.getCode = --this.verify.time_out + 's'
-              }
-            }, 1000);
-          })
-        } else {
-          console.log('error submit!!')
-          return false
+      //创建 formData 对象
+      let formData = new FormData();
+      // 向 formData 对象中添加文件
+      if(this.BI_form.image_path!=='')
+        formData.append('photo', this.BI_form.image_path);
+      else formData.append('photo',null)
+      this.$axios({
+        method: 'post',
+        url: 'http://localhost:8081/user/upload/face',
+        headers: {
+          'Authorization': this.$store.getters.getToken,
+          'Content-Type': 'multipart/form-data'
+        },
+        data: formData,
+        transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
+          var ret = '';
+          for (var it in data) {
+            // 如果要发送中文 编码
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+          }
+          return ret.substring(0, ret.length - 1)
+        }]
+      }).then(res => {
+        console.log(res)
+        if (res.data.code === 2000) {
+
         }
       })
     },
-    handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
-    },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg';
+      const isJPG = file.type === 'image/jpeg'
+      const isPNG = file.type === 'image/png'
       const isLt2M = file.size / 1024 / 1024 < 2;
 
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!');
+      if (!isJPG && !isPNG) {
+        this.$message.error('上传头像图片只能是 JPG 或者 PNG 格式 !');
       }
       if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!');
       }
-      return isJPG && isLt2M;
-    }
+      return (isPNG || isJPG) && isLt2M;
+    },
+
+    submitBIForm(formName) {
+      console.log(this.BI_form.birthday)
+      this.$refs[formName].validate((valid) => {
+        //创建 formData 对象
+        let formData = new FormData();
+        // 向 formData 对象中添加文件
+        if(this.BI_form.image_path!=='')
+          formData.append('photo', this.BI_form.image_path);
+        else formData.append('photo',null)
+        const newRequest = axios.create({
+          baseUrl: "http://localhost:8081"//请求地址
+        });
+
+        let gender = 0
+        if(this.BI_form.gender==='Woman') gender = 1
+        else if (this.BI_form.gender === 'Secret') gender = 2
+        newRequest({
+          method: "POST",
+          url: "/user/update"
+              + '?birthday=' + this.BI_form.birthday
+              + '&gender=' + gender
+              + '&name=' + this.BI_form.user_name
+              + '&sign=' + this.BI_form.PersonalitySignature,
+          data: formData,
+          headers: {
+            "Content-Type":
+                "multipart/form-data",
+            'Authorization': this.$store.getters.getToken
+          }
+        }).then(res => {
+          this.$message({
+            type: 'success',
+            message: 'Modify the information successfully'
+          });
+        });
+      });
+    },
+
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+    EditImage() {
+      this.edit_image = true;
+    },
+
+    Down(formName) {
+
+    },
   }
+
 }
 </script>
 
-<style >
+<style>
 
 .clearfix:before,
 .clearfix:after {
@@ -351,25 +358,19 @@ export default {
 .box-card {
 }
 
-.user-avator-pi {
-  margin:0 auto;
-  display: block;
-  width: 150px;
-  height: 150px;
-  border-radius: 100%;
-  cursor: pointer;
-}
-
-.avatar-uploader .el-upload {
+.avatar-uploader_image .el-upload {
+  margin-left: 40%;
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
 }
-.avatar-uploader .el-upload:hover {
+
+.avatar-uploader_image .el-upload:hover {
   border-color: #409EFF;
 }
+
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
@@ -378,6 +379,7 @@ export default {
   line-height: 178px;
   text-align: center;
 }
+
 .avatar {
   width: 178px;
   height: 178px;

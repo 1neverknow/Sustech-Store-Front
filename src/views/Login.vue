@@ -162,7 +162,7 @@ export default {
                 type: 'success',
               })
               // 验证成功后，跳转到home page
-              _this.$router.push("/")
+              this.getBasicInfo()
             } else {
               Element.Message({
                 message: res.data.message,
@@ -177,6 +177,22 @@ export default {
             type: 'error',
           })
           return false
+        }
+      })
+    },
+    getBasicInfo() {
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/user/me',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(res => {
+        if (res.data.code === 2000) {
+          console.log("test6")
+          this.$store.commit("SET_Basic_Info",res.data.data)
+          console.log(this.$store.getters.getBasic_Info)
+          this.$router.push('/sh')
         }
       })
     },

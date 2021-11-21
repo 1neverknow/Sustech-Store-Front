@@ -1,7 +1,7 @@
 <template>
   <div>
     <!--    <el-col :span = "2">-->
-    <!--      <img src="../assets/img.jpg" class="user-avator" alt />-->
+    <!--      <img src="../assets/failed.jpg" class="user-avator" alt />-->
     <!--    </el-col>el-col-->
     <el-card>
       <el-descriptions class="margin-top" title="Person Information" :column="3" border>
@@ -195,16 +195,16 @@ export default {
   name: "Account",
   data() {
     return {
-      user_name: '',
-      picture: '',
-      email: '',
-      gender: '',
-      birthday: '',
-      credit: '',
-      id_card: '',
-      money: '',
-      phone: '',
-      PersonalitySignature: '',
+      user_name: this.$store.getters.getBasic_Info.userName,
+      picture: this.$store.getters.getBasic_Info.picturePath,
+      email: this.$store.getters.getBasic_Info.email,
+      gender: this.$store.getters.getBasic_Info.gender,
+      birthday: this.$store.getters.getBasic_Info.birthday,
+      credit: this.$store.getters.getBasic_Info.credit,
+      id_card: this.$store.getters.getBasic_Info.id_card,
+      money: this.$store.getters.getBasic_Info.money,
+      phone: this.$store.getters.getBasic_Info.phone,
+      PersonalitySignature: this.$store.getters.getBasic_Info.sign,
       receiver1: '',
       telephone1: '',
       address1: '',
@@ -237,34 +237,34 @@ export default {
   methods: {
     initialAccount() {
       // this.user_name = 'user'
-      this.$axios({
-        method: 'get',
-        url: 'http://localhost:8081/user/information/'
-            + this.$store.getters.getUser.userId,
-        headers: {'authorization': this.$store.getters.getToken},
-        data: {
-          queryUserId: this.$store.getters.getUser.userId,
-        },
-      }).then(res => {
-        if (res.data.code === 2000) {
-          console.log(1)
-          const data = res.data.data
-          this.user_name = data.userName
-          this.phone = data.phone
-          this.picture = data.picturePath
-          this.email = data.email
-          this.gender = data.gender
-          this.birthday = data.birthday
-          this.credit = data.credit
-          this.money = data.money
-          this.id_card = data.idCard
-          this.PersonalitySignature = data.sign
-        } else {
-          this.$alert(res.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
-        }
-      })
+      // this.$axios({
+      //   method: 'get',
+      //   url: 'http://localhost:8081/user/information/'
+      //       + this.$store.getters.getUser.userId,
+      //   headers: {'authorization': this.$store.getters.getToken},
+      //   data: {
+      //     queryUserId: this.$store.getters.getUser.userId,
+      //   },
+      // }).then(res => {
+      //   if (res.data.code === 2000) {
+      //     console.log(1)
+      //     const data = res.data.data
+      //     this.user_name = data.userName
+      //     this.phone = data.phone
+      //     this.picture = data.picturePath
+      //     this.email = data.email
+      //     this.gender = data.gender
+      //     this.birthday = data.birthday
+      //     this.credit = data.credit
+      //     this.money = data.money
+      //     this.id_card = data.idCard
+      //     this.PersonalitySignature = data.sign
+      //   } else {
+      //     this.$alert(res.data.message, 'Tip', {
+      //       confirmButtonText: 'OK'
+      //     })
+      //   }
+      // })
       this.$axios({
         method: 'get',
         url: 'http://localhost:8081/user/address',
@@ -278,7 +278,7 @@ export default {
           return ret.substring(0, ret.length - 1)
         }]
       }).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.code === 2000) {
           const data = res.data.data
           if(data.length>0){
             this.receiver1=data[0].recipientName
