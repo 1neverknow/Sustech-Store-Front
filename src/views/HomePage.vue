@@ -21,7 +21,7 @@
           </el-carousel>
         </el-card>
       </el-col>
-<!---->
+      <!---->
       <el-col :span="12">
         <div style="height: 100%">
           <el-calendar v-model="value">

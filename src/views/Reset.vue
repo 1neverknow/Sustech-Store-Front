@@ -1,41 +1,43 @@
 <!--密码重设界面-->
 
 <template>
-  <div class="ms-reset">
-    <el-container>
-      <div style="margin: 50px"></div>
-      <el-header style="height: 100px">
-        <router-link to="/user">
-          <el-avatar
-              :size="90"
-              src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-              style="margin: 5px auto; overflow: hidden; border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,.05); position: relative;"
-          ></el-avatar>
-        </router-link>
-      </el-header>
-      <el-main>
-        <el-form
-            ref="ruleForm"
-            :model="ruleForm"
-            :rules="rules"
-            :label-position="labelPosition"
-            label-width="0px"
-            class="ms-content"
-        >
-          <el-form-item label="New Password" prop="password">
-            <el-input type="password" v-model="ruleForm.password"></el-input>
-          </el-form-item>
-          <el-form-item label="Input Your Password Again" prop="confirm">
-            <el-input type="password" v-model="ruleForm.confirm"></el-input>
-          </el-form-item>
+  <div class="reset-wrap">
+    <el-card class="ms-reset">
+      <el-container>
+        <div style="margin: 50px"></div>
+        <el-header style="height: 100px">
+          <router-link to="/user">
+            <el-avatar
+                :size="90"
+                src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+                style="margin: 5px auto; overflow: hidden; border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,.05); position: relative;"
+            ></el-avatar>
+          </router-link>
+        </el-header>
+        <el-main>
+          <el-form
+              ref="ruleForm"
+              :model="ruleForm"
+              :rules="rules"
+              :label-position="labelPosition"
+              label-width="0px"
+              class="ms-content"
+          >
+            <el-form-item label="New Password" prop="password">
+              <el-input type="password" v-model="ruleForm.password"></el-input>
+            </el-form-item>
+            <el-form-item label="Input Your Password Again" prop="confirm">
+              <el-input type="password" v-model="ruleForm.confirm"></el-input>
+            </el-form-item>
 
-          <div class="submit-btn">
-            <el-button type="primary" style="margin-top: 30px" @click="submitForm('ruleForm')">Submit</el-button>
-          </div>
+            <div class="submit-btn">
+              <el-button type="primary" style="margin-top: 30px" @click="submitForm('ruleForm')">Submit</el-button>
+            </div>
 
-        </el-form>
-      </el-main>
-    </el-container>
+          </el-form>
+        </el-main>
+      </el-container>
+    </el-card>
   </div>
 </template>
 
@@ -133,33 +135,36 @@ export default {
 </script>
 
 <style scoped>
+.reset-wrap {
+  background-image: url("../assets/imgs/rhythm-link.jpg");
+  position: fixed;
+  background-size: 100%;
+  width: 100%;
+  height: 100%;
+}
 .el-header {
+  margin-top: -90px;
   background-color: skyblue;
-  color: var(--el-text-color-primary);
   text-align: center;
   line-height: 100px;
-  /*margin-top: -50px;*/
-  /*margin-bottom: -30px;*/
   height: 100px;
 }
 
 .ms-content {
-  padding: 30px 30px;
+  /*padding: 30px 30px;*/
 }
 
 .ms-reset {
-  position: absolute;
-  left: 40%;
-  top: 30%;
-  width: 500px;
-  height: 800px;
-  margin: -190px 0 0 -175px;
+  margin: 70px auto auto;
+  width: 600px;
+  height: 500px;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.8);
   overflow: hidden;
 }
 
 .submit-btn {
+  margin-top: 50px;
   text-align: center;
 }
 .submit-btn button {

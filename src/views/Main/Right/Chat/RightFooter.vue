@@ -211,94 +211,94 @@ export default {
     }
   },
   methods: {
-    initWebSocket() {
-      let url = "http://localhost:8081/webSocket"
-      let socket = new SockJS(url);
-      this.$websocket.stomp = Stomp.over(socket);
-      // stomp = Stomp.over(socket);
-      console.log(this.chatId)
-      this.$websocket.stomp.connect(
-          // stomp.connect(
-          {
-            "Authorization": this.$store.getters.getToken,
-            "chatId": 1
-          }
-          , function (frame) {
-            //用户模式
-            this.$websocket.stomp.subscribe("/user/queue", function (res) {
-              // stomp.subscribe("/user/queue", function (res) {
-              document.querySelector("#content-input").val(res.body);
-            });
-            this.$websocket.stomp.subscribe("/app/subscribe/chat", function (res) {
-              // stomp.subscribe("/app/subscribe/chat", function (res) {
-              // console.log(res.data())
-              subscribeMsg = [];
-              let data = JSON.parse(res.body);
-              console.log(data);
-              // console.log(res.body.length)
-              // let count = data.length - 1;
-              // console.log(count)
-              let myId = data.speakUserId;
-              let myName = data.speakUserName;
-              let yourName = data.otherUserName;
-              let myPicture = data.speakUserPicturePath;
-              let yourPicture = data.otherUserPicturePath;
-              console.log(myId);
-              console.log(myName);
-              console.log(myPicture);
-              for (let item of data.chatContents) {
-                // console.log(item);
-                let msg;
-                if (item.isSpeakUser) {
-                  msg = {
-                    avatar: myPicture,
-                    ctn: item.content,
-                    nickname: myName,
-                    sender: item.isSpeakUser,
-                    time: toDate(item.date),
-                    type: "chat"
-                  }
-                } else {
-                  msg = {
-                    avatar: yourPicture,
-                    ctn: item.content,
-                    nickname: yourName,
-                    sender: item.isSpeakUser,
-                    time: toDate(item.date),
-                    type: "chat"
-                  }
-                }
-                subscribeMsg = [msg].concat(subscribeMsg);
-              }
-
-              myInformation = {
-                id: myId,
-                avatar: myPicture,
-                nickname: myName.toString(),
-                // gender: "",
-                // alias: "",
-                // region: ""
-              }
-              console.log(subscribeMsg);
-              console.log(myInformation);
-              // this.$store.commit("setInitialHistory", subscribeMsg);
-              // this.$store.commit("setMyself", myInformation);
-            })
-            //   , function (res) {
-            // document.querySelector("#subscribeMsg").val(res.body);
-            // });
-            // setConnect(true);
-          }
-      );
-      this.$store.commit("setInitialHistory", subscribeMsg);
-      this.$store.commit("setMyself", myInformation);
-      // this.commit();
-    },
+    // initWebSocket() {
+    //   let url = "http://localhost:8081/webSocket"
+    //   let socket = new SockJS(url);
+    //   this.$websocket.stomp = Stomp.over(socket);
+    //   // stomp = Stomp.over(socket);
+    //   console.log(this.chatId)
+    //   this.$websocket.stomp.connect(
+    //   // stomp.connect(
+    //       {
+    //         "Authorization": this.$store.getters.getToken,
+    //         "chatId": 1
+    //       }
+    //       , function (frame) {
+    //         //用户模式
+    //         this.$websocket.stomp.subscribe("/user/queue", function (res) {
+    //         // stomp.subscribe("/user/queue", function (res) {
+    //           document.querySelector("#content-input").val(res.body);
+    //         });
+    //         this.$websocket.stomp.subscribe("/app/subscribe/chat", function (res) {
+    //         // stomp.subscribe("/app/subscribe/chat", function (res) {
+    //           // console.log(res.data())
+    //           subscribeMsg = [];
+    //           let data = JSON.parse(res.body);
+    //           console.log(data);
+    //           // console.log(res.body.length)
+    //           // let count = data.length - 1;
+    //           // console.log(count)
+    //           let myId = data.speakUserId;
+    //           let myName = data.speakUserName;
+    //           let yourName = data.otherUserName;
+    //           let myPicture = data.speakUserPicturePath;
+    //           let yourPicture = data.otherUserPicturePath;
+    //           console.log(myId);
+    //           console.log(myName);
+    //           console.log(myPicture);
+    //           for (let item of data.chatContents) {
+    //             // console.log(item);
+    //             let msg;
+    //             if (item.isSpeakUser) {
+    //               msg = {
+    //                 avatar: myPicture,
+    //                 ctn: item.content,
+    //                 nickname: myName,
+    //                 sender: item.isSpeakUser,
+    //                 time: toDate(item.date),
+    //                 type: "chat"
+    //               }
+    //             } else {
+    //               msg = {
+    //                 avatar: yourPicture,
+    //                 ctn: item.content,
+    //                 nickname: yourName,
+    //                 sender: item.isSpeakUser,
+    //                 time: toDate(item.date),
+    //                 type: "chat"
+    //               }
+    //             }
+    //             subscribeMsg = [msg].concat(subscribeMsg);
+    //           }
+    //
+    //           myInformation = {
+    //             id: myId,
+    //             avatar: myPicture,
+    //             nickname: myName.toString(),
+    //             // gender: "",
+    //             // alias: "",
+    //             // region: ""
+    //           }
+    //           console.log(subscribeMsg);
+    //           console.log(myInformation);
+    //           // this.$store.commit("setInitialHistory", subscribeMsg);
+    //           // this.$store.commit("setMyself", myInformation);
+    //         })
+    //         //   , function (res) {
+    //         // document.querySelector("#subscribeMsg").val(res.body);
+    //         // });
+    //         // setConnect(true);
+    //       }
+    //   );
+    //   this.$store.commit("setInitialHistory", subscribeMsg);
+    //   this.$store.commit("setMyself", myInformation);
+    //   // this.commit();
+    // },
 
 
     commit(){
-      this.$store.commit("setInitialHistory", subscribeMsg);
-      this.$store.commit("setMyself", myInformation);
+      // this.$store.commit("setInitialHistory", subscribeMsg);
+      // this.$store.commit("setMyself", myInformation);
     },
 
     handleShowExpression() {

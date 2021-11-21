@@ -16,14 +16,15 @@ export default new Vuex.Store({
         // 后端发送过来的用户信息
         // userInfo: JSON.parse(localStorage.getItem('userInfo')),
         userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
+        search_content : sessionStorage.getItem('search_content'),
         default_address:{
             receiver: '',
             telephone: '',
             address: '',
         },
+        // state:'未搜索',
+        query_good_list:JSON.parse(sessionStorage.getItem('query_good_list')),
         basic_info: JSON.parse(sessionStorage.getItem('basic_info')),
-
-
         // token: "",
         isShowExpression: false,
         isShowMembers: false,
@@ -51,6 +52,11 @@ export default new Vuex.Store({
             // alias: "",
             // region: ""
         },
+        goods: {
+            id: 0,
+            avatar: user,
+            price: 0
+        },
         chats: [
             {
                 chatId: 0,
@@ -76,6 +82,22 @@ export default new Vuex.Store({
                     }
                 ]
             },
+            // {
+            //     chatId: 1,
+            //     linkmanIndex: 1,
+            //     isMute: false,
+            //     isOnTop: false,
+            //     messages: [
+            //         {
+            //             avatar,
+            //             ctn: "你好",
+            //             nickname: "111",
+            //             // sender: "1",
+            //             time: new Date("2011-01-11 9:11:11"),
+            //             type: "chat"
+            //         }
+            //     ]
+            // }
         ],
         linkmans: [
             {
@@ -88,25 +110,25 @@ export default new Vuex.Store({
                 region: "这是地区",
                 avatar: group
             },
-            // {
-            //     id: "p1",
-            //     type: "A",
-            //     nickname: "用户一",
-            //     gender: "",
-            //     alias: "",
-            //     region: "这是地区",
-            //     avatar
-            // },
-            // {
-            //     id: "p2",
-            //     type: "B",
-            //     nickname: "用户二",
-            //     gender: "",
-            //     alias: "这是备注",
-            //
-            //     region: "这是地区",
-            //     avatar
-            // }
+            {
+                id: "p1",
+                type: "A",
+                nickname: "用户一",
+                gender: "",
+                alias: "",
+                region: "这是地区",
+                avatar
+            },
+            {
+                id: "p2",
+                type: "B",
+                nickname: "用户二",
+                gender: "",
+                alias: "这是备注",
+
+                region: "这是地区",
+                avatar
+            }
         ],
         currentChatId: -1
 
@@ -130,6 +152,7 @@ export default new Vuex.Store({
             // localStorage.setItem('userInfo', JSON.stringify(userInfo))
             sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
         },
+
         SET_Default_Address: (state, address) => {
             state.default_address.receiver = address.receiver
             state.default_address.telephone = address.telephone
@@ -144,6 +167,20 @@ export default new Vuex.Store({
             state.basic_info = basic
             sessionStorage.setItem('basic_info',JSON.stringify(basic))
         },
+        SET_Good_List: (state, list) => {
+            state.query_good_list = list
+            sessionStorage.setItem('query_good_list',JSON.stringify(list))
+        },
+        SET_SEARCH_CONTENT: (state, content) => {
+            state.search_content = content
+            sessionStorage.setItem('search_content',content)
+        },
+        // SET_State: (state) => {
+        //     state.state = '已搜索'
+        //     sessionStorage.setItem('state','已搜索')
+        // },
+
+
         REMOVE_INFO: () => {
             // 清除token和userInfo的值
             this.state.token = ''
@@ -209,6 +246,7 @@ export default new Vuex.Store({
             state.isShowSearch = false;
         },
         setChatId(state, id) {
+            console.log("ididididididid")
             state.currentChatId = id;
             state.currentRight = 0;
         },
@@ -216,6 +254,7 @@ export default new Vuex.Store({
             state.isShowSearch = isShowSearch;
         },
         sendMessage(state, msg) {
+            console.log("yeahhhhhhhh!")
             for (let chat of state.chats) {
                 if (chat.chatId === state.currentChatId) {
                     chat.messages.push(msg);
@@ -299,6 +338,11 @@ export default new Vuex.Store({
             state.other.avatar=yourInformation.avatar;
             state.other.nickname=yourInformation.nickname;
         },
+        setGoods(state, goodsInformation){
+            state.goods.id=goodsInformation.id;
+            state.goods.avatar=goodsInformation.avatar;
+            state.goods.price=goodsInformation.price;
+        },
         addMessage(state,userMsg){
             let temp = {
                 avatar:state.other.avatar,
@@ -315,15 +359,20 @@ export default new Vuex.Store({
                     break;
                 }
             }
+
         },
         logout (state) {
             state.token = null
             state.userInfo = null
             state.basic_info = {}
+            state.query_good_list = []
+            state.search_content = []
             localStorage.removeItem('token')
             sessionStorage.removeItem('userInfo')
             sessionStorage.removeItem('basic_info')
-            },
+            sessionStorage.removeItem('query_good_list')
+            sessionStorage.removeItem('search_content')
+        },
     },
     getters: {
         // get
@@ -339,12 +388,20 @@ export default new Vuex.Store({
         },
         getBasic_Info: state =>{
             return state.basic_info
-        }
+        },
+        getGood_list: state =>{
+            return state.query_good_list
+        },
+        getContent : state =>{
+            return state.search_content
+        },
+        // getState: state =>{
+        //     return state.state
+        // }
         // user: state => state
     },
     actions: {
     },
     modules: {
     },
-
 })

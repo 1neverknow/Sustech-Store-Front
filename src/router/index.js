@@ -15,9 +15,13 @@ import Deal from "@/views/Deal"
 import Publish from "@/views/Publish"
 import Order from "@/views/Order"
 import None from "@/views/None"
-import Admin from "@/views/Admin"
+import AdminAppealing from "@/views/AdminAppealing"
+import AdminComplainGoods from "@/views/AdminComplainGoods"
+import AdminComplainUser from "@/views/AdminComplainUser"
+import AppealingDealAll from "@/views/AppealingDealAll";
+import ComplainGoodsAll from "@/views/ComplainGoodsAll";
+import ComplainUserAll from "@/views/ComplainUserAll";
 import Announced from "@/views/Announced"
-
 import MainPage from "@/views/MainPage";
 import Account from "@/views/Account";
 import HomePage from "@/views/HomePage";
@@ -28,6 +32,7 @@ import Search from "@/views/Search"
 import Main from "@/views/Main/Main";
 import ST from "@/views/test"
 import SHP from '@/views/SearchHomePage'
+
 
 Vue.use(VueRouter)
 // router: 路由 - 页面跳转管理
@@ -95,6 +100,11 @@ const routes = [
     ]
   },
   {
+    path: '/login',
+    name: 'Login',
+    component: Login
+  },
+  {
     path: '/s',
     name: 'Search',
     component: ST
@@ -103,11 +113,6 @@ const routes = [
     path: '/sh',
     name: 'SHP',
     component: SHP
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    component: Login
   },
   {
     path: '/login/forgot',
@@ -172,13 +177,59 @@ const routes = [
     component: None
   },
   {
-    path: '/admin',
-    name: 'Admin',
+    path: '/adminAppealing',
+    name: 'AdminAppealing',
     meta: {
       requireAuth: true
     },
-    component: Admin
+    component: AdminAppealing
   },
+  {
+    path: '/adminComplainUser',
+    name: 'AdminComplainUser',
+    meta: {
+      requireAuth: true
+    },
+    component: AdminComplainUser
+  },
+  {
+    path: '/adminComplainGoods',
+    name: 'AdminComplainGoods',
+    meta: {
+      requireAuth: true
+    },
+    component: AdminComplainGoods
+  },
+  {
+    path: '/complainGoodsAll',
+    name: 'ComplainGoodsAll',
+    meta: {
+      requireAuth: true
+    },
+    component: ComplainGoodsAll
+
+  },{
+    path: '/complainUserAll',
+    name: 'ComplainUserAll',
+    meta: {
+      requireAuth: true
+    },
+    component: ComplainUserAll
+
+  },{
+    path: '/appealingDealAll',
+    name: 'AppealingDealAll',
+    meta: {
+      requireAuth: true
+    },
+    component: AppealingDealAll
+
+  },
+
+
+
+
+
   // {
   //   path: '/user/collection',
   //   name: 'Collection',

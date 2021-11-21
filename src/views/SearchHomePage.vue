@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-header>
+    <el-header class="main_header">
       <div class="header_left">
         <div class="user-image">
           <img src="@/assets/pic.png"/>
@@ -20,16 +20,19 @@
         </div>
         <div class="have-login" v-if="this.$store.getters.getToken!==null">
           <div class="user-image">
-            <img src="@/assets/photo.png"/>
+            <router-link to="/" style="text-decoration: none">
+              <img :src="'http://localhost:8081/'+ this.$store.getters.getBasic_Info.picturePath"/>
+            </router-link>
+
           </div>
-          <el-button type="primary" plain style="margin-left: 10px">LogOut</el-button>
+          <el-button type="primary" plain style="margin-left: 10px" @click=logout()>LogOut</el-button>
         </div>
       </div>
     </el-header>
 
     <el-main class="sh_mail">
       <el-collapse v-model="judge" @click="judge===['1']?judge=true:judge=['1']">
-        <el-collapse-item name="1" title="Collapse this" >
+        <el-collapse-item name="1" title="Collapse this">
           <div style="margin-top: 10px">
             <el-carousel indicator-position="outside" height="500px" autoplay interval="2000">
               <el-carousel-item v-for="carousel in carousels" :key="carousels">
@@ -46,7 +49,8 @@
 
 
       <div class="search_all" style="margin-top: 10px">
-        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form :inline="true" :model="formInline" class="demo-form-inline" ref="ruleForm"
+                 :rules="rules">
 
           <el-form-item label="Search Type">
             <el-select v-model="formInline.region" placeholder="Search Users or Goods">
@@ -56,51 +60,127 @@
           </el-form-item>
 
           <el-form-item>
-            <el-input v-model="formInline.user" placeholder="Please input the search content"></el-input>
+            <el-input v-model="formInline.content" placeholder="Please input the search content"></el-input>
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" @click="onSubmit">Search</el-button>
+            <el-button type="primary" @click="onsubmit('ruleForm')">Search</el-button>
           </el-form-item>
         </el-form>
 
       </div>
 
-      <el-alert
-          right
-          type="info"
-          :closable="false">
-        <template #default="title">
-          <p>asd</p>
-        </template>
-      </el-alert>
+      <div class="goods" v-show="type">
+        <el-alert
+            right
+            type="info"
+            :closable="false">
+          <template #default="title">
+            <p>asd</p>
+          </template>
+        </el-alert>
 
-      <div id="DailyRecom" @click="dispalyGoods()">
-        <!--     每日推荐 -->
-        <div v-for="item in list">
-          <div>
-            <img class="img_sc" src="../assets/img.jpg" alt="">
-            <p class="p_sc">
-              {{ item.name }}
-            </p>
-            <p class="price_sc">
-              {{ item.price}}
-            </p>
-            <p class="p_sc">
-              <el-button type="text" class="button" icon="el-icon-star-off" @click="addCollection()">添加收藏</el-button>
-              <el-button type="text" class="button" icon="el-icon-goods">加购物车</el-button>
-            </p>
-          </div>
+
+        <el-col>
+          <el-row>
+            <div id="DailyRecom">
+              <!--     每日推荐 -->
+              <div v-for="item in list">
+                <div>
+                  <img class="img_sc" :src="item.picture_path" alt="">
+                  <p class="p_sc">
+                    {{ item.name }}
+                  </p>
+                  <p class="price_sc">
+                    {{ item.price }}
+                  </p>
+                  <p class="p_sc">
+                    <el-button type="text" class="button" icon="el-icon-star-off" @click="addCollection()">添加收藏
+                    </el-button>
+                    <el-button type="text" class="button" icon="el-icon-goods" @click="queryGoods(item.goods_id)">查看详情
+                    </el-button>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </el-row>
+
+          <el-row>
+            <div class="pagination" style="float: bottom">
+              <el-pagination
+                  background
+                  layout="prev, pager, next"
+                  :total="70">
+              </el-pagination>
+            </div>
+          </el-row>
+        </el-col>
+      </div>
+
+      <div class="user" v-show="!type">
+        <div v-for="item in user_list" style="margin: 10px">
+          <el-card style="opacity: 0.5">
+            <el-container>
+              <el-aside width="200px">
+                <div class="search_user_image">
+                  <img :src="item.picturePath">
+                </div>
+              </el-aside>
+              <el-container>
+                <el-header>
+                  <el-descriptions class="margin-top" :column="3" border>
+                    <!--                <template slot="extra">-->
+                    <!--                  <router-link to="/pi_modify">-->
+                    <!--                    <el-button type="primary" size="medium">See details</el-button>-->
+                    <!--                  </router-link>-->
+                    <!--                </template>-->
+
+                    <el-descriptions-item label-style="width:15%" content-style="width:15%">
+                      <template slot="label">
+                        <i class="el-icon-user"></i>
+                        User Name
+                      </template>
+                      {{ item.userName }}
+                    </el-descriptions-item>
+
+                    <el-descriptions-item label-style="width:15%" content-style="width:15%">
+                      <template slot="label">
+                        <i class="el-icon-message"></i>
+                        Email
+                      </template>
+                      {{ item.email }}
+                    </el-descriptions-item>
+
+                    <el-descriptions-item label-style="width:15%" content-style="width:15%">
+                      <template slot="label">
+                        <i class="el-icon-cherry"></i>
+                        Credit
+                      </template>
+                      {{ item.credit }}
+                    </el-descriptions-item>
+
+                  </el-descriptions>
+                </el-header>
+
+                <el-main>
+                  <p>发布列表</p>
+
+                </el-main>
+              </el-container>
+            </el-container>
+          </el-card>
+
         </div>
 
       </div>
-
 
     </el-main>
   </el-container>
 </template>
 
 <script>
+
+import Element from "element-ui";
 
 export default {
   beforeRouteEnter(to, from, next) {
@@ -114,6 +194,37 @@ export default {
     next()
   },
   mounted() {
+    console.log(this.$store.getters.getGood_list)
+    if (this.$store.getters.getGood_list===null||this.$store.getters.getGood_list.length===0) {
+      console.log(123)
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/goods/random',
+      }).then(res => {
+        if (res.data.code === 2000) {
+          console.log("asdasd")
+          console.log(res.data.data)
+          res.data.data.forEach(item => {
+            this.list.push({
+              goods_id: item.goodsId,
+              picture_path: item.picturePath,
+              price: '¥' + item.price,
+              name: item.title
+            })
+          })
+        }
+      })
+    } else {
+      this.formInline = {
+        content: this.$store.getters.getContent,
+        region: 'goods'
+      }
+      this.$store.getters.getGood_list.forEach(item => {
+        this.list.push(item)
+      })
+      this.$store.commit('SET_Good_List', [])
+      console.log(this.list)
+    }
     this.$axios({
       method: 'get',
       url: 'http://localhost:8081/carousel',
@@ -124,83 +235,152 @@ export default {
         })
       }
     })
-    this.$axios({
-      method: 'get',
-      url: 'http://localhost:8081/goods/random',
-    }).then(res => {
-      if (res.data.code === 2000) {
-        console.log(res.data.data)
-        // res.data.data.forEach(item => {
-        //   console.log(item.link)
-        //   this.carousels.push(item)
-        // })
-      }
-    })
+
   },
   name: "SHP",
   data() {
     return {
+      type: true,
+      state: false,
       judge: ['1'],
+      user_list: [
+
+      ],
       carousels: [],
       list: [
-        {
-          picture_path: "../assets/img.jpg",
-          price : '¥132.0',
-          name: "防晒口罩护颈防紫外线薄款女冰丝遮阳脸罩透气夏季男全脸遮脸面罩"
-        },
-        {
-          picture_path: "failed.jpg",
-          price : '¥132.0',
-          name: "fuck everything"
-        },
-        {
-          picture_path: "failed.jpg",
-          price : '¥132.0',
-          name: "fuck everything"
-        }
+        // {
+        //   goods_id: 1,
+        //   picture_path: "../assets/img.jpg",
+        //   price: '¥132.0',
+        //   name: "防晒口罩护颈防紫外线薄款女冰丝遮阳脸罩透气夏季男全脸遮脸面罩"
+        // },
+        // {
+        //   goods_id: 2,
+        //   picture_path: "failed.jpg",
+        //   price: '¥132.0',
+        //   name: "fuck everything"
+        // },
+        // {
+        //   goods_id: 3,
+        //   picture_path: "failed.jpg",
+        //   price: '¥132.0',
+        //   name: "fuck everything"
+        // }
       ],
       formInline: {
-        user: '',
+        content: '',
         region: ''
       },
-      GoodList: [
-        {
-          goodsId: 1,
-          picture: '',
-          title: 'Mana Stone',
-          introduce: 'Help you grow stronger',
-          price: 100000,
-        },
-        {
-          goodsId: 2,
-          picture: '',
-          title: 'KFC',
-          introduce: '写饿了',
-          price: 30,
-        }
-      ]
 
     }
   },
-  methods:{
-    dispalyGoods(){
-      this.$message({
-        type: 'info',
-        message: 'You have Cancel the operation'
+  methods: {
+    logout() {
+      this.$confirm('Are you sure to Log out?', 'Tips', {
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+        this.$store.commit('logout')
+        this.$message({
+          type: 'success',
+          message: 'You have successfully log out'
+        });
+        this.$router.push("/login")
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'You have Cancel the operation'
+        });
       });
     },
-    addCollection(){
-      this.$message({
-        type: 'error',
-        message: 'You have Cancel the operation'
-      });
+    queryGoods(id) {
+      if (this.state) {
+        this.$store.commit('SET_Good_List', this.list)
+        this.$store.commit('SET_SEARCH_CONTENT', this.formInline.content)
+
+      }
+      this.$router.push('/goods/' + id)
+    },
+    addCollection() {
+        // 需要先验证用户是否已经登陆
+        if (!this.$store.getters.getUser) {
+          Element.Message({
+            message: 'Please login first',
+            type: 'error',
+          })
+          return
+        }
+        this.$axios.put("http://localhost:8081/user/collection?goodsId="
+            + this.goodsId).then(res => {
+          Element.Message({
+            message: 'Add product to collection successfully',
+            type: 'success',
+          })
+          this.inCollection = true
+        })
+
+    },
+    onsubmit(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (this.formInline.region === 'goods') {
+            this.state = true
+            this.list = []
+            console.log(this.list.length)
+            this.$axios({
+              method: 'get',
+              url: 'http://localhost:8081/searchGoods/' + this.formInline.content + '/1',
+            }).then(res => {
+              if (res.data.code === 2000) {
+                console.log(res.data.data)
+                res.data.data.forEach(item => {
+                  this.list.push({
+                    goods_id: item.goodsId,
+                    picture_path: item.picturePath,
+                    price: '¥' + item.price,
+                    name: item.title
+                  })
+                })
+              }
+            })
+          } else if (this.formInline.region === 'users') {
+            this.state = false
+            this.type = false
+            this.user_list =[]
+            console.log(this.user_list)
+            this.$axios({
+              method: 'get',
+              url: 'http://localhost:8081/searchUser/' + this.formInline.content + '/1',
+            }).then(res => {
+              if (res.data.code === 2000) {
+                console.log(res.data.data)
+                res.data.data.forEach(item => {
+                  this.user_list.push({
+                    userName: item.userName,
+                    picturePath: 'http:/localhost::8081/'+item.picturePath,
+                    email: item.email,
+                    credit: item.credit
+                  })
+                })
+              }
+            })
+          }
+
+        } else {
+          console.log('error submit!!')
+          alert('Please check your input')
+          return false
+        }
+      })
+
     }
   }
 }
 </script>
 
 <style scoped>
-.el-header {
+.main_header {
   background-color: #a0e7fc;
   color: #333;
   text-align: center;
@@ -213,6 +393,7 @@ export default {
   padding: 0;
   text-align: center;
   height: 95%;
+  width: 100%;
   background-image: url(../assets/background1.png);
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -249,7 +430,7 @@ export default {
 
 #DailyRecom {
   box-sizing: border-box;
-  margin-left: 50px;
+  margin-left: 10%;
   padding: 0;
 }
 
@@ -264,7 +445,7 @@ export default {
 }
 
 #DailyRecom > div:hover {
-  /*border: 2px solid #ff0000;*/
+  border: 1px solid #ff0000;
   transform: translate(0, -10px);
 }
 
@@ -279,6 +460,7 @@ export default {
   text-align: justify;
   /* text-indent: 2rem; */
 }
+
 .price_sc {
   width: 180px;
   font-size: 15px;
@@ -306,5 +488,11 @@ export default {
 .ca_img {
   height: 500px;
   width: 1000px;
+}
+.search_user_image img {
+  display: block;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
 }
 </style>

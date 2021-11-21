@@ -1,29 +1,32 @@
 <template>
-    <div class="right-goods-wrap">
-      <info-block
-          :visible="isShowChatterInfo"
-          :memberInfo="chatterInfo"
-          :infoPosition="infoPosition"
-      ></info-block>
-      <div  v-if="isNoChat">
-      </div>
-      <div class="goods-detail" v-else>
-        <el-row class="font">
-          <el-col :span="7" ><div >
-            显示图片
-          </div></el-col>
-          <el-col :span="8"><div >
-            GoodsID:
-            price:
-          </div></el-col>
-          <el-col :span="9"><div >
-            <div class="button">
-              <el-button class="confirm-to-buy" >Confirm to buy!</el-button>
-            </div>
-          </div></el-col>
-        </el-row>
-      </div>
+  <div class="right-goods-wrap">
+    <info-block
+        :visible="isShowChatterInfo"
+        :memberInfo="chatterInfo"
+        :infoPosition="infoPosition"
+    ></info-block>
+    <div  v-if="isNoChat">
     </div>
+    <div class="goods-detail" v-else>
+      <el-row class="font">
+        <el-col :span="7" ><div >
+          显示图片
+        </div></el-col>
+        <el-col :span="8"><div >
+          GoodsID:
+          price:
+        </div></el-col>
+        <el-col :span="9"><div >
+          <div class="button">
+            <el-button
+                class="confirm-to-buy"
+                @click="handleClick"
+            >Confirm to buy!</el-button>
+          </div>
+        </div></el-col>
+      </el-row>
+    </div>
+  </div>
 
 </template>
 
@@ -55,61 +58,65 @@ export default {
     // }
   },
   methods: {
-    // 通过路由获取商品id
-    activate() {
-      console.log(this.$route.params.goodsId)
-      if (this.$route.params.goodsId) {
-        this.goodsId = this.$route.params.goodsId
-        this.getDetails(this.goodsId)
-      }
-    },
+    handleClick() {
+      const goodsId = this.$store.goods.id
+      this.$route.push('/deal/' + goodsId)
+    }
+    // // 通过路由获取商品id
+    // activate() {
+    //   console.log(this.$route.params.goodsId)
+    //   if (this.$route.params.goodsId) {
+    //     this.goodsId = this.$route.params.goodsId
+    //     this.getDetails(this.goodsId)
+    //   }
+    // },
     // 获取商品详情
-    getDetails(val) {
-      const _this = this
-      this.$axios({
-        method: 'get',
-        url: 'http://localhost:8081/goods/' + val,
-        data: {
-          goodsId: val
-        },
-      })
-          .then(res => {
-            const productDetails = res.data.data
-            _this.price = productDetails.price
-            _this.title = productDetails.title
-            _this.picturePath = productDetails.picturePath
-            // _this.labels = productDetails.labels
-            _this.introduce = productDetails.introduce
-            _this.announcer = productDetails.announcer
-            _this.comments = JSON.parse(productDetails.comments)
-            _this.want = productDetails.want
-            _this.announceTime = productDetails.announceTime
-          })
-    },
-    buyGoods() {
-      // 需要先验证用户是否已经登陆
-      if (!this.$store.getters.getUser) {
-        Element.Message({
-          showClose: true,
-          message: 'Please login first',
-          type: 'error',
-        })
-        return
-      }
-      this.$axios.post("http://localhost:8081/product/user/addCollect", {
-        userID: this.$store.getters.getUser.userID,
-        productID: this.productID
-      })
-          .then(res => {
-            if (res.data.code === "200") { // 状态码为200 -> 添加成功
-              Element.Message({
-                showClose: true,
-                message: 'Add product to collection successfully',
-                type: 'success',
-              })
-            }
-          })
-    },
+    // getDetails(val) {
+    //   const _this = this
+    //   this.$axios({
+    //     method: 'get',
+    //     url: 'http://localhost:8081/goods/' + val,
+    //     data: {
+    //       goodsId: val
+    //     },
+    //   })
+    //       .then(res => {
+    //         const productDetails = res.data.data
+    //         _this.price = productDetails.price
+    //         _this.title = productDetails.title
+    //         _this.picturePath = productDetails.picturePath
+    //         // _this.labels = productDetails.labels
+    //         _this.introduce = productDetails.introduce
+    //         _this.announcer = productDetails.announcer
+    //         _this.comments = JSON.parse(productDetails.comments)
+    //         _this.want = productDetails.want
+    //         _this.announceTime = productDetails.announceTime
+    //       })
+    // },
+    // buyGoods() {
+    //   // 需要先验证用户是否已经登陆
+    //   if (!this.$store.getters.getUser) {
+    //     Element.Message({
+    //       showClose: true,
+    //       message: 'Please login first',
+    //       type: 'error',
+    //     })
+    //     return
+    //   }
+    //   this.$axios.post("http://localhost:8081/product/user/addCollect", {
+    //     userID: this.$store.getters.getUser.userID,
+    //     productID: this.productID
+    //   })
+    //       .then(res => {
+    //         if (res.data.code === "200") { // 状态码为200 -> 添加成功
+    //           Element.Message({
+    //             showClose: true,
+    //             message: 'Add product to collection successfully',
+    //             type: 'success',
+    //           })
+    //         }
+    //       })
+    // },
 // 提交评论
   }
 }
@@ -132,12 +139,12 @@ export default {
   border:1px solid rgb(191, 203, 217);
   border-radius: 4px
 }
-  /*border-radius: 4px*/
+/*border-radius: 4px*/
 .el-row {
   margin-bottom: 20px;
-/*&:last-child {*/
-/*   margin-bottom: 0;*/
-/* }*/
+  /*&:last-child {*/
+  /*   margin-bottom: 0;*/
+  /* }*/
 }
 .el-col {
   border-radius: 4px;

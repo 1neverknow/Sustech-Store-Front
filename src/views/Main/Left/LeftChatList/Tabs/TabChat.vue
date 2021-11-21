@@ -63,12 +63,17 @@
 
 <script>
 import avatar from "@/assets/default.png";
-import store from "@/store/index.js"
+import "../../../../../main.js"
+import "../../../../../util/jquery.js"
+import "../../../../../util/sockjs.min.js"
+import "../../../../../util/stomp.js"
+import store from "../../../../../store/index.js"
 import {toDate} from "element-ui/src/utils/date-util";
 
 let subscribeMsg = [];
 let myInformation;
 let yourInformation;
+let goodsInformation;
 global.stomp=null;
 export default {
   name: "TabChat",
@@ -125,6 +130,8 @@ export default {
               // console.log(res.body.length)
               // let count = data.length - 1;
               // console.log(count)
+              console.log(data.speakUserId);
+              console.log("##########################")
               let myId = data.speakUserId;
               let yourId = data.otherUserId;
               let myName = data.speakUserName;
@@ -178,9 +185,14 @@ export default {
                 // alias: "",
                 // region: ""
               }
-
+              goodsInformation = {
+                id: goodsId,
+                avatar: goodsPicture,
+                price: goodsPrice,
+              }
               console.log(subscribeMsg);
               console.log(myInformation);
+              console.log(goodsInformation);
             });
             //   // setConnect(true);
           }
@@ -196,6 +208,7 @@ export default {
       this.$store.commit("setInitialHistory", subscribeMsg);
       this.$store.commit("setMyself", myInformation);
       this.$store.commit("setOther", yourInformation);
+      this.$store.commit("setGoods", goodsInformation);
     },
     handleChangeChat(index) {
 

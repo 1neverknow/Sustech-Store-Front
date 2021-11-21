@@ -5,54 +5,64 @@
         <p>
           <i class="el-icon-setting" style="color: orange"></i>
         </p>
-        <p>Management</p>
+        <p>Admin</p>
         <router-link to></router-link>
       </div>
     </div>
     <div class="content">
       <el-menu
-          :default-active="activeIndex2"
+          :default-active="activeIndex"
           class="menu"
           mode="horizontal"
           @select="handleSelect"
           background-color="#545c64"
           text-color="#fff"
-          active-text-color="#ffd04b">
-        <el-menu-item index="1">Appealing</el-menu-item>
+          active-text-color="#ffd04b"
+          router>
+        <el-menu-item index="AdminAppealing">
+            Appealing
+        </el-menu-item>
         <el-submenu index="2">
           <template slot="title">Complain</template>
-          <el-menu-item index="2-1">Goods</el-menu-item>
-          <el-menu-item index="2-2">User</el-menu-item>
+          <el-menu-item index="AdminComplainGoods">
+            Goods
+          </el-menu-item>
+          <el-menu-item index="AdminComplainUser">
+            User
+          </el-menu-item>
         </el-submenu>
+
         <el-submenu index="3">
-          <template slot="title">Operations</template>
-          <el-menu-item index="3-1">Goods</el-menu-item>
-          <el-menu-item index="3-2">User</el-menu-item>
-          <el-menu-item index="3-3">Deal</el-menu-item>
+          <template slot="title">All</template>
+          <el-menu-item index="ComplainGoodsAll">
+            Goods
+          </el-menu-item>
+          <el-menu-item index="ComplainUserAll">
+            User
+          </el-menu-item>
+          <el-menu-item index="AppealingDealAll">
+            Deal
+          </el-menu-item>
         </el-submenu>
-<!--        <el-menu-item index="3" disabled>消息中心</el-menu-item>-->
-<!--        <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>-->
+
+
       </el-menu>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
 export default {
-  name: "Admin",
-  setup() {
-    const activeIndex = ref('1')
-    const activeIndex2 = ref('1')
-    const handleSelect = (key, keyPath) => {
-      console.log(key, keyPath)
-    }
+  data() {
     return {
-      activeIndex,
-      activeIndex2,
-      handleSelect,
-    }
+      activeIndex: '1'
+    };
   },
+  methods: {
+    handleSelect(key, keyPath) {
+      console.log(key, keyPath);
+    }
+  }
 }
 </script>
 

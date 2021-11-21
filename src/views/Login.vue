@@ -39,7 +39,7 @@
             <el-form-item label="Verify code" style="margin-bottom: 50px">
               <el-input type="text" v-model="verify.verifycode" style="width: 420px;"></el-input>
               <template v-if="verify.verifyImg">
-                <img :src="verify.verifyImg" style="float: right">
+                <img @click="getVerifyImg" :src="verify.verifyImg" style="float: right">
               </template>
               <template v-else>
                 <el-button @click="getVerifyImg" type="primary" style="width: 100px; float: right">Get</el-button>
@@ -139,9 +139,11 @@ export default {
         if (valid && this.verify.verifycode !== '') {
           // 更改为调用全局this -> 可以用来获取store里的信息
           const _this = this
-          // const newRequest = axios.create();
-          this.$axios.post('http://localhost:8081/login?checkCode=' + this.verify.verifycode, this.ruleForm)
-              .then((res)=>{
+          const newRequests = axios.create()
+          newRequests.defaults.withCredentials = true;
+          // this.$axios.defaults.withCredentials = true;
+          newRequests.post('http://localhost:8081/login?checkCode=' + this.verify.verifycode, this.ruleForm)
+              .then((res)=> {
             console.log(res)
             if (res.data.code === 2000) {
               // 接受后端返回的数据
@@ -158,11 +160,9 @@ export default {
                 showClose: true,
                 message: 'Login success!',
                 type: 'success',
-
               })
               // 验证成功后，跳转到home page
               this.getBasicInfo()
-              console.log(this.$store.getters.getBasic_Info)
             } else {
               Element.Message({
                 message: res.data.message,
@@ -192,7 +192,7 @@ export default {
           console.log("test6")
           this.$store.commit("SET_Basic_Info",res.data.data)
           console.log(this.$store.getters.getBasic_Info)
-          this.$router.push('/')
+          this.$router.push('/sh')
         }
       })
     },
@@ -203,23 +203,16 @@ export default {
       this.invisible = !(value === 'show');
     },    //判断渲染，true:暗文显示，false:明文显示
     getVerifyImg() {
-      const newRequest = axios.create()
-      newRequest({
+      const newRequests = axios.create()
+      newRequests.defaults.withCredentials = true;
+      newRequests({
         method: 'get',
         url: 'http://localhost:8081/code/image',
         responseType: "blob"
       }).then(res => {
-        console.log(res)
-        if (res.status === 200) {
-          const {data, headers} = res
-          const blob = new Blob([data], {type: headers['content-type']})
-          this.verify.verifyImg = window.URL.createObjectURL(blob)
-        } else {
-          Element.Message({
-            message: res.data.message,
-            type: 'error',
-          })
-        }
+        const {data, headers} = res
+        const blob = new Blob([data], {type: headers['content-type']})
+        this.verify.verifyImg = window.URL.createObjectURL(blob)
       })
     },
     initialInfo() {
