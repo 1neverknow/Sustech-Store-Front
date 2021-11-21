@@ -14,9 +14,23 @@
             width="180">
         </el-table-column>
         <el-table-column
-            prop="dealId"
-            label="dealId"
+            prop="usersId"
+            label="usersId"
             width="180">
+          <template slot-scope="scope">
+          <router-link v-bind:to="'/user/'+scope.row.usersId">
+            {{scope.row.usersId}}
+          </router-link>
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="complainerId"
+            label="complainerId">
+          <template slot-scope="scope">
+          <router-link v-bind:to="'/user/'+scope.row.usersId">
+            {{scope.row.usersId}}
+          </router-link>
+          </template>
         </el-table-column>
         <el-table-column
             prop="picture"
@@ -34,12 +48,7 @@
             label="isProcess"
             :formatter="formatBoolean">
         </el-table-column>
-        <el-table-column label="operation" align="center" min-width="100">
-          　　　　<template slot-scope="scope">
-          　　　　　　<el-button type="success" @click="Accept(scope.row.recordId)" plain>Accept</el-button>
-          <el-button type="danger" @click="Reject(scope.row.recordId)" plain>Reject</el-button>
-          　　　　</template>
-          　　</el-table-column>
+
       </el-table>
 
 
@@ -65,7 +74,7 @@
 <script>
 import AdminHeader from "@/components/AdminHeader";
 export default {
-  name: "Adminappealing",
+  name: "ComplainUserAll",
   components:{AdminHeader},
   data() {
     return {
@@ -88,30 +97,6 @@ export default {
       _this.handleCurrentChange(_this.currentPage)
       _this.pageSize=size
     },
-    Accept(id){
-      const _this= this
-      _this.$axios.put("http://localhost:8081/admin/operate/deal?canRefund="+true+"&recordId="+id).then(res => {
-        console.log(res)
-        _this.$axios.get("/admin/appealing/deal/not").then(res => {
-          console.log(res)
-          _this.allData = res.data.data.sort()
-          _this.total = res.data.data.length
-          _this.tableData=_this.allData.slice(_this.pageSize*(_this.currentPage-1),_this.pageSize*(_this.currentPage))
-        })
-      })
-    },
-    Reject(id){
-      const _this= this
-      _this.$axios.put("http://localhost:8081/admin/operate/deal?canRefund"+false+"&recordId="+id).then(res => {
-        console.log(res)
-        _this.$axios.get("/admin/appealing/deal/not").then(res => {
-          console.log(res)
-          _this.allData = res.data.data
-          _this.total = res.data.data.length
-          _this.tableData=_this.allData.slice(_this.pageSize*(_this.currentPage-1),_this.pageSize*(_this.currentPage))
-        })
-      })
-    },
     formatBoolean: function (row, column, cellValue) {
       var ret = ''
       if (cellValue) {
@@ -125,7 +110,7 @@ export default {
   created() {
     const _this = this
     _this.handleCurrentChange(1)
-    _this.$axios.get("/admin/appealing/deal/not").then(res => {
+    _this.$axios.get("/admin/complain/allUser").then(res => {
       console.log(res)
       _this.allData = res.data.data
       _this.total = res.data.data.length

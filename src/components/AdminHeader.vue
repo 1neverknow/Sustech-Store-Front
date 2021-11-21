@@ -32,6 +32,19 @@
           </el-menu-item>
         </el-submenu>
 
+        <el-submenu index="3">
+          <template slot="title">All</template>
+          <el-menu-item index="ComplainGoodsAll">
+            Goods
+          </el-menu-item>
+          <el-menu-item index="ComplainUserAll">
+            User
+          </el-menu-item>
+          <el-menu-item index="AppealingDealAll">
+            Deal
+          </el-menu-item>
+        </el-submenu>
+
 
       </el-menu>
     </div>

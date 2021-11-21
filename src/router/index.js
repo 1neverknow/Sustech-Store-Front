@@ -18,6 +18,9 @@ import None from "@/views/None"
 import AdminAppealing from "@/views/AdminAppealing"
 import AdminComplainGoods from "@/views/AdminComplainGoods"
 import AdminComplainUser from "@/views/AdminComplainUser"
+import AppealingDealAll from "@/views/AppealingDealAll";
+import ComplainGoodsAll from "@/views/ComplainGoodsAll";
+import ComplainUserAll from "@/views/ComplainUserAll";
 import Announced from "@/views/Announced"
 import MainPage from "@/views/MainPage";
 import Account from "@/views/Account";
@@ -183,6 +186,31 @@ const routes = [
       requireAuth: true
     },
     component: AdminComplainGoods
+  },
+  {
+    path: '/complainGoodsAll',
+    name: 'ComplainGoodsAll',
+    meta: {
+      requireAuth: true
+    },
+    component: ComplainGoodsAll
+
+  },{
+    path: '/complainUserAll',
+    name: 'ComplainUserAll',
+    meta: {
+      requireAuth: true
+    },
+    component: ComplainUserAll
+
+  },{
+    path: '/appealingDealAll',
+    name: 'AppealingDealAll',
+    meta: {
+      requireAuth: true
+    },
+    component: AppealingDealAll
+
   },
 
 

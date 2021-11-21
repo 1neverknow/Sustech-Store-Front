@@ -17,10 +17,20 @@
            prop="usersId"
            label="usersId"
            width="180">
+         <template slot-scope="scope">
+           <router-link v-bind:to="'/user/'+scope.row.usersId">
+             {{scope.row.usersId}}
+           </router-link>
+         </template>
        </el-table-column>
        <el-table-column
            prop="complainerId"
            label="complainerId">
+         <template slot-scope="scope">
+         <router-link v-bind:to="'/user/'+scope.row.complainerId">
+           {{scope.row.complainerId}}
+         </router-link>
+         </template>
        </el-table-column>
        <el-table-column
            prop="picture"
@@ -143,8 +153,8 @@ export default {
 <style scoped>
   .block{
     margin-top: 20px;
-    margin-left: 500px;
-    margin-right: 500px;
+    margin-left: 200px;
+    margin-right: 200px;
   }
 
   .el-table el-table-column{
