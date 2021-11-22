@@ -15,28 +15,11 @@
     <el-card class="content">
 <!--      有收藏物品-->
       <div v-if="collectList.length > 0">
-        <el-row class="goods-list">
-          <MyList
-              v-bind:type="'collection'"
-              v-bind:list="collectList"
-          ></MyList>
-        </el-row>
-        <el-row>
-          <!-- 分页区域 -->
-          <el-pagination
-              class="pagination"
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page="queryInfo.pagenum"
-              :page-sizes="[5, 10, 15, 20]"
-              :page-size="queryInfo.pagesize"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="queryInfo.total"
-              style="float:right;"
-              background
-          >
-          </el-pagination>
-        </el-row>
+        <MyList
+            v-bind:total="total"
+            v-bind:type="'collection'"
+            v-bind:list="collectList"
+        ></MyList>
       </div>
 <!--      收藏列表为空-->
       <div v-else class="collect-empty">
@@ -45,6 +28,7 @@
         </div>
       </div>
     </el-card>
+    <el-footer></el-footer>
   </div>
 </template>
 
@@ -56,12 +40,7 @@ export default {
   data() {
     return {
       collectList: [],
-      queryInfo: {
-        query: '',
-        pagenum: 1,
-        pagesize: 10,
-        total: 0,
-      },
+      total: 0,
     }
   },
   methods: {
@@ -73,9 +52,8 @@ export default {
       this.$axios.get('http://localhost:8081/user/collection')
         .then(res => {
           const collection_data = res.data.data
-          this.queryInfo.total = collection_data.length
-          let size = this.queryInfo.pagesize < this.queryInfo.total ? this.queryInfo.pagesize : this.queryInfo.total
-          for (let i=0; i<size; i++) {
+          this.total = collection_data.length
+          for (let i in collection_data) {
             const item = collection_data[i]
             this.collectList.push({
               goodsId: item.goodsId,
@@ -89,14 +67,6 @@ export default {
             })
           }
         })
-    },
-    handleSizeChange(newSize) {
-      this.queryInfo.pagesize = newSize
-      this.getCollectList()
-    },
-    handleCurrentChange(newPage) {
-      this.queryInfo.pagenum = newPage
-      this.getCollectList()
     },
   },
   mounted() {
