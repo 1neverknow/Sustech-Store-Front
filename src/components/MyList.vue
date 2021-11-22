@@ -2,30 +2,58 @@
 
 <template>
   <div id="list" class="myList">
-    <ul style="list-style: none">
-<!--      productID是商品编号！-->
-      <li v-for="(item,index) in list" :key="index">
-        <el-popconfirm
-            confirm-button-text="OK"
-            cancel-button-text="No, Thanks"
-            icon="el-icon-question"
-            icon-color="red"
-            title="Are you sure to remove this goods?"
-            @confirm="confirmEvent(index)"
-        >
-          <i class="el-icon-close delete" slot="reference" v-show="true"></i>
-        </el-popconfirm>
-<!--        点击后跳转至商品详情-->
-        <router-link :to="{path: '/goods/'+ item.goodsId}" class="router-link-active">
-          <img :src="'http://localhost:8081/'+ item.picture"/>
-          <h2>{{item.title}}</h2>
-          <h3></h3>
-          <p>
-            <span>￥{{item.price}}</span>
-          </p>
-        </router-link>
-      </li>
-    </ul>
+    <el-row class="goods-list">
+      <ul style="list-style: none">
+        <!--      productID是商品编号！-->
+        <li
+            v-for="(item,index) in showList"
+            :key="index">
+          <el-popconfirm
+              confirm-button-text="OK"
+              cancel-button-text="No, Thanks"
+              icon="el-icon-question"
+              icon-color="red"
+              title="Are you sure to remove this goods?"
+              @confirm="confirmEvent(index)"
+          >
+            <i class="el-icon-close delete" slot="reference" v-show="true"></i>
+          </el-popconfirm>
+          <!--        点击后跳转至商品详情-->
+          <div>
+            <router-link
+                :to="{path: '/goods/'+ item.goodsId}"
+                class="router-link-active">
+              <img
+                  style="width: 120px; height: 120px; text-align: center"
+                  :src="item.picture"
+              >
+              <h2>{{item.title}}</h2>
+              <h3></h3>
+              <p>
+                <span>￥{{item.price}}</span>
+              </p>
+            </router-link>
+          </div>
+        </li>
+      </ul>
+    </el-row>
+    <el-row class="pagination">
+      <!-- 分页区域 -->
+      <el-pagination
+          class="pagination"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="queryInfo.pagenum"
+          :page-sizes="[4, 8, 12, 16]"
+          :page-size="queryInfo.pagesize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="queryInfo.total"
+          style="float:right;"
+          background
+      >
+      </el-pagination>
+    </el-row>
+
   </div>
 </template>
 
@@ -36,11 +64,41 @@ import Element from "element-ui";
 export default {
   name: "MyList",
   // list为父组件传来的列表
-  props: ['type', 'list'],
+  props: ['type', 'list', 'offlist', 'total'],
   data() {
-    return{}
+    return{
+      showList: [],
+      queryInfo: {
+        query: '',
+        pagenum: 1,
+        pagesize: 8,
+        total: 0,
+      },
+    }
   },
   methods: {
+    loadShowList() {
+      this.showList = []
+      let fromIdx = (this.queryInfo.pagenum - 1) * this.queryInfo.pagesize
+      let toIdx = fromIdx + this.queryInfo.pagesize
+      console.log('from', fromIdx, 'to', toIdx)
+      if (this.total < toIdx) {
+         toIdx = this.total
+      }
+      if (toIdx <= this.list.length) {
+        for (let i = fromIdx; i < toIdx; i++) {
+          console.log(this.list[i])
+          this.showList.push(this.list[i])
+        }
+      } else {
+        for (let i = fromIdx; i < this.list.length; i++) {
+          this.showList.push(this.list[i])
+        }
+        for (let i = 0; i < toIdx - this.list.length; i++) {
+          this.showList.push(this.offlist[i])
+        }
+      }
+    },
     confirmEvent(index) {
       const goodsId = this.list[index].goodsId
       if (this.type === 'collection') {
@@ -62,9 +120,20 @@ export default {
               this.list.splice(index, 1)
             })
       }
-
     },
-
+    handleSizeChange(newSize) {
+      this.queryInfo.pagesize = newSize
+      this.loadShowList()
+    },
+    handleCurrentChange(newPage) {
+      this.queryInfo.pagenum = newPage
+      this.loadShowList()
+    },
+  },
+  mounted() {
+    this.queryInfo.total = this.total
+    console.log('mounted show list')
+    this.loadShowList()
   }
 }
 </script>
@@ -154,4 +223,20 @@ export default {
 .router-link-active {
   text-decoration: none;
 }
+.myList .list-item {
+  width: 200px;
+  height: 200px;
+}
+
+.myList .pagination {
+  float: bottom;
+  margin: auto;
+}
+
+.myList .goods-list {
+  margin-left: -4%;
+  overflow: hidden;
+  /*height: 700px;*/
+}
+
 </style>

@@ -42,7 +42,7 @@
               <el-carousel-item v-for="item in picturePath" :key="item.id">
                 <el-image
                     style="height: 500px; margin-top: 50px;"
-                    :src="'http://localhost:8081/' + item"
+                    :src="item"
                     fit="contain"
                 ></el-image>
               </el-carousel-item>
@@ -134,8 +134,8 @@
         </el-row>
 
         <el-collapse v-model="activeNames" class="collapse">
-          <el-collapse-item name="1">
-            <template #title>
+          <el-collapse-item name="1" style="margin-left: 10%;">
+            <template #title >
               <h2 style="margin-right: 10px">Comments </h2>
               <i class="header-icon el-icon-info"></i>
             </template>
@@ -145,8 +145,7 @@
                 v-bind:comments="comments"
             ></GoodsComment>
           </el-collapse-item>
-
-          <el-collapse-item name="2">
+          <el-collapse-item name="2" style="margin-left: 10%;">
             <template #title>
               <h2 style="margin-right: 10px">More </h2>
               <i class="header-icon el-icon-search"></i>
@@ -262,19 +261,6 @@ export default {
         } else {
           this.comments = []
         }
-        // const commentList = res.data.data
-        // this.comments = []
-        // for (let i in commentList) {
-        //   const c = commentList[i]
-        //   this.comments.push({
-        //     commentDate: c.commentDate,
-        //     commentId: c.commentId,
-        //     content: c.content,
-        //     picturePath: c.picturePath,
-        //     userId: c.userId,
-        //     username: c.username
-        //   })
-        // }
       })
     },
     // 点击我想要联系卖家
@@ -294,7 +280,14 @@ export default {
         })
         return
       }
-      this.$route.push('/message')
+      this.$axios.post('http://localhost:8081/chat/want?goodsId=' + this.goodsId)
+          .then(res => {
+            Element.Message({
+              message: 'Success',
+              type: 'success',
+            })
+      })
+      this.$router.push('/message')
       // this.addDeal()
     },
     // 添加到收藏夹

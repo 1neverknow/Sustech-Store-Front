@@ -10,29 +10,13 @@
       </div>
     </div>
     <el-card class="content">
-      <div v-if="announceList.length > 0">
-        <el-row class="goods-list">
-          <MyList
-              v-bind:type="'announcement'"
-              v-bind:list="announceList"
-          ></MyList>
-        </el-row>
-        <el-row>
-          <!-- 分页区域 -->
-          <el-pagination
-              class="pagination"
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page="queryInfo.pagenum"
-              :page-sizes="[4, 8, 12, 16]"
-              :page-size="queryInfo.pagesize"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="queryInfo.total"
-              style="float:right;"
-              background
-          >
-          </el-pagination>
-        </el-row>
+      <div v-if="onList.length > 0 || offList.length > 0">
+        <MyList
+            v-bind:total="total"
+            v-bind:type="'announcement'"
+            v-bind:list="onList"
+            v-bind:offlist="offList"
+        ></MyList>
       </div>
       <!--      收藏列表为空-->
       <div v-else class="collect-empty">
@@ -41,53 +25,57 @@
         </div>
       </div>
     </el-card>
+    <el-footer></el-footer>
   </div>
 </template>
 
 <script>
 import MyList from "@/components/MyList"
-import { ref } from 'vue'
 export default {
   name: "Announced",
   components: {MyList},
-  setup() {
-    const count = ref(0)
-    const load = () => {
-      count.value += 2
-    }
-    return {
-      count,
-      load,
-    }
-  },
   data() {
     return {
       goodsState: '0',
-      announceList: [],
-      queryInfo: {
-        query: '',
-        pagenum: 1,
-        pagesize: 10,
-        total: 0,
-      },
+      onList: [],
+      offList: [],
+      total: 0,
     }
   },
   methods: {
     activate() {
-      this.getannounceList()
+      this.total = 0
+      this.getOnList()
+      this.getOffList()
     },
-    getannounceList() {
-      console.log('get announcement list')
-      this.$axios.get('http://localhost:8081/user/announceGoods')
+    getOnList() {
+      console.log('get announcement onlist')
+      this.$axios.get('http://localhost:8081/user/announceGoods/0')
           .then(res => {
             const announcement_data = res.data.data
-            this.queryInfo.total = announcement_data.length
-            // let size = this.queryInfo.pagesize < this.queryInfo.total ? this.queryInfo.pagesize : this.queryInfo.total
-            let size = this.queryInfo.pagesize
-            // if r
+            console.log('onList', announcement_data)
+            this.total += announcement_data.length
             for (let i in announcement_data) {
               const item = announcement_data[i]
-              this.announceList.push({
+              this.onList.push({
+                goodsId: item.goodsId,
+                picture: item.picturePath,
+                title: item.title,
+                price: item.price,
+              })
+            }
+          })
+    },
+    getOffList() {
+      console.log('get announcement offlist')
+      this.$axios.get('http://localhost:8081/user/announceGoods/1')
+          .then(res => {
+            const announcement_data = res.data.data
+            console.log('offList', announcement_data)
+            this.total += announcement_data.length
+            for (let i in announcement_data) {
+              const item = announcement_data[i]
+              this.offList.push({
                 goodsId: item.goodsId,
                 picture: item.picturePath,
                 title: item.title,
@@ -114,7 +102,7 @@ export default {
 <style scoped>
 .announcement {
   background-color: #f5f5f5;
-  margin: auto auto auto -200px;
+  margin: auto auto auto -10%;
 }
 .announcement .announcement-header {
   background-color: #fff;
@@ -146,16 +134,6 @@ export default {
   /*margin-left: 400px;*/
   /*text-align: center;*/
   width: 1225px;
-}
-.announcement .content .pagination {
-  float: bottom;
-  margin: auto;
-}
-
-.announcement .content .goods-list {
-  margin-left: -13.7px;
-  overflow: hidden;
-  height: 700px;
 }
 /* 收藏列表为空的时候显示的内容CSS */
 .announcement .collect-empty {

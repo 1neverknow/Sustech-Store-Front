@@ -9,7 +9,7 @@
         <el-table-column label="Goods" prop="goodsTitle"></el-table-column>
         <el-table-column label="Photo" prop="goodsPhoto">
           <template slot-scope="scope">
-            <img :src="'http://localhost:8081/' + scope.row.goodsPhoto" alt="" style="width: 80px;height: 80px">
+            <img :src="scope.row.goodsPhoto" alt="" style="width: 80px;height: 80px">
           </template>
         </el-table-column>
         <el-table-column label="Price" prop="price"></el-table-column>
@@ -18,7 +18,7 @@
         <el-table-column label="Operation">
           <template slot-scope="scope">
             <template>
-<!--              全部订单列表-->
+              <!--              全部订单列表-->
               <el-button
                   icon="el-icon-info"
                   size="mini"
@@ -48,8 +48,8 @@
                   plain
               >Pay</el-button>
               <el-dialog
-                :visible.sync="payVisible"
-                width="50%"
+                  :visible.sync="payVisible"
+                  width="50%"
               >
                 <Pay
                     @changePayVisible="changePayVisible"
@@ -61,11 +61,11 @@
             </template>
 
             <template v-else-if="stage===1 && dealType==='buy'">
-                <!--一键退款-->
-                <Refund
-                    @refresh="refresh"
-                    v-bind:dealId="scope.row.dealId"
-                ></Refund>
+              <!--一键退款-->
+              <Refund
+                  @refresh="refresh"
+                  v-bind:dealId="scope.row.dealId"
+              ></Refund>
             </template>
 
             <template v-else-if="stage===1 && dealType==='sell'">
@@ -77,8 +77,8 @@
                   plain
               >Deliver</el-button>
               <el-dialog title="Mailing Form"
-                 :visible.sync="deliveryVisible"
-                 width="50%"
+                         :visible.sync="deliveryVisible"
+                         width="50%"
               >
                 <Deliver
                     @refresh="refresh"
@@ -119,7 +119,7 @@
             </template>
 
             <template v-else-if="stage===3">
-            <!--收货后可以评价-->
+              <!--收货后可以评价-->
               <el-button
                   icon="el-icon-edit"
                   size="mini"
@@ -243,13 +243,13 @@ export default {
     },
     cancelRefund(dealId) {
       this.$axios.put('http://localhost:8081/deal/cancelRefund/' + dealId)
-        .then((res)=>{
-        Element.Message({
-          message: 'Success!',
-          type: 'success',
-        })
-        this.refresh()
-      })
+          .then((res)=>{
+            Element.Message({
+              message: 'Success!',
+              type: 'success',
+            })
+            this.refresh()
+          })
     },
     changeHandleRefundVisible(value) {
       this.refundHandlerVisible = value

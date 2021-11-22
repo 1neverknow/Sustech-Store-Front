@@ -60,7 +60,7 @@ export default {
   methods: {
     handleClick() {
       const goodsId = this.$store.goods.id
-      this.$route.push('/deal/' + goodsId)
+      this.$router.push('/deal/' + goodsId)
     }
     // // 通过路由获取商品id
     // activate() {

@@ -44,7 +44,7 @@
               <el-switch v-model="freeDelivery"></el-switch>
             </el-form-item>
             <el-form-item v-if="freeDelivery === false"
-                label="Delivery Fee" prop="deliveryFee">
+                label="Delivery Fee" prop="postage">
               <el-input
                   v-model.number="goods.postage"
                   type="price"
@@ -54,8 +54,7 @@
           </el-col>
           <el-divider direction="vertical"></el-divider>
           <el-col :span="10" :offset="2" class="img-uploader">
-            <h4
-                style="color: grey; line-height: 60px; font-size: 14px"
+            <h4 style="color: grey; line-height: 60px; font-size: 14px"
             >Upload your photos here
             </h4>
             <el-alert
@@ -86,8 +85,8 @@
           </el-col>
         </el-row>
 
-        <el-row>
-          <el-col :span="10" :offset="2">
+        <el-row style="margin-left: 2%">
+          <el-col :span="10" :offset="2" >
             <el-form-item label="Labels" prop="labels">
               <TagInput v-bind:dynamicTags="goods.labels"></TagInput>
             </el-form-item>
@@ -97,7 +96,7 @@
         <div>
           <el-button
               type="primary"
-              style="float: left; width: 50%; margin-top: 70px; margin-left: 15%"
+              class="publish-btn"
               @click="validateInfo('goods')"
               round
           >Publish</el-button
@@ -105,6 +104,7 @@
         </div>
       </el-form>
     </el-card>
+    <el-footer></el-footer>
   </div>
 </template>
 
@@ -119,8 +119,9 @@ export default {
   components: {TagInput},
   data() {
     const validatePostage = (rule, value, callback) => {
-      if (!this.freeDelivery && val === 0) {
-        callback(new Error('Postage is needed'))
+      const valnum = parseInt(value)
+      if (valnum < 0 || valnum > 999) {
+        callback(new Error('Postage can only be (0, 999]'))
       } else {
         callback()
       }
@@ -133,6 +134,14 @@ export default {
         callback()
       }
     }
+    const validatePrice = (rule, value, callback) => {
+      const valnum = parseInt(value)
+      if (valnum <= 0 || valnum > 99999999) {
+        callback(new Error('Price can only be (0, 99999999]'))
+      } else {
+        callback()
+      }
+    }
     return {
       labelPosition: 'left',
       freeDelivery: true, // 是否包邮
@@ -140,7 +149,7 @@ export default {
         introduce: 'aaaaaaaaaa',
         isSell: true,
         labels: [],
-        price: '333333333333333',
+        price: '999',
         title: '300 Mana Stone',
         postage: 0,
       },
@@ -154,10 +163,15 @@ export default {
           { required: true, message: 'Price is required' },
         ],
         postage: [
-          {validator: validatePostage, trigger: 'blur',}
+          {validator: validatePostage, trigger: 'blur',},
+          { type: 'number', message: 'postage must be a number' },
         ],
         labels: [
           {validator: validateLabel, trigger: 'blur',},
+        ],
+        price: [
+          {validator: validatePrice, trigger: 'blur',},
+          { type: 'number', message: 'price must be a number' },
         ]
       },
       dialogImageUrl: '',
@@ -273,12 +287,13 @@ export default {
 <style scoped>
 .publish {
   background-color: #f5f5f5;
+  margin: auto auto auto -10%;
 }
 .publish .publish-header {
   background-color: #fff;
   border-bottom: 2px solid deepskyblue;
   margin-bottom: 20px;
-  margin-top: -50px;
+  margin-top: -98px;
   width: 100%;
 }
 .publish .publish-header .header-content {
@@ -303,10 +318,11 @@ export default {
   padding: 20px 0;
   width: 1225px;
   /*margin: 0 auto;*/
-  height: 800px;
+  /*height: 800px;*/
 }
 .publish .content .form-body {
   margin-top: 70px;
+  margin-left: 10%;
 }
 .publish .content .img-uploader {
   margin-top: 30px;
@@ -323,6 +339,7 @@ export default {
   position: relative;
   overflow: hidden;
 }
+
 .publish .content .img-uploader .avatar-uploader .el-upload:hover {
   border-color: #409eff;
 }
@@ -338,7 +355,11 @@ export default {
   margin-left: 100px;
 }
 
-.publish .content .form-btn {
-  margin: 40px auto;
+.publish .content .publish-btn {
+  float: left;
+  width: 50%;
+  margin-bottom: 50px;
+  margin-top: 70px;
+  margin-left: 15%;
 }
 </style>

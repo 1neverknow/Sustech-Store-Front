@@ -30,13 +30,13 @@
       </el-tabs>
       <OrderList
           @refresh="refresh"
-          v-bind:orderList="orderList"
+          v-bind:orderList="showList"
           v-bind:total="total"
           v-bind:stage="this.queryInfo.queryStage"
           v-bind:dealType="this.dealType"
       ></OrderList>
     </div>
-    <div class="footer">
+    <el-footer class="footer">
       <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -48,7 +48,7 @@
           background
       >
       </el-pagination>
-    </div>
+    </el-footer>
   </div>
 </template>
 
@@ -67,27 +67,27 @@ export default {
       },
       total: 0,
       orderList: [],
-      progressVisible: false,
-      progressInfo: [],
-      detailVisible: false,
-      commentVisible: false,
-      commentForm: {
-        content: '',
-        rate: '',
-      },
-      commentFormRules: {
-        content: [
-          { required: true, message: 'Content is needed', trigger: 'blur' }
-        ],
-        rate: [
-          { required: true, message: 'Rate the deal', trigger: 'blur' }
-        ],
-      },
+      showList: []
     }
   },
   methods: {
     activate() {
       this.getOrderList(-1)
+      this.loadShowList()
+    },
+    loadShowList() {
+      console.log('show list loading')
+      this.showList = []
+      let fromIdx = (this.queryInfo.pagenum - 1) * this.queryInfo.pagesize
+      let toIdx = fromIdx + this.queryInfo.pagesize
+      if (this.total < toIdx) {
+        toIdx = this.total
+      }
+      console.log('from ', fromIdx, '; to ', toIdx)
+      for (let i = fromIdx; i < toIdx; i++) {
+        console.log(this.orderList[i])
+        this.showList.push(this.orderList[i])
+      }
     },
     handleClick(tab) {
       console.log(tab.label)
@@ -162,6 +162,19 @@ export default {
             stage: item.stage,
           })
         }
+
+        console.log('show list loading')
+        this.showList = []
+        let fromIdx = (this.queryInfo.pagenum - 1) * this.queryInfo.pagesize
+        let toIdx = fromIdx + this.queryInfo.pagesize
+        if (this.total < toIdx) {
+          toIdx = this.total
+        }
+        console.log('from ', fromIdx, '; to ', toIdx)
+        for (let i = fromIdx; i < toIdx; i++) {
+          console.log(this.orderList[i])
+          this.showList.push(this.orderList[i])
+        }
       })
     },
     getAllSellOrder() {
@@ -181,6 +194,19 @@ export default {
             price: item.goodsAbbreviation.price + item.goodsAbbreviation.postage,
             stage: item.stage,
           })
+        }
+
+        console.log('show list loading')
+        this.showList = []
+        let fromIdx = (this.queryInfo.pagenum - 1) * this.queryInfo.pagesize
+        let toIdx = fromIdx + this.queryInfo.pagesize
+        if (this.total < toIdx) {
+          toIdx = this.total
+        }
+        console.log('from ', fromIdx, '; to ', toIdx)
+        for (let i = fromIdx; i < toIdx; i++) {
+          console.log(this.orderList[i])
+          this.showList.push(this.orderList[i])
         }
       })
     },
@@ -208,6 +234,19 @@ export default {
             stage: item.stage,
           })
         }
+
+        console.log('show list loading')
+        this.showList = []
+        let fromIdx = (this.queryInfo.pagenum - 1) * this.queryInfo.pagesize
+        let toIdx = fromIdx + this.queryInfo.pagesize
+        if (this.total < toIdx) {
+          toIdx = this.total
+        }
+        console.log('from ', fromIdx, '; to ', toIdx)
+        for (let i = fromIdx; i < toIdx; i++) {
+          console.log(this.orderList[i])
+          this.showList.push(this.orderList[i])
+        }
       })
     },
     getSellStageOrder(stage) {
@@ -227,71 +266,56 @@ export default {
             stage: item.stage,
           })
         }
+
+        console.log('show list loading')
+        this.showList = []
+        let fromIdx = (this.queryInfo.pagenum - 1) * this.queryInfo.pagesize
+        let toIdx = fromIdx + this.queryInfo.pagesize
+        if (this.total < toIdx) {
+          toIdx = this.total
+        }
+        console.log('from ', fromIdx, '; to ', toIdx)
+        for (let i = fromIdx; i < toIdx; i++) {
+          console.log(this.orderList[i])
+          this.showList.push(this.orderList[i])
+        }
       })
     },
     handleSizeChange(newSize) {
       this.queryInfo.pagesize = newSize
-      this.getOrderList()
     },
     handleCurrentChange(newPage) {
       this.queryInfo.pagenum = newPage
-      this.getOrderList()
-    },
-    changeDetailVisible(value) {
-      this.detailVisible = value
-    },
-    showProgressBox() {
-      this.progressVisible = true
-      console.log(this.progressInfo)
-    },
-    // 希望退货
-    refund(dealId) {
-      this.$axios.get('http://localhost:8081/deal/refund/' + dealId)
-          .then(res => {
-          })
-    },
-    confirmGet(dealId) {
-      this.$axios.get('http://localhost:8081/deal/confirm/' + dealId)
-          .then(res => {
-          })
-    },
-    commentDeal(dealId) {
-      let isGood = true
-      if (this.commentForm.rate< 3 ) {
-        isGood = false
-      }
-      this.$axios.get('http://localhost:8081/deal/comment/' + dealId)
-          .then(res => {
-
-          })
-    },
-    showCommentBox() {
-      this.commentVisible = true
-    },
-    updateQueryInfo(value) {
-      this.queryInfo = value
     },
     refresh() {
       this.getOrderList(this.queryInfo.queryStage)
+      this.loadShowList()
     }
   },
   watch: {
     'dealType': function(newVal, oldVal) {
       this.refresh()
+    },
+    'queryInfo.pagenum': function (newVal, oldVal) {
+      this.loadShowList()
+    },
+    'queryInfo.pagesize': function (newVal, oldVal) {
+      this.loadShowList()
     }
   },
   mounted() {
     this.activate()
-  }
+  },
 }
 </script>
 
 <style scoped>
 .order {
   background-color: #f5f5f5;
-  margin: auto auto auto -10px;
-  height: 800px;
+  margin: auto auto auto -20px;
+  width: 103%;
 }
+
 .order .order-header {
   background-color: #fff;
   border-bottom: 2px solid deepskyblue;
@@ -302,7 +326,7 @@ export default {
 .order .order-header .header-content {
   width: 1225px;
   height: 80px;
-  margin: 30px auto 30px 0;
+  margin: 30px auto 30px 50px;
 }
 .order .order-header .header-content p {
   float: left;
@@ -319,12 +343,13 @@ export default {
 .order .content {
   margin-top: -20px;
   padding: 10px;
-  /*margin: auto;*/
+  margin-left: 5%;
+  width: 90%;
 }
 .order .footer {
-  /*margin-top: 50px;*/
+  margin-top: 50px;
   margin-right: 50px;
-  margin-bottom: 100px;
+  margin-bottom: 50px;
   text-align: right;
   /*float: right;*/
 }

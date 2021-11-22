@@ -14,7 +14,7 @@
         </li>
         <li>
           <h4 style="margin-bottom: 15px;"></h4>
-          <el-input :disabled="disabled" clearable v-model="rechargeParams.totalAmt" placeholder="Charging Amount" style="width: 200px;"></el-input>
+          <el-input :disabled="disabled" clearable v-model="rechargeParams.totalAmt" placeholder="￥0 - 99999999" style="width: 200px;"></el-input>
         </li>
       </ul>
       <div style="text-align: center; margin-top: 30px;">
@@ -56,7 +56,14 @@ export default {
           message: 'Please input a price!',
           type: 'error',
         })
-        return;
+        return
+      } else if (parseInt(this.rechargeParams.totalAmt) > 99999999 ||
+          parseInt(this.rechargeParams.totalAmt) <= 0) {
+        Element.Message({
+          message: 'Charging amount should be (0, 99999999]',
+          type: 'error',
+        })
+        return
       }
       this.$axios({
         method: 'put',
@@ -78,6 +85,9 @@ export default {
 </script>
 
 <style scoped>
+.box-card {
+  margin-bottom: 20px;
+}
 /* 信息列表样式 */
 .msg-box > li {
   list-style: none;
