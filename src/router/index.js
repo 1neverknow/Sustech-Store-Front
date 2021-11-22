@@ -97,6 +97,14 @@ const routes = [
         },
         component: Announced
       },
+      {
+        path: '/publish',
+        name: 'Publish',
+        meta: {
+          requireAuth: true
+        },
+        component: Publish
+      },
     ]
   },
   {
@@ -155,22 +163,7 @@ const routes = [
     },
     component: Deal
   },
-  {
-    path: '/publish',
-    name: 'Publish',
-    meta: {
-      requireAuth: true
-    },
-    component: Publish
-  },
-  // {
-  //   path: '/user/order',
-  //   name: 'Order',
-  //   meta: {
-  //     requireAuth: true
-  //   },
-  //   component: Order
-  // },
+
   {
     path: '/none',
     name: 'None',

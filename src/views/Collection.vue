@@ -79,7 +79,7 @@ export default {
 <style scoped>
 .collection {
   background-color: #f5f5f5;
-  margin: auto auto auto -200px;
+  margin: auto auto auto -10%;
 }
 .collection .collection-header {
   background-color: #fff;

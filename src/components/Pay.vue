@@ -6,13 +6,13 @@
       </li>
       <li>
         <el-radio-group v-model="rechargeParams.paymentType" @change="paymentTypeChange">
-          <el-radio border :label="''+ 0">Wechat Pay</el-radio>
-          <el-radio border :label="''+ 1">Ali-Pay</el-radio>
-          <el-radio border :label="''+ 2">Account Balance</el-radio>
+          <el-radio :label="''+ 0">Wechat Pay</el-radio>
+          <el-radio :label="''+ 1">Ali-Pay</el-radio>
+          <el-radio :label="''+ 2">Account Balance</el-radio>
         </el-radio-group>
       </li>
     </ul>
-    <div style="text-align: center; margin-top: 30px;">
+    <div style="text-align: left; margin-top: 30px; margin-left: 8%">
       <el-button type="primary" @click="getPay" style="width: 140px">Confirm</el-button>
       <el-button @click="closeDialog" style="width: 140px">Cancel</el-button>
     </div>
@@ -88,6 +88,9 @@ export default {
 </script>
 
 <style scoped>
+.box-card {
+  margin-bottom: 20px;
+}
 /* 信息列表样式 */
 .msg-box > li {
   list-style: none;

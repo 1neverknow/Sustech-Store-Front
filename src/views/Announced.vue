@@ -102,7 +102,7 @@ export default {
 <style scoped>
 .announcement {
   background-color: #f5f5f5;
-  margin: auto auto auto -200px;
+  margin: auto auto auto -10%;
 }
 .announcement .announcement-header {
   background-color: #fff;

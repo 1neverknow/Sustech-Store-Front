@@ -53,7 +53,7 @@
               v-for="item in goodsList"
               :key="item.id"
           >
-            <img :src="'http://localhost:8081/' + item.goodsPicture" />
+            <img :src="item.goodsPicture" />
             <span class="pro-name">{{item.goodsName}}</span>
             <span class="pro-total">￥ {{item.price}}</span>
           </li>
@@ -82,11 +82,6 @@
 
       <!--      结算导航-->
       <div class="section-bar">
-<!--        <el-button type="primary"-->
-<!--           @click="chargeVisible = true"-->
-<!--           style="float: left; width: 150px"-->
-<!--           plain-->
-<!--        >Charge</el-button>-->
         <div class="btn">
           <router-link
               :to="{path: '/goods/' + this.goodsList[0].goodsId}"
@@ -104,13 +99,6 @@
                 v-bind:dealId="dealInfo.dealId"
             ></Pay>
           </el-dialog>
-<!--          <el-dialog  :visible.sync="chargeVisible" append-to-body>-->
-<!--            <Charge-->
-<!--                v-if="chargeVisible"-->
-<!--                @changeVisible="changeVisible"-->
-<!--                v-bind:dealId="dealInfo.dealId"-->
-<!--            ></Charge>-->
-<!--          </el-dialog>-->
         </div>
       </div>
 
@@ -289,14 +277,13 @@ export default {
   color: #333;
   font-size: 18px;
   line-height: 20px;
-  margin-bottom: 20px;
 }
 .confirmOrder .content .address-body li {
   list-style: none;
   float: left;
   color: #333;
-  width: 220px;
-  height: 178px;
+  width: 180px;
+  height: 128px;
   border: 1px solid #e0e0e0;
   padding: 15px 24px 0;
   margin: 30px 30px 30px auto;
@@ -310,8 +297,9 @@ export default {
 .confirmOrder .content .address-body li h2 {
   font-size: 18px;
   font-weight: normal;
-  line-height: 30px;
-  margin-bottom: 10px;
+  /*line-height: 30px;*/
+  margin-top: 2px;
+  margin-bottom: 6px;
 }
 .confirmOrder .content .address-body li p {
   font-size: 14px;
@@ -321,16 +309,15 @@ export default {
   padding: 10px 0;
   max-width: 180px;
   max-height: 88px;
-  line-height: 22px;
   overflow: hidden;
 }
 .confirmOrder .content .address-body .add-address {
   text-align: center;
-  line-height: 30px;
+  /*line-height: 30px;*/
 }
 .confirmOrder .content .address-body .add-address i {
   font-size: 30px;
-  padding-top: 50px;
+  padding-top: 25px;
   text-align: center;
 }
 .confirmOrder .content .address-body .add-address i:hover {
