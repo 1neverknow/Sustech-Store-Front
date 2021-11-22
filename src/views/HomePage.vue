@@ -48,7 +48,7 @@ export default {
     }
   },
   mounted() {
-    this.imageUrl = 'http://localhost:8081/' + this.$store.getters.getBasic_Info.picturePath
+    this.imageUrl =this.$store.getters.getBasic_Info.picturePath
 
   },
   methods: {

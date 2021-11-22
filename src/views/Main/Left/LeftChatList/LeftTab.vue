@@ -46,7 +46,7 @@ export default {
   name: "LeftTab",
   components: {
     TabChat,
-    // TabLinkman,
+    TabLinkman,
     // TabArticle,
     // ChatList
   },
@@ -83,59 +83,59 @@ export default {
     },
 
 
-    initial() {
-      console.log(this.$store.getters.getToken)
-      this.$axios({
-        method: 'get',
-        url: 'http://localhost:8081/chat/list',
-        headers: {'authorization': this.$store.getters.getToken},
-        transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
-          var ret = '';
-          for (var it in data) {
-            // 如果要发送中文 编码
-            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-          }
-          return ret.substring(0, ret.length - 1)
-        }]
-      }).then(res => {
-        if (res.data.code === 2000) {
-          const data = res.data.data
-          console.log(data)
-          let list=[]
-          // console.log(toDate(data))
-          data.forEach((item) => {
-            console.log(item.lastMessageDate)
-            console.log( toDate(item.lastMessageDate))
-            let chatList = {
-              chatId: item.chatId,
-              linkmanIndex: item.otherUserId,
-              // isMute: false,
-              // isOnTop: false,
-              messages: [
-                {
-                  avatar: item.otherUserPicturePath,
-                  nickname: item.otherUserName.toString(),
-                  ctn: item.lastMessageContent,
-                  time: toDate(item.lastMessageDate),
-                  type: "chat"
-                }
-              ],
-              // address: item.addressName,
-              // type:item.isDefault==='null'?'Normal':'Default'
-            }
-            console.log(chatList)
-            list.push(chatList)
-            // this.$store.commit("setChatId", item.dealId);
-          })
-          this.$store.commit("setInitialChatList", list);
-
-        } else {
-          this.$alert(res.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
-        }
-      })
-    },
+    // initial() {
+    //   console.log(this.$store.getters.getToken)
+    //   this.$axios({
+    //     method: 'get',
+    //     url: 'http://localhost:8081/chat/list',
+    //     headers: {'authorization': this.$store.getters.getToken},
+    //     transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
+    //       var ret = '';
+    //       for (var it in data) {
+    //         // 如果要发送中文 编码
+    //         ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+    //       }
+    //       return ret.substring(0, ret.length - 1)
+    //     }]
+    //   }).then(res => {
+    //     if (res.data.code === 2000) {
+    //       const data = res.data.data
+    //       console.log(data)
+    //       let list=[]
+    //       // console.log(toDate(data))
+    //       data.forEach((item) => {
+    //         console.log(item.lastMessageDate)
+    //         console.log( toDate(item.lastMessageDate))
+    //         let chatList = {
+    //           chatId: item.chatId,
+    //           linkmanIndex: item.otherUserId,
+    //           // isMute: false,
+    //           // isOnTop: false,
+    //           messages: [
+    //             {
+    //               avatar: item.otherUserPicturePath,
+    //               nickname: item.otherUserName.toString(),
+    //               ctn: item.lastMessageContent,
+    //               time: toDate(item.lastMessageDate),
+    //               type: "chat"
+    //             }
+    //           ],
+    //           // address: item.addressName,
+    //           // type:item.isDefault==='null'?'Normal':'Default'
+    //         }
+    //         console.log(chatList)
+    //         list.push(chatList)
+    //         // this.$store.commit("setChatId", item.dealId);
+    //       })
+    //       this.$store.commit("setInitialChatList", list);
+    //
+    //     } else {
+    //       this.$alert(res.data.message, 'Tip', {
+    //         confirmButtonText: 'OK'
+    //       })
+    //     }
+    //   })
+    // },
   },
 };
 </script>

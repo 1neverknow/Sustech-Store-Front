@@ -16,14 +16,14 @@ export default new Vuex.Store({
         // 后端发送过来的用户信息
         // userInfo: JSON.parse(localStorage.getItem('userInfo')),
         userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
-        search_content : sessionStorage.getItem('search_content'),
-        default_address:{
+        search_content: sessionStorage.getItem('search_content'),
+        default_address: {
             receiver: '',
             telephone: '',
             address: '',
         },
         // state:'未搜索',
-        query_good_list:JSON.parse(sessionStorage.getItem('query_good_list')),
+        query_good_list: JSON.parse(sessionStorage.getItem('query_good_list')),
         basic_info: JSON.parse(sessionStorage.getItem('basic_info')),
         // token: "",
         isShowExpression: false,
@@ -32,6 +32,7 @@ export default new Vuex.Store({
         isShowMyInfo: false,
         isShowChatterInfo: false,
         isShowSearch: false,
+
         chatCount: 1,
         currentTabIndex: 0,
         currentRight: 0,
@@ -63,6 +64,7 @@ export default new Vuex.Store({
                 linkmanIndex: 1,
                 isMute: false,
                 isOnTop: false,
+                isOnce: true,
                 messages: [
                     {
                         avatar,
@@ -100,38 +102,38 @@ export default new Vuex.Store({
             // }
         ],
         linkmans: [
+            // {
+            //     id: "g1",
+            //     type: "group",
+            //     members: ["p1", "p2"],
+            //     nickname: "这是群组",
+            //     gender: "",
+            //     alias: "",
+            //     region: "这是地区",
+            //     avatar: group
+            // },
             {
-                id: "g1",
-                type: "group",
-                members: ["p1", "p2"],
-                nickname: "这是群组",
-                gender: "",
-                alias: "",
-                region: "这是地区",
-                avatar: group
+                id: 0,
+                // type: "A",
+                nickname: "用户",
+                // gender: "",
+                // alias: "",
+                // region: "这是地区",
+                avatar:avatar
             },
-            {
-                id: "p1",
-                type: "A",
-                nickname: "用户一",
-                gender: "",
-                alias: "",
-                region: "这是地区",
-                avatar
-            },
-            {
-                id: "p2",
-                type: "B",
-                nickname: "用户二",
-                gender: "",
-                alias: "这是备注",
-
-                region: "这是地区",
-                avatar
-            }
+            // {
+            //     id: "p2",
+            //     type: "B",
+            //     nickname: "用户二",
+            //     gender: "",
+            //     alias: "这是备注",
+            //
+            //     region: "这是地区",
+            //     avatar
+            // }
         ],
-        currentChatId: -1
-
+        currentChatId: -1,
+        currentOnce: false
 
 
     },
@@ -165,15 +167,15 @@ export default new Vuex.Store({
 
         SET_Basic_Info: (state, basic) => {
             state.basic_info = basic
-            sessionStorage.setItem('basic_info',JSON.stringify(basic))
+            sessionStorage.setItem('basic_info', JSON.stringify(basic))
         },
         SET_Good_List: (state, list) => {
             state.query_good_list = list
-            sessionStorage.setItem('query_good_list',JSON.stringify(list))
+            sessionStorage.setItem('query_good_list', JSON.stringify(list))
         },
         SET_SEARCH_CONTENT: (state, content) => {
             state.search_content = content
-            sessionStorage.setItem('search_content',content)
+            sessionStorage.setItem('search_content', content)
         },
         // SET_State: (state) => {
         //     state.state = '已搜索'
@@ -237,6 +239,23 @@ export default new Vuex.Store({
         setCurrentLinkman(state, index) {
             state.currentLinkman = index;
         },
+        setCurrentOnce(state) {
+            for (let chat of state.chats) {
+                if (chat.chatId === state.currentChatId) {
+                    state.currentOnce = chat.isOnce;
+                    break;
+                }
+            }
+        },
+        changeCurrentOnce(state) {
+            for (let chat of state.chats) {
+                if (chat.chatId === state.currentChatId) {
+                    state.currentOnce = true;
+                    chat.isOnce = true;
+                    break;
+                }
+            }
+        },
         hideAll(state) {
             state.isShowMembers = false;
             state.isShowMemberInfo = false;
@@ -262,35 +281,49 @@ export default new Vuex.Store({
                 }
             }
         },
-        addChat(state, linkmanIndex) {
+        addChat(state, chatList) {
+            console.log("*********************")
+            console.log(chatList)
             state.currentTabIndex = 0;
             state.currentRight = 0;
-            for (let i = 0; i < state.chats.length; i++) {
-                let chat = state.chats[i];
-                if (chat.linkmanIndex === linkmanIndex) {
-                    state.chats.splice(i, 1);
-                    state.chats = [chat].concat(state.chats);
-                    state.currentChatId = chat.chatId;
-                    return;
-                }
-            }
+            // for (let i = 0; i < state.chats.length; i++) {
+            //     let chat = state.chats[i];
+            //     if (chat.linkmanIndex === chatList.linkmanIndex) {
+            //         state.chats.splice(i, 1);
+            //         state.chats = [chat].concat(state.chats);
+            //         state.currentChatId = chat.chatId;
+            //         return;
+            //     }
+            // }
             state.chats = [
                 {
-                    linkmanIndex,
-                    chatId: state.chatCount,
+                    linkmanIndex: chatList.linkmanIndex,
+                    chatId: chatList.chatId,
                     isMute: false,
                     isOnTop: false,
+                    isOnce: false,
                     messages: []
                 }
             ].concat(state.chats);
-            state.currentChatId = state.chatCount;
-
-            state.chatCount += 1;
+            state.currentChatId = chatList.chatId;
+            console.log("&&&&&&&&&&&&&&&&&&&&&")
+            console.log(chatList.messages.nickname)
+            this.state.linkmans = [
+                {
+                    id: chatList.linkmanIndex,
+                    // type: "A",
+                    nickname: chatList.messages.nickname,
+                    avatar:chatList.messages.avatar
+                }
+            ].concat(this.state.linkmans)
+            console.log(this.state.linkmans)
+            // state.chatCount += 1;
         },
         setInitialChatList(state, chatList) {
             console.log(chatList.length)
+            console.log("#####################")
             for (let i = 0; i < chatList.length; i++) {
-                // console.log('fuck')
+                console.log('fuck')
                 let list = chatList[i];
                 // let chatId=list.chatId;
                 // state.currentTabIndex = 0;
@@ -313,6 +346,7 @@ export default new Vuex.Store({
                 // state.currentChatId=chatId;
                 // console.log(state.chats)
             }
+            console.log(state.chats)
         },
         setInitialHistory(state, subscribeMsg) {
 
@@ -329,23 +363,23 @@ export default new Vuex.Store({
             }
         },
         setMyself(state, myInformation) {
-            state.myself.id=myInformation.id;
-            state.myself.avatar=myInformation.avatar;
-            state.myself.nickname=myInformation.nickname;
+            state.myself.id = myInformation.id;
+            state.myself.avatar = myInformation.avatar;
+            state.myself.nickname = myInformation.nickname;
         },
         setOther(state, yourInformation) {
-            state.other.id=yourInformation.id;
-            state.other.avatar=yourInformation.avatar;
-            state.other.nickname=yourInformation.nickname;
+            state.other.id = yourInformation.id;
+            state.other.avatar = yourInformation.avatar;
+            state.other.nickname = yourInformation.nickname;
         },
-        setGoods(state, goodsInformation){
-            state.goods.id=goodsInformation.id;
-            state.goods.avatar=goodsInformation.avatar;
-            state.goods.price=goodsInformation.price;
+        setGoods(state, goodsInformation) {
+            state.goods.id = goodsInformation.id;
+            state.goods.avatar = goodsInformation.avatar;
+            state.goods.price = goodsInformation.price;
         },
-        addMessage(state,userMsg){
+        addMessage(state, userMsg) {
             let temp = {
-                avatar:state.other.avatar,
+                avatar: state.other.avatar,
                 ctn: userMsg,
                 nickname: state.other.nickname,
                 sender: false,
@@ -361,7 +395,7 @@ export default new Vuex.Store({
             }
 
         },
-        logout (state) {
+        logout(state) {
             state.token = null
             state.userInfo = null
             state.basic_info = {}
@@ -380,19 +414,19 @@ export default new Vuex.Store({
         getUser: state => {
             return state.userInfo
         },
-        getToken: state =>{
+        getToken: state => {
             return state.token
         },
-        getDefault_Address: state =>{
+        getDefault_Address: state => {
             return state.default_address
         },
-        getBasic_Info: state =>{
+        getBasic_Info: state => {
             return state.basic_info
         },
-        getGood_list: state =>{
+        getGood_list: state => {
             return state.query_good_list
         },
-        getContent : state =>{
+        getContent: state => {
             return state.search_content
         },
         // getState: state =>{
@@ -400,8 +434,6 @@ export default new Vuex.Store({
         // }
         // user: state => state
     },
-    actions: {
-    },
-    modules: {
-    },
+    actions: {},
+    modules: {},
 })

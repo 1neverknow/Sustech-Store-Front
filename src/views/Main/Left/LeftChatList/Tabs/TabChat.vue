@@ -70,15 +70,21 @@ import "../../../../../util/stomp.js"
 import store from "../../../../../store/index.js"
 import {toDate} from "element-ui/src/utils/date-util";
 
+let list = [];
 let subscribeMsg = [];
 let myInformation;
 let yourInformation;
 let goodsInformation;
-global.stomp=null;
+global.stomp = null;
 export default {
   name: "TabChat",
   data() {
     return {};
+  },
+  mounted() {
+    this.getChatList();
+    this.connection();
+    // this.$store.commit("setInitialChatList", list);
   },
   computed: {
     chats() {
@@ -105,98 +111,251 @@ export default {
   },
   methods: {
     connection() {
+      console.log("1111111111111")
       let url = "http://localhost:8081/webSocket"
       let socket = new SockJS(url);
       stomp = Stomp.over(socket);
+      console.log("22222222222222")
       console.log(global.stomp);
       console.log(this.$store.state.currentChatId)
       stomp.connect(
           {
             "Authorization": this.$store.getters.getToken,
-            "chatId": this.$store.state.currentChatId
+            // "chatId": this.$store.state.currentChatId
           }
           , function (frame) {
             //用户模式
             stomp.subscribe("/user/queue", function (res) {
               let data = res.body;
               console.log(data);
-              store.commit("addMessage",data);
+              store.commit("addMessage", data);
               // document.querySelector("#userMsg").val(res.body);
             });
-            stomp.subscribe("/app/subscribe/chat", function (res) {
-              subscribeMsg = [];
-              let data = JSON.parse(res.body);
-              console.log(data);
-              // console.log(res.body.length)
-              // let count = data.length - 1;
-              // console.log(count)
-              console.log(data.speakUserId);
-              console.log("##########################")
-              let myId = data.speakUserId;
-              let yourId = data.otherUserId;
-              let myName = data.speakUserName;
-              let yourName = data.otherUserName;
-              let myPicture = "http://localhost:8081/"+data.speakUserPicturePath;
-              let yourPicture = "http://localhost:8081/"+data.otherUserPicturePath;
-              let goodsId = data.goodsId;
-              let goodsPicture = "http://localhost:8081/"+data.goodsPicturePath;
-              let goodsPrice = data.goodsPrice;
-              console.log(myId);
-              console.log(myName);
-              console.log(myPicture);
-              for (let item of data.chatContents) {
-                // console.log(item);
-                let msg;
-                if (item.isSpeakUser) {
-                  msg = {
-                    avatar: myPicture,
-                    ctn: item.content,
-                    nickname: myName,
-                    sender: item.isSpeakUser,
-                    time: toDate(item.date),
-                    type: "chat"
-                  }
-                } else {
-                  msg = {
-                    avatar: yourPicture,
-                    ctn: item.content,
-                    nickname: yourName,
-                    sender: item.isSpeakUser,
-                    time: toDate(item.date),
-                    type: "chat"
-                  }
-                }
-                subscribeMsg = [msg].concat(subscribeMsg);
-              }
-
-              myInformation = {
-                id: myId,
-                avatar: myPicture,
-                nickname: myName.toString(),
-                // gender: "",
-                // alias: "",
-                // region: ""
-              }
-              yourInformation = {
-                id: yourId,
-                avatar: yourPicture,
-                nickname: yourName.toString(),
-                // gender: "",
-                // alias: "",
-                // region: ""
-              }
-              goodsInformation = {
-                id: goodsId,
-                avatar: goodsPicture,
-                price: goodsPrice,
-              }
-              console.log(subscribeMsg);
-              console.log(myInformation);
-              console.log(goodsInformation);
-            });
+            // stomp.subscribe("/app/subscribe/chat", function (res) {
+            //   const data = JSON.parse(res.body);
+            //   console.log(data)
+            //   list = []
+            //   // console.log(toDate(data))
+            //   data.forEach((item) => {
+            //     console.log(item)
+            //     console.log(item.lastMessageContent)
+            //     console.log(toDate(item.lastMessageDate))
+            //     if (toDate(item.lastMessageDate) != null) {
+            //       let chatList = {
+            //         chatId: item.chatId,
+            //         linkmanIndex: item.otherUserId,
+            //         isMute: false,
+            //         isOnTop: false,
+            //         isOnce: false,
+            //         messages: [
+            //           {
+            //             avatar: item.otherUserPicturePath,
+            //             nickname: item.otherUserName.toString(),
+            //             ctn: item.lastMessageContent,
+            //             time: toDate(item.lastMessageDate),
+            //             type: "chat"
+            //           }
+            //         ],
+            //         // address: item.addressName,
+            //         // type:item.isDefault==='null'?'Normal':'Default'
+            //       }
+            //       console.log(chatList)
+            //       list.push(chatList)
+            //     }else{
+            //       let chatList = {
+            //         chatId: item.chatId,
+            //         linkmanIndex: item.otherUserId,
+            //         isMute: false,
+            //         isOnTop: false,
+            //         isOnce: false,
+            //         messages: [
+            //           {
+            //             avatar: item.otherUserPicturePath,
+            //             nickname: item.otherUserName.toString(),
+            //             ctn: "",
+            //             time: "",
+            //             type: "chat"
+            //           }
+            //         ],
+            //       }
+            //       console.log(chatList)
+            //       list.push(chatList)
+            //     }
+            //     console.log(list)
+            //     // this.commit();
+            //     // this.$store.commit("setChatId", item.dealId);
+            //   })
+            //   // this.$store.commit("setInitialChatList", list);
+            // });
             //   // setConnect(true);
           }
       );
+      this.commit();
+    },
+    getChatList(){
+        console.log(this.$store.getters.getToken)
+        this.$axios({
+          method: 'get',
+          url: 'http://localhost:8081/chat/list',
+          headers: {'authorization': this.$store.getters.getToken},
+          transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
+            var ret = '';
+            for (var it in data) {
+              // 如果要发送中文 编码
+              ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+            }
+            return ret.substring(0, ret.length - 1)
+          }]
+        }).then(res => {
+          if (res.data.code === 2000) {
+            const data = res.data.data
+            console.log(data)
+            list=[]
+            // console.log(toDate(data))
+            data.forEach((item) => {
+              console.log(item.lastMessageDate)
+              console.log( toDate(item.lastMessageDate))
+              if (toDate(item.lastMessageDate) != null) {
+                let chatList = {
+                  chatId: item.chatId,
+                  linkmanIndex: item.otherUserId,
+                  isMute: false,
+                  isOnTop: false,
+                  isOnce: false,
+                  messages: [
+                    {
+                      avatar: item.otherUserPicturePath,
+                      nickname: item.otherUserName.toString(),
+                      ctn: item.lastMessageContent,
+                      time: toDate(item.lastMessageDate),
+                      type: "chat"
+                    }
+                  ],
+                  // address: item.addressName,
+                  // type:item.isDefault==='null'?'Normal':'Default'
+                }
+                console.log(chatList)
+                list.push(chatList)
+              }else{
+                let chatList = {
+                  chatId: item.chatId,
+                  linkmanIndex: item.otherUserId,
+                  isMute: false,
+                  isOnTop: false,
+                  isOnce: false,
+                  messages:
+                    {
+                      avatar: item.otherUserPicturePath,
+                      nickname: item.otherUserName.toString(),
+                      ctn: "",
+                      time: "",
+                      type: "chat"
+                    }
+                }
+                console.log(chatList)
+                this.$store.commit("addChat",chatList)
+              }
+              // this.$store.commit("setChatId", item.dealId);
+            })
+            this.$store.commit("setInitialChatList", list);
+
+          } else {
+            this.$alert(res.data.message, 'Tip', {
+              confirmButtonText: 'OK'
+            })
+          }
+        })
+    },
+    getHistory() {
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/chat/history/' + this.currentChatId,
+        headers: {'authorization': this.$store.getters.getToken},
+        transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
+          let ret = '';
+          for (let it in data) {
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+          }
+          return ret.substring(0, ret.length - 1)
+        }]
+      }).then(res => {
+        if (res.data.code === 2000) {
+          const data = res.data.data
+          subscribeMsg = [];
+          // let data = JSON.parse(res.body);
+          console.log(data);
+          // console.log(res.body.length)
+          // let count = data.length - 1;
+          // console.log(count)
+          console.log(data.speakUserId);
+          console.log("##########################")
+          let myId = data.speakUserId;
+          let yourId = data.otherUserId;
+          let myName = data.speakUserName;
+          let yourName = data.otherUserName;
+          let myPicture = data.speakUserPicturePath;
+          let yourPicture = data.otherUserPicturePath;
+          let goodsId = data.goodsId;
+          let goodsPicture = data.goodsPicturePath;
+          let goodsPrice = data.goodsPrice;
+          console.log(myId);
+          console.log(myName);
+          console.log(myPicture);
+          for (let item of data.chatContents) {
+            // console.log(item);
+            let msg;
+            if (item.isSpeakUser) {
+              msg = {
+                avatar: myPicture,
+                ctn: item.content,
+                nickname: myName,
+                sender: item.isSpeakUser,
+                time: toDate(item.date),
+                type: "chat"
+              }
+            } else {
+              msg = {
+                avatar: yourPicture,
+                ctn: item.content,
+                nickname: yourName,
+                sender: item.isSpeakUser,
+                time: toDate(item.date),
+                type: "chat"
+              }
+            }
+            subscribeMsg = [msg].concat(subscribeMsg);
+          }
+
+          myInformation = {
+            id: myId,
+            avatar: myPicture,
+            nickname: myName.toString(),
+            // gender: "",
+            // alias: "",
+            // region: ""
+          }
+          yourInformation = {
+            id: yourId,
+            avatar: yourPicture,
+            nickname: yourName.toString(),
+            // gender: "",
+            // alias: "",
+            // region: ""
+          }
+          goodsInformation = {
+            id: goodsId,
+            avatar: goodsPicture,
+            price: goodsPrice,
+          }
+          console.log(subscribeMsg);
+          console.log(myInformation);
+          console.log(goodsInformation);
+          this.$store.commit("setInitialHistory", subscribeMsg);
+          this.$store.commit("setMyself", myInformation);
+          this.$store.commit("setOther", yourInformation);
+          this.$store.commit("setGoods", goodsInformation);
+        }
+      })
     },
     disconnect() {
       if (stomp != null) {
@@ -204,21 +363,26 @@ export default {
       }
       // setConnect(false);
     },
-    commit(){
-      this.$store.commit("setInitialHistory", subscribeMsg);
-      this.$store.commit("setMyself", myInformation);
-      this.$store.commit("setOther", yourInformation);
-      this.$store.commit("setGoods", goodsInformation);
+    commit() {
+      this.$store.commit("setInitialChatList", list);
+      // this.$store.commit("setCurrentOnce", true);
     },
+
     handleChangeChat(index) {
 
       // console.log(this.chats);
       // console.log(index);
       // console.log(this.chats[index].chatId);
-      this.disconnect();
+      // this.disconnect();
       this.$store.commit("setChatId", this.chats[index].chatId);
-      this.connection();
-      this.commit();
+      this.$store.commit("setCurrentOnce");
+      if (!this.state.currentOnce) {
+        this.getHistory();
+        this.$store.commit("changeCurrentOnce");
+      }
+
+      // this.connection();
+      // this.commit();
     },
     getTime(time) {
       const d = time;
@@ -227,7 +391,8 @@ export default {
       return `${h}:${m}`;
     }
   }
-};
+}
+;
 </script>
 
 <style scoped>
