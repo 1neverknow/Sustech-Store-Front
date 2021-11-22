@@ -63,7 +63,7 @@ export default {
       queryInfo: {
         queryStage: -1,
         pagenum: 1,
-        pagesize: 10
+        pagesize: 5
       },
       total: 0,
       orderList: [],
