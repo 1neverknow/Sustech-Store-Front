@@ -23,7 +23,7 @@
 <!--        </div></el-row>-->
 <!--        <el-row :span="1"><div >-->
           <div class="button">
-            <el-button
+            <el-button :disabled="display()"
                 class="confirm-to-buy"
                 @click="handleClick"
             >Confirm to buy!</el-button>
@@ -76,7 +76,18 @@ export default {
     handleClick() {
       const goodsId = this.$store.state.goods.id
       this.$router.push('/deal/' + goodsId)
-    }
+    },
+    display() {
+
+      const currentChatId = this.$store.state.currentChatId;
+      console.log(currentChatId)
+      for (let chat of this.$store.state.chats) {
+        if (chat.chatId === currentChatId) {
+          console.log(chat.isBuyer)
+          return chat.isBuyer;
+        }
+      }
+    },
     // // 通过路由获取商品id
     // activate() {
     //   console.log(this.$route.params.goodsId)

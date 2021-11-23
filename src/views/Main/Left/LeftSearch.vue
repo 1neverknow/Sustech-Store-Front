@@ -1,24 +1,24 @@
 <template>
 
   <div class="left-search-wrap">
-    <div class="demo-input-suffix">
-      <el-input
-          placeholder="请输入内容"
-          v-model="searchText"
-          style="margin-top: 10px;">
-        <i slot="prefix" class="el-input__icon el-icon-search"></i>
-      </el-input>
-    </div>
-    <!--    <div class="left-search-input-wrap" @click.stop="">-->
-    <!--      <i class="left-search"></i>-->
-    <!--            <i class="el-icon-search"></i>-->
-    <!--            <el-input v-model="searchText" placeholder="搜索"></el-input>-->
-    <!--      <input-->
-    <!--          class="left-search-input"-->
-    <!--          placeholder="搜索"-->
-    <!--          v-model="searchText"-->
-    <!--      />-->
-    <!--    </div>-->
+<!--    <div class="demo-input-suffix">-->
+<!--      <el-input-->
+<!--          placeholder="请输入内容"-->
+<!--          v-model="searchText"-->
+<!--          style="margin-top: 10px;">-->
+<!--        <i slot="prefix" class="el-input__icon el-icon-search"></i>-->
+<!--      </el-input>-->
+<!--    </div>-->
+        <div class="left-search-input-wrap" @click.stop="">
+          <i class="left-search"></i>
+<!--                <i class="el-icon-search"></i>-->
+<!--                <el-input v-model="searchText" placeholder="搜索"></el-input>-->
+          <input
+              class="left-search-input"
+              placeholder="搜索"
+              v-model="searchText"
+          />
+        </div>
     <div
         class="search-result-wrap list-wrap"
         v-if="isShowSearch"
@@ -150,7 +150,7 @@ export default {
 .left-search-input-wrap {
   margin: 18px 18px 6px;
   height: 32px;
-  background-color: rgb(48, 65, 86);
+  background-color: #e28353;
   display: flex;
 }
 
@@ -167,7 +167,7 @@ export default {
   background-color: #ffffff;
   outline: none;
   border: none;
-  color: rgb(48, 65, 86);
+  color: #e28353;
   font-size: 12px;
 }
 
@@ -205,7 +205,7 @@ export default {
   height: 25px;
   color: rgb(191, 203, 217);
   font-size: 16px;
-  background-color: rgb(48, 65, 86);
+  background-color: #e28353;
   display: flex;
   align-items: center;
 }
@@ -226,7 +226,7 @@ export default {
 
 .search-result-text {
   height: 30px;
-  color: rgb(48, 65, 86);
+  color: #e28353;
   font-size: 14px;
   display: flex;
   align-items: center;

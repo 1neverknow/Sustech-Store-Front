@@ -45,6 +45,12 @@
                 : getTime(chat.messages[chat.messages.length - 1].time)
           }}</span
         >
+        <span
+          class="chat-info-count"
+          v-if="setCount()"
+          >
+          {{unReadCount}}
+        </span>
         <div class="chat-info-icon-wrap" v-if="chat.isMute">
           <i
               :class="
@@ -75,14 +81,19 @@ let subscribeMsg = [];
 let myInformation;
 let yourInformation;
 let goodsInformation;
+let isBuyer;
 global.stomp = null;
 export default {
   name: "TabChat",
   data() {
-    return {};
+    return {
+      unReadCount:0
+    };
   },
   mounted() {
     this.getChatList();
+    // this.getHistory();
+    // this.handleChangeChat();
     this.connection();
     // this.$store.commit("setInitialChatList", list);
   },
@@ -191,6 +202,19 @@ export default {
           }
       );
     },
+    setCount() {
+      const currentChatId = this.$store.state.currentChatId;
+      console.log(currentChatId)
+      for (let chat of this.$store.state.chats) {
+        if (chat.chatId === currentChatId) {
+          console.log(chat.isBuyer)
+          console.log(chat.unReadCount)
+          this.unReadCount = chat.unReadCount
+          if (chat.unReadCount===0) return false;
+          else return true;
+        }
+      }
+    },
     getChatList(){
         console.log(this.$store.getters.getToken)
         this.$axios({
@@ -225,7 +249,8 @@ export default {
                   isMute: false,
                   isOnTop: false,
                   isOnce: false,
-
+                  isBuyer: item.isBuyer,
+                  unReadCount: 0,
                   messages: []
                   // address: item.addressName,
                   // type:item.isDefault==='null'?'Normal':'Default'
@@ -238,7 +263,8 @@ export default {
                   isMute: false,
                   isOnTop: false,
                   isOnce: false,
-
+                  isBuyer: item.isBuyer,
+                  unReadCount: item.unreadCount,
                   messages: [
                     {
                       avatar: item.otherUserPicturePath,
@@ -276,86 +302,6 @@ export default {
           }
         })
       console.log(this.$store.getters.getToken)
-      this.$axios({
-        method: 'get',
-        url: 'http://localhost:8081/chat/list',
-        headers: {'authorization': this.$store.getters.getToken},
-        transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
-          var ret = '';
-          for (var it in data) {
-            // 如果要发送中文 编码
-            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-          }
-          return ret.substring(0, ret.length - 1)
-        }]
-      }).then(res => {
-        if (res.data.code === 2000) {
-          const data = res.data.data
-          console.log(data)
-          let chatList=[]
-          let linkmanList = []
-          // console.log(toDate(data))
-          let count = 0
-          const chatHis = data.chatHistories
-          this.$store.state.myself.nickname = data.userName
-          this.$store.state.myself.avatar = data.picturePath
-          chatHis.forEach((item) => {
-            if(item.lastMessageContent==null){
-              chatList.push({
-                chatId: item.chatId,
-                linkmanIndex: count,
-                linkmanId: item.chatId,
-                isMute: false,
-                isOnTop: false,
-                isOnce: false,
-                messages: []
-                // address: item.addressName,
-                // type:item.isDefault==='null'?'Normal':'Default'
-              })
-            }else {
-              chatList.push({
-                chatId: item.chatId,
-                linkmanIndex: count,
-                linkmanId: item.chatId,
-                isMute: false,
-                isOnTop: false,
-                isOnce: false,
-                messages: [
-                  {
-                    avatar: item.otherUserPicturePath,
-                    nickname: item.otherUserName.toString(),
-                    ctn: item.lastMessageContent,
-                    time: toDate(item.lastMessageDate),
-                    type: "chat"
-                  }
-                ]
-                // address: item.addressName,
-                // type:item.isDefault==='null'?'Normal':'Default'
-              })
-            }
-            linkmanList.push({
-              id: chatList.chatId,
-              // type: "A",
-              nickname: item.otherUserName.toString(),
-              avatar: item.otherUserPicturePath
-            })
-            count++
-            // this.$store.commit("setChatId", item.dealId);
-          })
-          this.$store.state.linkmans = linkmanList
-          this.$store.state.chats = chatList
-          console.log("#####################")
-          console.log(linkmanList)
-          console.log(chatList)
-          // for (let item = 0;item<chatList.length;item++){
-          //   this.handleChangeChat(item);
-          // }
-        } else {
-          this.$alert(res.data.message, 'Tip', {
-            confirmButtonText: 'OK'
-          })
-        }
-      })
     },
     getHistory() {
       this.$axios({
@@ -382,6 +328,8 @@ export default {
           let goodsId = data.goodsId;
           let goodsPicture = data.goodsPicturePath;
           let goodsPrice = data.goodsPrice;
+          isBuyer = data.isBuyer;
+          console.log(isBuyer)
           for (let item of data.chatContents) {
             let msg;
             if (item.isSpeakUser) {
@@ -405,7 +353,6 @@ export default {
             }
             subscribeMsg = [msg].concat(subscribeMsg);
           }
-
           myInformation = {
             id: myId,
             avatar: myPicture,
@@ -421,7 +368,7 @@ export default {
             avatar: goodsPicture,
             price: goodsPrice,
           }
-          subscribeMsg = [subscribeMsg,goodsInformation]
+          subscribeMsg = [subscribeMsg,goodsInformation,isBuyer]
           this.$store.commit("setInitialHistory", subscribeMsg);
           this.$store.commit("setMyself", myInformation);
           this.$store.commit("setOther", yourInformation);
@@ -436,8 +383,7 @@ export default {
       // setConnect(false);
     },
     commit() {
-      // this.$store.commit("setInitialChatList", list);
-      // this.$store.commit("setCurrentOnce", true);
+
     },
 
     handleChangeChat(index) {
@@ -447,11 +393,12 @@ export default {
       // console.log(this.chats[index].chatId);
       // this.disconnect();
       this.$store.commit("setChatId", this.$store.state.chats[index].chatId);
-      if (!this.$store.state.chats[index].currentOnce) {
+      if (!this.$store.state.chats[index].isOnce) {
         this.getHistory();
-        this.$store.state.chats[index].currentOnce = true;
-      }
-      this.$store.commit("setGoods", this.$store.state.chats[index].goodsInformation);
+        this.$store.state.chats[index].isOnce = true;
+      } else{
+        this.$store.commit("setGoods", this.$store.state.chats[index].goodsInformation);
+    }
 
       // this.connection();
       // this.commit();
@@ -529,6 +476,14 @@ export default {
 .chat-info-time {
   color: #6b6f7c;
   user-select: none;
+}
+
+.chat-info-count{
+  color: #ff0000;
+  user-select: none;
+  border:1px solid;
+  border-radius:10px;
+  background: #ff0000;
 }
 
 .chat-info-icon-wrap {

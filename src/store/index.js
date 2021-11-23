@@ -62,6 +62,8 @@ export default new Vuex.Store({
                 isMute: false,
                 isOnTop: false,
                 isOnce: true,
+                isBuyer: false,
+                unReadCount: 0,
                 goodsPicture: "",
                 goodsPrice: 0,
                 goodsId : 0,
@@ -246,6 +248,8 @@ export default new Vuex.Store({
                     isMute: false,
                     isOnTop: false,
                     isOnce: false,
+                    isBuyer: true,
+                    unReadCount: 0,
                     messages: []
                 }
             ].concat(state.chats);
@@ -267,10 +271,10 @@ export default new Vuex.Store({
             // state.chatCount += 1;
         },
         setInitialHistory(state, subscribeMsg) {
-
+            console.log(subscribeMsg[2])
             console.log("History")
             console.log(subscribeMsg);
-            const msg = subscribeMsg[0];
+            let msg = subscribeMsg[0];
             const goodsInformation = subscribeMsg[1];
             for (let index = 0;index< state.chats.length;index++) {
                 if (state.chats[index].chatId === state.currentChatId) {
@@ -281,6 +285,7 @@ export default new Vuex.Store({
                         isMute: false,
                         isOnTop: false,
                         isOnce: true,
+                        isBuyer: subscribeMsg[2],
                         goodsInformation: {
                             avatar: goodsInformation.avatar,
                             price: goodsInformation.price,

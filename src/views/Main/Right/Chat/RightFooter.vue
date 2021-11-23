@@ -365,6 +365,7 @@ export default {
       let ctn = handleMessage(ctnInput).trim();
       console.log( this.$store.state)
       stomp.send("/app/chat", {}, JSON.stringify({"body": document.querySelector("#content-input").innerHTML,"chatId": this.$store.state.currentChatId}));
+      stomp.send("app/clear", {}, JSON.stringify({'Authorization': this.$store.getters.getToken,"chatId": this.$store.state.currentChatId}))
       // stomp.send("/app/chat", {}, JSON.stringify({"body": document.querySelector("#content-input").innerHTML}));
 
       if (ctn === "") {
