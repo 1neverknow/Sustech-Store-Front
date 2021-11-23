@@ -14,7 +14,7 @@
             <el-tooltip :content="item.things" placement="left-start">
               <div class="mark">
                 {{item.things}}
-                <i class="el-icon-delete" @click="deleteEvent(item)"></i>
+                <i class="el-icon-delete" @click="deleteEvent(item.id,index)"></i>
               </div>
 
             </el-tooltip>
@@ -58,7 +58,7 @@ export default {
         years:'',
         months:'',
         days:'',
-        id:'',
+        id:0,
         things:''
       },
       calendarData: [
@@ -80,37 +80,35 @@ export default {
       const _this=this
       _this.$axios.put("http://localhost:8081/admin/calendar",{
         date:_this.formData.data,description:_this.formData.content}).then(res=>{
-        console.log(res)
-        //TODO
-      })
-      let date = _this.formData.data.split('-')
-      let a =  {
-        years: [date[0]],
-        months: [date[1]],
-        days: [date[2]],
-        things: _this.formData.content
-        //TODO
+        let date = _this.formData.data.split('-')
+        let a =  {
+          years: [date[0]],
+          months: [date[1]],
+          days: [date[2]],
+          things: _this.formData.content,
+          id: res.data.data
         }
-      _this.calendarData.push(a)
-
+        _this.calendarData.push(a)
+      })
     },
-    deleteEvent(item){
+    deleteEvent(id,index){
       const _this=this
-      _this.$axios.delete("http://localhost:8081/admin/calendar?eventId="+item.id)
-      calendarData.remove(item)
-    }
+      console.log("zxyzxy:"+id)
+      _this.$axios.delete("http://localhost:8081/admin/calendar?eventId="+id)
+      _this.calendarData.splice(index,1)
+
   },
-  created() {
+  mounted() {
     const _this = this
-    _this.$axios.get("/calender").then(res => {
+    _this.$axios.get("http://localhost:8081/calender").then(res => {
       console.log(res)
+      console.log("!!!!!!!")
       _this.result = res.data.data
       for (let item of _this.result){
         _this.eachDay.years=item.date.substr(0,4)
         _this.eachDay.months=item.date.substr(-5,2)
         _this.eachDay.days=item.date.substr(-2)
         _this.eachDay.things=item.description
-        //TODO
         _this.id=item.id
         _this.calendarData.push(_this.eachDay)
         _this.eachDay= {}
@@ -118,6 +116,7 @@ export default {
     })
 
   }
+}
 }
 </script>
 
