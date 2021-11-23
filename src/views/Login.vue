@@ -80,6 +80,16 @@
 import Element from "element-ui"
 import axios from 'axios'
 export default {
+  beforeRouteEnter(to, from, next) {
+    // 添加背景色 margin:0;padding:0是为了解决vue四周有白边的问题
+    document.querySelector('body').setAttribute('style', 'margin:0;padding:0')
+    next()
+  },
+  beforeRouteLeave(to, from, next) {
+    // 去除背景色
+    document.querySelector('body').setAttribute('style', '')
+    next()
+  },
   name: "Login",
   // 校验规则
   data() {
@@ -200,6 +210,18 @@ export default {
       })
     },
     getBasicInfo() {
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/admin/appealing/allDeal',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(res => {
+        if(res.data.code === 2000){
+          this.$store.commit('SET_ROLE','管理员')
+        }
+      })
+
       this.$axios({
         method: 'get',
         url: 'http://localhost:8081/user/me',

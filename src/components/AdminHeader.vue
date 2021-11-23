@@ -3,7 +3,9 @@
     <div class="admin-header">
       <div class="header-content">
         <p>
-          <i class="el-icon-setting" style="color: orange"></i>
+          <router-link :to="{path: '/user/' + this.$store.getters.getUser.userId}">
+            <i class="el-icon-setting" style="color: orange"></i>
+          </router-link>
         </p>
         <p>Admin</p>
         <router-link to></router-link>

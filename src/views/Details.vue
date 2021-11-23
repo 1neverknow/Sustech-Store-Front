@@ -88,8 +88,8 @@
               <span>￥{{price}}</span>
             </div>
             <template v-if="goodsState === 1">
-              <el-col :offset="12" :sm="18" :lg="10"
-                      style="margin-top: -43%;"
+              <el-col :offset="11" :sm="18" :lg="10"
+                      style="margin-top: -40%;"
               >
                 <el-result
                     icon="error"
@@ -102,7 +102,7 @@
             <!--              这一部分改成announcer信息-->
             <!--              avatar，信誉分，性别，name，id-->
             <div class="announcer-info">
-              <el-avatar class="announcer-avatar" :size="40" :src="'http://localhost:8081/' + announcer.avatar"></el-avatar>
+              <el-avatar class="announcer-avatar" :size="40" :src="announcer.avatar"></el-avatar>
               <span>
                 <router-link class="announcer-name" :to="{path: '/user/' + announcer.userId}">{{announcer.userName}}</router-link>
               </span>
@@ -500,12 +500,13 @@ export default {
   padding-top: 2%;
   height: 30px;
   line-height: 30px;
-  font-size: 40px;
+  font-size: 35px;
   font-weight: normal;
   color: #212121;
 }
 #details .main .content .intro {
   /*color: #b0b0b0;*/
+  font-size: 20px;
   color: grey;
   margin: auto;
 }

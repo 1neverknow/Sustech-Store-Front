@@ -28,6 +28,7 @@
         <Charge
             v-if="chargeVisible"
             @changeVisible="changeChargeVisible"
+            @chargeConfirm="chargeConfirm"
             v-bind:dealId="dealId"
         ></Charge>
       </el-dialog>
@@ -48,6 +49,7 @@ export default {
         "paymentType": "0", //支付方式[0:微信,1:支付宝,2:余额,3:活动]
         "transType": "0" //交易类型[0:充值,1:消费]
       },
+      chargeId: 0,
       chargeVisible: false,
     }
   },
@@ -79,6 +81,34 @@ export default {
     },
     changeChargeVisible(value) {
       this.chargeVisible = value
+    },
+    chargeConfirm(value) {
+      const chargeId = value
+      console.log(value)
+      Element.MessageBox.confirm(
+            'Have you finished charge?',
+            'Warning',
+            {
+              confirmButtonText: 'YES',
+              cancelButtonText: 'Cancel',
+              type: 'warning',
+            }
+        )
+        .then(() => {
+          this.$axios.get('http://localhost:8081/user/charge/' + chargeId)
+          .then(res => {
+            Element.Message({
+              type: 'success',
+              message: 'Charge Success',
+            })
+          })
+        })
+        .catch(() => {
+          Element.Message({
+            type: 'info',
+            message: 'Charge canceled',
+          })
+        })
     },
     closeDialog() {
       this.$emit('changePayVisible', false)

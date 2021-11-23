@@ -89,7 +89,17 @@ export default {
               isSell: item.isSell
             })
           }
-          this.loadShowList()
+          this.showList = []
+          let fromIdx = (this.queryInfo.pagenum - 1) * this.queryInfo.pagesize
+          let toIdx = fromIdx + this.queryInfo.pagesize
+          console.log('from', fromIdx, 'to', toIdx)
+          if (this.queryInfo.total < toIdx) {
+            toIdx = this.queryInfo.total
+          }
+          for (let i = fromIdx; i < toIdx; i++) {
+            // console.log(this.collectList[i])
+            this.showList.push(this.collectList[i])
+          }
         })
     },
     loadShowList() {
@@ -114,17 +124,18 @@ export default {
       this.loadShowList()
     },
     refresh() {
+      // setTimeout('getCollectList()', 5000);
       this.getCollectList()
     }
   },
   mounted() {
     this.activate()
   },
-  watch: {
-    'collectList': function(newVal, oldVal) {
-      this.loadShowList()
-    },
-  }
+  // watch: {
+  //   'collectList': function(newVal, oldVal) {
+  //     this.loadShowList()
+  //   },
+  // }
 }
 </script>
 

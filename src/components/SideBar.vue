@@ -74,15 +74,21 @@
 <!--          <span slot="title">Search</span>-->
 <!--        </el-menu-item>-->
 
-        <el-menu-item index="MR">
+        <el-menu-item index="MR" >
           <i class="el-icon-s-release"></i>
           <span slot="title">My release</span>
+        </el-menu-item>
+
+        <el-menu-item index="Admin" v-if="this.$store.getters.getRole==='管理员'">
+          <i class="el-icon-box"></i>
+          <span slot="title">Admin</span>
         </el-menu-item>
 
         <el-menu-item index="LO">
           <i class="el-icon-close"></i>
           <span slot="title">Log Out</span>
         </el-menu-item>
+
 
         <!--                <el-menu-item-group v-if="this.$store.state.proj.projId != null" id="proj-items">-->
         <!--                </el-menu-item-group>-->
@@ -138,9 +144,12 @@ export default {
       console.log(key, keyPath)
       if (key.indexOf("@") !== -1) {
         console.log('Not finished')
-      } else if(key!=='LO'){
+      } else if(key!=='LO'&& key!=='Admin'){
         this.$router.push({name: key})
-      }else{
+      }else if(key==='Admin'){
+        this.$router.push('/adminAppealing')
+      }
+      else{
         this.$confirm('Are you sure to Log out?', 'Tips', {
           confirmButtonText: 'Yes',
           cancelButtonText: 'Cancel',

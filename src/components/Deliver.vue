@@ -45,7 +45,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$axios.put('http://localhost:8081/deal/appealing/'
+          this.$axios.put('http://localhost:8081/deal/deliver/'
               + this.dealId
               + '?mailingNumber=' + this.ruleForm.mailingNumber)
           .then((res) => {

@@ -36,7 +36,11 @@
             prop="picture"
             label="picture">
           <template   slot-scope="scope">
-            <img :src="scope.row.picturePath"  min-width="70" height="70" />
+            <el-image
+                style="width: 100px; height: 100px"
+                :src="scope.row.picturePath"
+                :preview-src-list=[scope.row.picturePath] min-width="70" height="70">
+            </el-image>
           </template>
         </el-table-column>
         <el-table-column
@@ -50,8 +54,8 @@
         </el-table-column>
         <el-table-column label="operation" align="center" min-width="100">
           　　　　<template slot-scope="scope">
-          　　　　　　<el-button type="success" @click="Accept(scope.row.recordId)" plain>Accept</el-button>
-          <el-button type="danger" @click="Reject(scope.row.recordId)" plain>Reject</el-button>
+          　　　　　　<el-button type="success" @click="Accept(scope.row.recordId)" style="width: 100px ;margin-left: 5px" plain>Accept </el-button>
+          <el-button type="danger" @click="Reject(scope.row.recordId)" style="width: 100px ;margin-left: 5px" plain>Reject</el-button>
           　　　　</template>
           　　</el-table-column>
       </el-table>

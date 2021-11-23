@@ -183,14 +183,11 @@ export default {
       this.goods.tags = tags
     },
     handleRemove(file, fileList) {
-      for (let i in fileList) {
-        if (fileList[i] === file) {
-          fileList = fileList.splice(i, 1)
-          break
-        }
-      }
-      console.log(file, fileList)
-      this.photos = fileList
+      console.log('file', file, 'fileList', fileList)
+      const tmp_path = file.response
+      console.log(tmp_path)
+      const i = this.photos.findIndex(item => item.uid === file.uid)
+      this.photos.splice(i, 1)
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url

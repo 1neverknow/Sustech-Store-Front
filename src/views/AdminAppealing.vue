@@ -22,7 +22,11 @@
             prop="picture"
             label="picture">
           <template   slot-scope="scope">
-            <img :src="scope.row.picturePath"  min-width="70" height="70" />
+            <el-image
+                style="width: 100px; height: 100px"
+                :src="scope.row.picturePath"
+                :preview-src-list=[scope.row.picturePath] min-width="70" height="70">
+            </el-image>
           </template>
         </el-table-column>
         <el-table-column

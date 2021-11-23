@@ -36,7 +36,8 @@ export default {
         totalAmt: 0, //金额
         paymentType: 0, //支付方式[0:微信,1:支付宝,2:余额,3:活动]
         transType: 0, //交易类型[0:充值,1:消费]
-      }
+      },
+      chargeId: 0,
     }
   },
   methods: {
@@ -70,15 +71,18 @@ export default {
         url: 'http://localhost:8081/user/charge'
             + '?money=' + this.rechargeParams.totalAmt
       }).then(res => {
+        this.chargeId = res.data.data
         Element.Message({
           message: 'Success!',
           type: 'success',
         })
+        this.$emit('changeVisible', false)
+        this.$emit('chargeConfirm', this.chargeId)
       })
-      this.closeDialog()
     },
     closeDialog() {
       this.$emit('changeVisible', false)
+      this.$emit('chargeConfirm', this.chargeId)
     },
   }
 }
