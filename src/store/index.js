@@ -61,7 +61,8 @@ export default new Vuex.Store({
         chats: [
             {
                 chatId: 0,
-                linkmanIndex: 1,
+                linkmanIndex: 0,
+                linkmanId:0,
                 isMute: false,
                 isOnTop: false,
                 isOnce: true,
@@ -133,7 +134,8 @@ export default new Vuex.Store({
             // }
         ],
         currentChatId: -1,
-        currentOnce: false
+        currentOnce: false,
+        // linkCount:0
 
 
     },
@@ -295,9 +297,16 @@ export default new Vuex.Store({
             //         return;
             //     }
             // }
+            // for (var i = 0; i < this.state.linkmans; i++) {
+            //     if (){
+            //
+            //     }
+            // }
+
             state.chats = [
                 {
-                    linkmanIndex: chatList.linkmanIndex,
+                    linkmanIndex: this.state.linkmans.length,
+                    linkmanId: chatList.linkmanId,
                     chatId: chatList.chatId,
                     isMute: false,
                     isOnTop: false,
@@ -308,23 +317,42 @@ export default new Vuex.Store({
             state.currentChatId = chatList.chatId;
             console.log("&&&&&&&&&&&&&&&&&&&&&")
             console.log(chatList.messages.nickname)
-            this.state.linkmans = [
-                {
-                    id: chatList.linkmanIndex,
-                    // type: "A",
-                    nickname: chatList.messages.nickname,
-                    avatar:chatList.messages.avatar
-                }
-            ].concat(this.state.linkmans)
+
+            let linkman= {
+                id: chatList.linkmanId,
+                // type: "A",
+                nickname: chatList.messages.nickname,
+                avatar:chatList.messages.avatar
+            }
+            this.state.linkmans.push(linkman)
+
+
+            // ].concat(this.state.linkmans)
             console.log(this.state.linkmans)
             // state.chatCount += 1;
         },
         setInitialChatList(state, chatList) {
             console.log(chatList.length)
             console.log("#####################")
+            let count=-1;
+            for (let item of chatList) {
+                let linkman= {
+                    id: item.linkmanId,
+                    nickname: item.messages.nickname,
+                    avatar:item.messages.avatar
+                }
+                this.state.linkmans.push(linkman)
+            }
+            for (let item of this.state.linkmans) {
+                if (chatList.linkmanId===item.id){
+                    break;
+                }
+                count++;
+            }
             for (let i = 0; i < chatList.length; i++) {
                 console.log('fuck')
                 let list = chatList[i];
+                list.linkmanIndex=count;
                 // let chatId=list.chatId;
                 // state.currentTabIndex = 0;
                 // state.currentRight = 0;
