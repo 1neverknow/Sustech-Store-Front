@@ -57,10 +57,10 @@
         @keyup="handleEditorFocus"
     ></pre>
     <div class="action">
-      <div class="action-txt">按 Ctrl+Enter 进行换行</div>
+      <div class="action-txt">press "Ctrl+Enter" to wrap word</div>
       <!--      <button id="connect">连接</button>-->
       <!--      <button id="disconnect" disabled="disabled">断开</button>-->
-      <button class="action-btn" @click="handleSend">发送</button>
+      <button class="action-btn" @click="handleSend">Send</button>
       <!--      <div>-->
       <!--        <h3>订阅形式</h3>-->
       <!--        <label>订阅消息：</label><input id="subscribeMsg" >-->

@@ -6,13 +6,22 @@
       :infoPosition="infoPosition"
       :canChat="false"
     ></info-block>
-    <div class="avatar">
-      <img
-        class="avatar-img"
-        :src="avatar"
-        @click.stop="handleShowMyInfo($event)"
-      />
+    <div class="demo-image__preview">
+      <el-image
+          style="width: 50px; height: 50px"
+          :src="avatar"
+          :preview-src-list="srcList"
+          @click.stop="handleShowMyInfo($event)">
+      </el-image>
     </div>
+
+<!--    <div class="avatar">-->
+<!--      <img-->
+<!--        class="avatar-img"-->
+<!--        :src="avatar"-->
+<!--        @click.stop="handleShowMyInfo($event)"-->
+<!--      />-->
+<!--    </div>-->
     <div class="nickName">{{ nickname }}</div>
   </div>
 </template>
@@ -81,10 +90,11 @@ export default {
 
 .nickName {
   height: 40px;
-  flex-grow: 1;
-  color: #fff;
-  font-size: 18px;
+  flex-grow: 2;
+  color: #e28353;
+  font-size: 20px;
   display: flex;
   align-items: center;
+  padding: 5px;
 }
 </style>

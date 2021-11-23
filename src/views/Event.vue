@@ -58,10 +58,10 @@ export default {
         years:'',
         months:'',
         days:'',
-        id:0,
+        id:'',
         things:''
       },
-      calendarData: [
+      calendarData:[
       ],
       value: new Date()
     }
@@ -96,27 +96,26 @@ export default {
       console.log("zxyzxy:"+id)
       _this.$axios.delete("http://localhost:8081/admin/calendar?eventId="+id)
       _this.calendarData.splice(index,1)
-
   },
+},
   mounted() {
     const _this = this
     _this.$axios.get("http://localhost:8081/calender").then(res => {
       console.log(res)
-      console.log("!!!!!!!")
+      _this.calendarData = []
       _this.result = res.data.data
       for (let item of _this.result){
         _this.eachDay.years=item.date.substr(0,4)
         _this.eachDay.months=item.date.substr(-5,2)
         _this.eachDay.days=item.date.substr(-2)
         _this.eachDay.things=item.description
-        _this.id=item.id
+        _this.eachDay.id=item.eventId
         _this.calendarData.push(_this.eachDay)
         _this.eachDay= {}
       }
     })
 
   }
-}
 }
 </script>
 

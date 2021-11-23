@@ -8,17 +8,17 @@
         :canChat="canChat"
       ></info-block>
       <div class="info-wrap">
-        <div
-          class="info-pack"
-          :style="{ visibility: isNoChat ? 'hidden' : 'visible' }"
-          @click.stop="handleShowMembers"
-        >
+<!--        <div-->
+<!--          class="info-pack"-->
+<!--          :style="{ visibility: isNoChat ? 'hidden' : 'visible' }"-->
+<!--          @click.stop="handleShowMembers"-->
+<!--        >-->
           <div class="info-nickname">{{ nickname }}</div>
-          <div class="info-icon-wrap">
-            <i :class="`icon ${isShowMembers ? 'icon-up' : 'icon-down'}`"></i>
-          </div>
+<!--          <div class="info-icon-wrap">-->
+<!--            <i :class="`icon ${isShowMembers ? 'icon-up' : 'icon-down'}`"></i>-->
+<!--          </div>-->
 
-        </div>
+<!--        </div>-->
       </div>
       <div
         class="members-wrap list-wrap"
@@ -106,7 +106,8 @@ export default {
       if (linkman === null) {
         return "";
       }
-      return linkman.alias !== "" ? linkman.alias : linkman.nickname;
+      // return linkman.alias !== "" ? linkman.alias : linkman.nickname;
+      return linkman.nickname;
     },
     members() {
       const linkman = getLinkman(this);
@@ -174,7 +175,8 @@ export default {
 <style scoped>
 .wrap {
   height: 51px;
-  background-color: #eee;
+  background-color: #fdfaf6;
+;
 }
 
 .info-wrap {
@@ -186,7 +188,7 @@ export default {
   align-items: center;
   border-bottom: 1px solid #d6d6d6;
   position: relative;
-  background-color: #eee;
+  background-color: #fdfaf6;
   z-index: 10;
 }
 
@@ -197,7 +199,7 @@ export default {
 }
 
 .info-nickname {
-  font-size: 14px;
+  font-size: 18px;
 }
 
 .info-icon-wrap {

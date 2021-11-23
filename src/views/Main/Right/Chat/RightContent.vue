@@ -23,7 +23,7 @@
               <div class="msg-right-wrap">
                 <pre
                     class="msg-ctn"
-                    style="background-color: #b2e281;"
+                    style="background-color: #e28353;"
                     v-html="msg.ctn"
                 ></pre>
               </div>
