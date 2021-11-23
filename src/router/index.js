@@ -15,6 +15,7 @@ import Deal from "@/views/Deal"
 import Publish from "@/views/Publish"
 import Order from "@/views/Order"
 import None from "@/views/None"
+import EditGoods from "@/views/EditGoods"
 import AdminAppealing from "@/views/AdminAppealing"
 import AdminComplainGoods from "@/views/AdminComplainGoods"
 import AdminComplainUser from "@/views/AdminComplainUser"
@@ -105,6 +106,14 @@ const routes = [
         },
         component: Publish
       },
+      {
+        path: '/goods/:goodsId/edit',
+        name: 'EditGoods',
+        meta: {
+          requireAuth: true
+        },
+        component: EditGoods
+      }
     ]
   },
   {

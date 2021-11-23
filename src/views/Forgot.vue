@@ -108,6 +108,8 @@ export default {
               message: 'Verify Success!',
               type: 'success',
             })
+            const jwt = res.headers['authorization']
+            this.$store.commit("SET_TOKEN",jwt)
             // 验证成功后，跳转到reset页面
             this.$router.push("/login/reset")
           })

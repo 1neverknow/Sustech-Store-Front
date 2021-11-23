@@ -192,10 +192,6 @@ export default {
     activate() {
       const goodsId = this.$route.params.goodsId
       if (!goodsId) {
-        Element.Message({
-          message: 'Goods ID not exist!',
-          type: 'error',
-        })
         this.$router.push('/none')
         return
       }

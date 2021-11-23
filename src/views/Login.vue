@@ -134,10 +134,29 @@ export default {
     }
   },
   methods: {
+    activate() {
+      const loginInfo = this.$store.getters.getLoginInfo
+      if (loginInfo === null) {
+        return
+      }
+      this.rememberMe = loginInfo.rememberMe
+      this.ruleForm.email = loginInfo.email
+      this.ruleForm.password = loginInfo.password
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid && this.verify.verifycode !== '') {
           // 更改为调用全局this -> 可以用来获取store里的信息
+          if(this.rememberMe) {
+            const loginInfo = {
+              email: this.ruleForm.email,
+              password: this.ruleForm.password,
+              rememberMe: this.rememberMe,
+            }
+            this.$store.commit("SET_LOGININFO", loginInfo)
+          } else {
+            this.$store.commit('removeLoginInfo')
+          }
           const _this = this
           const newRequests = axios.create()
           newRequests.defaults.withCredentials = true;
@@ -223,7 +242,8 @@ export default {
       }
     }
   },
-  mounted: {
+  mounted() {
+    this.activate()
   }
 }
 </script>
