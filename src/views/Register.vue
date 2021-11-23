@@ -136,7 +136,7 @@ export default {
             // 验证成功后，弹窗提示前往邮箱查看，并跳转到register页面
             Element.Message({
               showClose: true,
-              message: 'Register success! Please check your email for activation message',
+              message: 'Please check your email for activation message',
               type: 'success',
             })
             _this.$router.push("/login")

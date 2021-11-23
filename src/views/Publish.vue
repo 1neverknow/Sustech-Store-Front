@@ -149,7 +149,7 @@ export default {
         introduce: 'aaaaaaaaaa',
         isSell: true,
         labels: [],
-        price: '999',
+        price: 999,
         title: '300 Mana Stone',
         postage: 0,
       },

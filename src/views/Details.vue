@@ -400,6 +400,8 @@ export default {
 <style scoped>
 #details .page-header {
   height: 100px;
+  width: 105%;
+  margin-left: -2%;
   /*margin-top: -20px;*/
   z-index: 4;
   background: #fff;
@@ -454,14 +456,15 @@ export default {
 /* 主要内容CSS */
 #details .main {
   background-image: url("../assets/imgs/bg.jpg");
-  width: 100%;
+  width: 105%;
+  margin-left: -20px;
   margin-top: -30px;
 }
 #details .main .main-content-wrap {
   margin-top: -50px;
-  margin-left: 5%;
+  margin-left: 6%;
   /*background-color: whitesmoke;*/
-  width: 90%;
+  width: 85%;
   background: rgba(255, 255, 255, 0.85);
 }
 
@@ -502,8 +505,8 @@ export default {
   color: #212121;
 }
 #details .main .content .intro {
-  color: #b0b0b0;
-  /*padding-top: 10px;*/
+  /*color: #b0b0b0;*/
+  color: grey;
   margin: auto;
 }
 #details .main .content .announce {
@@ -612,7 +615,7 @@ export default {
   background: rgba(255, 255, 255, 0.8);
 }
 #details .main .footer .collapse {
-  margin-top: 10px;
+  margin-top: 5%;
   background-color: whitesmoke;
 }
 </style>
