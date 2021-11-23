@@ -3,7 +3,7 @@
     <div class="header">
       <img
           class="goods-photo"
-          :src="'http://localhost:8081/' + this.goodsInfo.goodsPicture"
+          :src="this.goodsInfo.goodsPicture"
           @click="routeGoods"
       ></img>
     </div>
