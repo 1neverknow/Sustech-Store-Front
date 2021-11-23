@@ -71,7 +71,16 @@ import axios from 'axios'
 
 export default {
   name: "Register",
-
+  beforeRouteEnter(to, from, next) {
+    // 添加背景色 margin:0;padding:0是为了解决vue四周有白边的问题
+    document.querySelector('body').setAttribute('style', 'margin:0;padding:0')
+    next()
+  },
+  beforeRouteLeave(to, from, next) {
+    // 去除背景色
+    document.querySelector('body').setAttribute('style', '')
+    next()
+  },
   data() {
     const validateEmail = (rule, value, callback) => {
       console.log(this)
@@ -104,7 +113,7 @@ export default {
         username:'mithra',
         email: 'c001hewanning@qq.com',
         password: '123',
-        gender: 0,
+        gender: 2,
       },
       accept: '',
       rules: {
@@ -168,7 +177,7 @@ export default {
 .register-wrap {
   background-image: url("../assets/imgs/cosmic.jpg");
   position: fixed;
-  background-size: 100%;
+  background-size: 105%;
   width: 100%;
   height: 100%;
 }
