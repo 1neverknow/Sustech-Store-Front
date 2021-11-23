@@ -1,27 +1,27 @@
 <!--收藏夹页面-->
 <template>
   <div class="collection">
-<!--    a static page for my favourite module-->
+    <!--    a static page for my favourite module-->
     <div class="collection-header">
       <div class="header-content">
         <p>
-          <i class="el-icon-star-on" style="color: gold; margin-right: 20px"></i>
+          <i class="el-icon-search" style="color: lightskyblue; margin-right: 20px"></i>
         </p>
-        <p>My Collections</p>
+        <p>{{label}}</p>
         <router-link to></router-link>
       </div>
     </div>
 
     <el-card class="content">
-<!--      有收藏物品-->
-      <div v-if="collectList.length > 0">
+      <!--      有收藏物品-->
+      <div v-if="list.length > 0">
         <MyList
-            v-bind:type="'collection'"
+            v-bind:type="'searchLabel'"
             v-bind:showList="showList"
             @refresh="refresh"
         ></MyList>
       </div>
-<!--      收藏列表为空-->
+      <!--      收藏列表为空-->
       <div v-else class="collect-empty">
         <div class="empty">
           <h2>Your Collection is Empty! 😢</h2>
@@ -39,7 +39,7 @@
           :page-size="queryInfo.pagesize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="queryInfo.total"
-          style="float:right;"
+          style="float:right; margin-top: 12px"
           background
       >
       </el-pagination>
@@ -50,11 +50,22 @@
 <script>
 import MyList from "@/components/MyList";
 export default {
-  name: "Collection",
+  name: "LabelPage",
   components: {MyList},
+  beforeRouteEnter(to, from, next) {
+    // 添加背景色 margin:0;padding:0是为了解决vue四周有白边的问题
+    document.querySelector('body').setAttribute('style', 'margin:0;padding:0')
+    next()
+  },
+  beforeRouteLeave(to, from, next) {
+    // 去除背景色
+    document.querySelector('body').setAttribute('style', '')
+    next()
+  },
   data() {
     return {
-      collectList: [],
+      label: '',
+      list: [],
       showList: [],
       queryInfo: {
         pagenum: 1,
@@ -65,42 +76,41 @@ export default {
   },
   methods: {
     activate() {
-      this.getCollectList()
+      this.label = this.$route.params.labelName
+      this.getLabelList()
     },
-    getCollectList() {
-      this.collectList = []
+    getLabelList() {
+      this.list = []
       this.showList = []
-      console.log('get collection list')
-      this.$axios.get('http://localhost:8081/user/collection')
-        .then(res => {
-          const collection_data = res.data.data
-          this.queryInfo.total = collection_data.length
-          for (let i in collection_data) {
-            const item = collection_data[i]
-            this.collectList.push({
-              goodsId: item.goodsId,
-              picture: item.picturePath,
-              title: item.title,
-              announcer: {
-                userId: item.announcer.userId,
-                username: item.announcer.userName,
-              },
-              price: item.price,
-              goodsState: item.goodsState
-            })
-          }
-          this.showList = []
-          let fromIdx = (this.queryInfo.pagenum - 1) * this.queryInfo.pagesize
-          let toIdx = fromIdx + this.queryInfo.pagesize
-          console.log('from', fromIdx, 'to', toIdx)
-          if (this.queryInfo.total < toIdx) {
-            toIdx = this.queryInfo.total
-          }
-          for (let i = fromIdx; i < toIdx; i++) {
-            // console.log(this.collectList[i])
-            this.showList.push(this.collectList[i])
-          }
-        })
+      this.$axios.get('http://localhost:8081/goods/label/' + this.label)
+          .then(res => {
+            const search_data = res.data.data
+            this.queryInfo.total = search_data.length
+            for (let i in search_data) {
+              const item = search_data[i]
+              this.list.push({
+                goodsId: item.goodsId,
+                picture: item.picturePath,
+                title: item.title,
+                announcer: {
+                  userId: item.announcer.userId,
+                  username: item.announcer.userName,
+                },
+                price: item.price,
+                goodsState: item.goodsState
+              })
+            }
+            this.showList = []
+            let fromIdx = (this.queryInfo.pagenum - 1) * this.queryInfo.pagesize
+            let toIdx = fromIdx + this.queryInfo.pagesize
+            console.log('from', fromIdx, 'to', toIdx)
+            if (this.queryInfo.total < toIdx) {
+              toIdx = this.queryInfo.total
+            }
+            for (let i = fromIdx; i < toIdx; i++) {
+              this.showList.push(this.list[i])
+            }
+          })
     },
     loadShowList() {
       this.showList = []
@@ -111,8 +121,7 @@ export default {
         toIdx = this.queryInfo.total
       }
       for (let i = fromIdx; i < toIdx; i++) {
-        console.log(this.collectList[i])
-        this.showList.push(this.collectList[i])
+        this.showList.push(this.list[i])
       }
     },
     handleSizeChange(newSize) {
@@ -124,7 +133,7 @@ export default {
       this.loadShowList()
     },
     refresh() {
-      this.getCollectList()
+      this.getLabelList()
     }
   },
   mounted() {
@@ -133,17 +142,20 @@ export default {
 }
 </script>
 
-
 <style scoped>
 .collection {
+  background-image: url("../assets/imgs/bg.jpg");
   background-color: #f5f5f5;
-  margin: auto auto auto -10%;
+  margin-top: -3%;
+  margin-left: -2.5%;
+  width: 105%
 }
 .collection .collection-header {
   background-color: #fff;
   border-bottom: 2px solid deepskyblue;
-  margin-top: -100px;
-  width: 100%;
+  /*margin-top: -100px;*/
+  width: 110%;
+  margin-left: -8%;
 }
 .collection .collection-header .header-content {
   width: 1225px;
@@ -169,6 +181,7 @@ export default {
   /*margin-left: 400px;*/
   /*text-align: center;*/
   width: 1225px;
+  background: rgba(255, 255, 255, 0.8);
 }
 .collection .content .pagination {
   float: bottom;
@@ -202,10 +215,10 @@ export default {
   font-size: 20px;
 }
 .collection .footer {
-  margin-top: 50px;
-  margin-right: 50px;
-  margin-bottom: 50px;
+  margin-top: 100px;
+  /*margin-right: 50px;*/
   text-align: right;
+  background-color: whitesmoke;
   /*float: right;*/
 }
 /* 收藏列表为空的时候显示的内容CSS END */

@@ -70,7 +70,12 @@
                 type="success"
                 class="tags"
             >
-              ● {{ item }}
+              <router-link
+                  :to="{path: '/search/label/' + item}"
+                  style="text-decoration: none; color: white"
+              >
+                ● {{ item }}
+              </router-link>
             </el-tag>
           </div>
           <!--右侧内容区-->

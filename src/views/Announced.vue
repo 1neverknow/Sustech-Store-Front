@@ -84,7 +84,7 @@ export default {
                 picture: item.picturePath,
                 title: item.title,
                 price: item.price,
-                isSell: item.isSell
+                goodsState: item.goodsState
               })
             }
             console.log('get announcement offlist')

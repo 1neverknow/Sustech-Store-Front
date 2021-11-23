@@ -7,18 +7,23 @@
         <!--      productID是商品编号！-->
         <li
             v-for="(item,index) in showList"
-            :key="index">
-          <template v-if="item.isSell">
-            <el-popconfirm
-                confirm-button-text="OK"
-                cancel-button-text="No, Thanks"
-                icon="el-icon-question"
-                icon-color="red"
-                title="Are you sure to remove this goods?"
-                @confirm="confirmDelete(item.goodsId)"
-            >
-              <i class="el-icon-close delete" slot="reference" v-show="true"></i>
-            </el-popconfirm>
+            :key="index"
+            style="height: 270px"
+        >
+          <template v-if="item.goodsState === 0">
+            <template v-if="type !== 'searchLabel'">
+              <el-popconfirm
+                  confirm-button-text="OK"
+                  cancel-button-text="No, Thanks"
+                  icon="el-icon-question"
+                  icon-color="red"
+                  title="Are you sure to remove this goods?"
+                  @confirm="confirmDelete(item.goodsId)"
+              >
+                <i class="el-icon-close delete" slot="reference" v-show="true"></i>
+              </el-popconfirm>
+            </template>
+
             <!--        点击后跳转至商品详情-->
             <div>
               <router-link
