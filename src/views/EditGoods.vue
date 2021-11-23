@@ -287,7 +287,6 @@ export default {
                 message: 'Success!',
                 type: 'success',
               })
-
             })
             resolve('done');
           }
