@@ -11,11 +11,11 @@ Vue.use(Vuex)
 // store的内容更新之后，会通知到每个组件。这样就可以达到多个组件数据同步的效果
 export default new Vuex.Store({
     state: {
-        // token和userInfo具体指的是什么？
         token: localStorage.getItem('token'),
         // 后端发送过来的用户信息
         // userInfo: JSON.parse(localStorage.getItem('userInfo')),
         userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
+        loginInfo: JSON.parse(localStorage.getItem('loginInfo')),
         search_content: sessionStorage.getItem('search_content'),
         default_address: {
             receiver: '',
@@ -61,7 +61,8 @@ export default new Vuex.Store({
         chats: [
             {
                 chatId: 0,
-                linkmanIndex: 1,
+                linkmanIndex: 0,
+                linkmanId:0,
                 isMute: false,
                 isOnTop: false,
                 isOnce: true,
@@ -133,7 +134,8 @@ export default new Vuex.Store({
             // }
         ],
         currentChatId: -1,
-        currentOnce: false
+        currentOnce: false,
+        // linkCount:0
 
 
     },
@@ -154,7 +156,11 @@ export default new Vuex.Store({
             // localStorage.setItem('userInfo', JSON.stringify(userInfo))
             sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
         },
-
+        SET_LOGININFO: (state, loginInfo) => {
+            state.loginInfo = loginInfo
+            // 登录之后，一次会话期间，保留登陆状态
+            localStorage.setItem('loginInfo', JSON.stringify(loginInfo))
+        },
         SET_Default_Address: (state, address) => {
             state.default_address.receiver = address.receiver
             state.default_address.telephone = address.telephone
@@ -295,9 +301,16 @@ export default new Vuex.Store({
             //         return;
             //     }
             // }
+            // for (var i = 0; i < this.state.linkmans; i++) {
+            //     if (){
+            //
+            //     }
+            // }
+
             state.chats = [
                 {
-                    linkmanIndex: chatList.linkmanIndex,
+                    linkmanIndex: this.state.linkmans.length,
+                    linkmanId: chatList.linkmanId,
                     chatId: chatList.chatId,
                     isMute: false,
                     isOnTop: false,
@@ -308,23 +321,42 @@ export default new Vuex.Store({
             state.currentChatId = chatList.chatId;
             console.log("&&&&&&&&&&&&&&&&&&&&&")
             console.log(chatList.messages.nickname)
-            this.state.linkmans = [
-                {
-                    id: chatList.linkmanIndex,
-                    // type: "A",
-                    nickname: chatList.messages.nickname,
-                    avatar:chatList.messages.avatar
-                }
-            ].concat(this.state.linkmans)
+
+            let linkman= {
+                id: chatList.linkmanId,
+                // type: "A",
+                nickname: chatList.messages.nickname,
+                avatar:chatList.messages.avatar
+            }
+            this.state.linkmans.push(linkman)
+
+
+            // ].concat(this.state.linkmans)
             console.log(this.state.linkmans)
             // state.chatCount += 1;
         },
         setInitialChatList(state, chatList) {
             console.log(chatList.length)
             console.log("#####################")
+            let count=-1;
+            for (let item of chatList) {
+                let linkman= {
+                    id: item.linkmanId,
+                    nickname: item.messages.nickname,
+                    avatar:item.messages.avatar
+                }
+                this.state.linkmans.push(linkman)
+            }
+            for (let item of this.state.linkmans) {
+                if (chatList.linkmanId===item.id){
+                    break;
+                }
+                count++;
+            }
             for (let i = 0; i < chatList.length; i++) {
                 console.log('fuck')
                 let list = chatList[i];
+                list.linkmanIndex=count;
                 // let chatId=list.chatId;
                 // state.currentTabIndex = 0;
                 // state.currentRight = 0;
@@ -407,6 +439,10 @@ export default new Vuex.Store({
             sessionStorage.removeItem('query_good_list')
             sessionStorage.removeItem('search_content')
         },
+        removeLoginInfo(state) {
+            state.loginInfo = null
+            localStorage.removeItem('loginInfo')
+        }
     },
     getters: {
         // get
@@ -416,6 +452,9 @@ export default new Vuex.Store({
         },
         getToken: state => {
             return state.token
+        },
+        getLoginInfo: state => {
+            return state.loginInfo
         },
         getDefault_Address: state => {
             return state.default_address

@@ -8,35 +8,96 @@
         <li
             v-for="(item,index) in showList"
             :key="index">
-          <el-popconfirm
-              confirm-button-text="OK"
-              cancel-button-text="No, Thanks"
-              icon="el-icon-question"
-              icon-color="red"
-              title="Are you sure to remove this goods?"
-              @confirm="confirmEvent(index)"
-          >
-            <i class="el-icon-close delete" slot="reference" v-show="true"></i>
-          </el-popconfirm>
-          <!--        点击后跳转至商品详情-->
-          <div>
-            <router-link
-                :to="{path: '/goods/'+ item.goodsId}"
-                class="router-link-active">
-              <img
-                  style="width: 120px; height: 120px; text-align: center"
-                  :src="item.picture"
+          <template v-if="item.isSell">
+            <el-popconfirm
+                confirm-button-text="OK"
+                cancel-button-text="No, Thanks"
+                icon="el-icon-question"
+                icon-color="red"
+                title="Are you sure to remove this goods?"
+                @confirm="confirmEvent(index)"
+            >
+              <i class="el-icon-close delete" slot="reference" v-show="true"></i>
+            </el-popconfirm>
+            <!--        点击后跳转至商品详情-->
+            <div>
+              <router-link
+                  :to="{path: '/goods/'+ item.goodsId}"
+                  class="router-link-active">
+                <img
+                    style="width: 120px; height: 120px; text-align: center"
+                    :src="item.picture"
+                >
+                <h2>{{item.title}}</h2>
+                <h4></h4>
+                <p>
+                  <span>￥{{item.price}}</span>
+                </p>
+              </router-link>
+              <template
+                  v-if="type==='announcement'"
               >
-              <h2>{{item.title}}</h2>
-              <h3></h3>
-              <p>
-                <span>￥{{item.price}}</span>
-              </p>
-            </router-link>
-          </div>
+                <el-button
+                    type="primary"
+                    icon="el-icon-edit"
+                    size="small"
+                    style="margin-left: 10%; margin-top: 5%; width: 80%"
+                    @click="handleEdit(item.goodsId)"
+                    plain
+                    round
+                >Edit</el-button>
+              </template>
+            </div>
+          </template>
+          <template v-else
+          class="offGoods">
+            <el-popconfirm
+                confirm-button-text="OK"
+                cancel-button-text="No, Thanks"
+                icon="el-icon-question"
+                icon-color="red"
+                title="Are you sure to remove this goods?"
+                @confirm="confirmEvent(index)"
+            >
+              <i class="el-icon-close delete" slot="reference" v-show="true"></i>
+            </el-popconfirm>
+            <!--        点击后跳转至商品详情-->
+            <div>
+              <router-link
+                  :to="{path: '/goods/'+ item.goodsId}"
+                  class="router-link-active">
+                <img
+                    style="width: 120px; height: 120px; text-align: center"
+                    :src="item.picture"
+                >
+                <h2>{{item.title}}</h2>
+                <h4></h4>
+                <p>
+                  <span>￥{{item.price}}</span>
+                </p>
+              </router-link>
+              <template>
+                <el-alert
+                    title="off shelves"
+                    type="error"
+                    center show-icon
+                    :closable="false"
+                ></el-alert>
+                <!--                <el-button-->
+<!--                    type="primary"-->
+<!--                    icon="el-icon-edit"-->
+<!--                    size="small"-->
+<!--                    style="margin-left: 10%; margin-top: 5%; width: 80%"-->
+<!--                    plain-->
+<!--                    round-->
+<!--                >Edit</el-button>-->
+              </template>
+            </div>
+          </template>
         </li>
       </ul>
     </el-row>
+
     <el-row class="pagination">
       <!-- 分页区域 -->
       <el-pagination
@@ -74,6 +135,8 @@ export default {
         pagesize: 8,
         total: 0,
       },
+      editVisible: false,
+      editGoodsId: 0,
     }
   },
   methods: {
@@ -120,6 +183,7 @@ export default {
               this.list.splice(index, 1)
             })
       }
+      this.refresh()
     },
     handleSizeChange(newSize) {
       this.queryInfo.pagesize = newSize
@@ -129,6 +193,16 @@ export default {
       this.queryInfo.pagenum = newPage
       this.loadShowList()
     },
+    handleEdit(goodsId) {
+      this.editGoodsId = goodsId
+      this.$router.push('/goods/' + goodsId + '/edit')
+    },
+    changeEditVisible(value) {
+      this.editVisible = value
+    },
+    refresh() {
+      this.$emit('refresh')
+    }
   },
   mounted() {
     this.queryInfo.total = this.total
@@ -237,6 +311,9 @@ export default {
   margin-left: -4%;
   overflow: hidden;
   /*height: 700px;*/
+}
+.myList .goods-list .offGoods {
+  background-color: darkgrey;
 }
 
 </style>

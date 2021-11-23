@@ -64,6 +64,7 @@ export default {
                 username: item.announcer.userName,
               },
               price: item.price,
+              isSell: item.isSell
             })
           }
         })
@@ -107,7 +108,7 @@ export default {
 .collection .content {
   padding: 20px 0;
   margin-top: 50px;
-  margin-left: 18%;
+  margin-left: 15%;
   /*margin-left: 400px;*/
   /*text-align: center;*/
   width: 1225px;

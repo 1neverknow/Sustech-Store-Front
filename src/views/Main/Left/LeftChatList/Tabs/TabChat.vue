@@ -218,7 +218,8 @@ export default {
               if (toDate(item.lastMessageDate) != null) {
                 let chatList = {
                   chatId: item.chatId,
-                  linkmanIndex: item.otherUserId,
+                  linkmanIndex: 0,
+                  linkmanId: item.otherUserId,
                   isMute: false,
                   isOnTop: false,
                   isOnce: false,
@@ -239,7 +240,8 @@ export default {
               }else{
                 let chatList = {
                   chatId: item.chatId,
-                  linkmanIndex: item.otherUserId,
+                  linkmanIndex: 0,
+                  linkmanId: item.otherUserId,
                   isMute: false,
                   isOnTop: false,
                   isOnce: false,
@@ -281,6 +283,7 @@ export default {
       }).then(res => {
         if (res.data.code === 2000) {
           const data = res.data.data
+          console.log(data)
           subscribeMsg = [];
           // let data = JSON.parse(res.body);
           console.log(data);
