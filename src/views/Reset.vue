@@ -50,9 +50,7 @@ export default {
     var validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('Password is required'));
-      } else if(value.length < 6){
-        callback(new Error('Length must be more than 6'));
-      }else{
+      } else{
         callback();
       }
     };
@@ -98,26 +96,19 @@ export default {
           })
           // 更改为调用全局this -> 可以用来获取store里的信息
           const _this = this
-
-          this.$axios({
-            method: 'post',
-            url: 'http://localhost:8081/login/reset'
-                + "?password=" + this.ruleForm.password,
-            data: {
-              password: this.ruleForm.password,
-            },
-            transformRequest: [function (data) {
-              var ret = '';
-              for (var it in data) {
-                // 如果要发送中文 编码
-                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-              }
-              return ret.substring(0,ret.length-1)
-            }],
-          }).then(res => {
-            // 验证成功后，跳转到login页面
-            _this.$router.push("/login")
-          })
+          const commitForm = {
+            type: 0,
+            content: this.ruleForm.password,
+            checkCode: null,
+          }
+          this.$axios.post('http://localhost:8081/user/security', commitForm)
+              .then(res => {
+                Element.Message({
+                  message: 'Reset Success!',
+                  type: 'success',
+                })
+                this.$router.push("/login")
+              })
           // 认证不通过的情况 -> 全局axios拦截
         } else {
           console.log('error submit!!')
