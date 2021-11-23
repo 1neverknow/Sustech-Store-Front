@@ -44,8 +44,14 @@
               <el-input v-model="ruleForm.varifycode"></el-input>
             </el-form-item>
 
+            <el-form-item label="" style="margin-top: -15px">
+              <router-link to="/login">
+                <el-link type="primary" style="float: left; height: 15px; margin-top: 15px">< Back to login</el-link>
+              </router-link>
+            </el-form-item>
+
             <div class="reset-btn">
-              <el-button type="primary" style="margin-top: 30px" @click="submitForm('ruleForm')">Reset</el-button>
+              <el-button type="primary" style="margin-top: -5px" @click="submitForm('ruleForm')">Reset</el-button>
             </div>
 
           </el-form>
@@ -61,6 +67,16 @@ import Element from "element-ui";
 export default {
   name: "Forgot",
 
+  beforeRouteEnter(to, from, next) {
+    // 添加背景色 margin:0;padding:0是为了解决vue四周有白边的问题
+    document.querySelector('body').setAttribute('style', 'margin:0;padding:0')
+    next()
+  },
+  beforeRouteLeave(to, from, next) {
+    // 去除背景色
+    document.querySelector('body').setAttribute('style', '')
+    next()
+  },
   data() {
     const validateEmail = (rule, value, callback) => {
       if (value === '') {
@@ -162,7 +178,7 @@ export default {
 .forgot-wrap {
   background-image: url("../assets/imgs/new-dimension.jpg");
   position: fixed;
-  background-size: 100%;
+  background-size: 105%;
   width: 100%;
   height: 100%;
 }

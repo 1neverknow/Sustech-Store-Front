@@ -274,7 +274,7 @@ export default {
 .login-wrap {
   background-image: url("../assets/imgs/starmaker.jpg");
   position: fixed;
-  background-size: 100%;
+  background-size: 105%;
   width: 100%;
   height: 100%;
 }

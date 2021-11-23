@@ -4,11 +4,14 @@
     <!--    a static page for my favourite module-->
     <div class="collection-header">
       <div class="header-content">
-        <p>
-          <i class="el-icon-search" style="color: lightskyblue; margin-right: 20px"></i>
-        </p>
-        <p>{{label}}</p>
-        <router-link to></router-link>
+        <div class="title">
+          <p>
+            <i class="el-icon-search" style="color: lightskyblue; margin-right: 20px"></i>
+          </p>
+          <p>{{label}}</p>
+          <GuideHeader></GuideHeader>
+        </div>
+
       </div>
     </div>
 
@@ -69,9 +72,10 @@
 
 <script>
 import MyList from "@/components/MyList";
+import GuideHeader from "@/components/GuideHeader"
 export default {
   name: "LabelPage",
-  components: {MyList},
+  components: {MyList, GuideHeader},
   beforeRouteEnter(to, from, next) {
     // 添加背景色 margin:0;padding:0是为了解决vue四周有白边的问题
     document.querySelector('body').setAttribute('style', 'margin:0;padding:0')
@@ -194,6 +198,16 @@ export default {
   color: deepskyblue;
   line-height: 80px;
 }
+.collection .collection-header .header-content .title {
+  margin-top: -30px;
+  width: 1225px;
+  height: 64px;
+  line-height: 64px;
+  font-size: 25px;
+  font-weight: 400;
+  color: #212121;
+}
+
 .collection .content {
   padding: 20px 0;
   margin-top: 50px;

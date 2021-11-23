@@ -6,7 +6,7 @@
           <p style="margin-left: 5%">{{title}}</p>
           <div class="list">
             <ul>
-              <li><router-link to="/">Homepage</router-link></li>
+              <li><router-link to="/sh">Homepage</router-link></li>
               <li><el-button
                 type="text"
                 class="route-btn"
