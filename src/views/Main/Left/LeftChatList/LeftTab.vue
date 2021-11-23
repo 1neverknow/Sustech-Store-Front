@@ -218,6 +218,6 @@ export default {
 
 .left-chat-list-tab-wrap::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background-color: rgb(48, 65, 86);
+  background-color: ;
 }
 </style>

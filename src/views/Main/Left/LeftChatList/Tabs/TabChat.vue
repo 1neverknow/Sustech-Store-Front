@@ -415,11 +415,11 @@ export default {
 .chat-wrap {
   height: 40px;
   padding: 12px 18px 11px;
-  border-bottom: 1px solid rgb(48, 65, 86);
+  border-bottom: 1px solid #e28353;
   display: flex;
   font-size: 13px;
   cursor: pointer;
-  border-bottom: 1px solid rgb(48, 65, 86);
+  border-bottom: 1px solid #e28353;
   color: #989898;
   user-select: none;
 }
@@ -429,7 +429,7 @@ export default {
 }
 
 .chat-wrap-selected {
-  background-color: rgb(48, 65, 86);
+  background-color: #e28353;
   color: #fff;
 }
 

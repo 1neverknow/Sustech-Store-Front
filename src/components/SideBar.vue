@@ -172,7 +172,7 @@ export default {
   text-align: left;
   /*background: blueviolet;*/
   height: 100%;
-  background: #303f55;
+  background: #e28353;
 }
 
 .el-radio-group {
@@ -195,7 +195,7 @@ export default {
   text-align: left;
 }
 #title #title-admin {
-  background-color: #303f55;
+  background-color: #e28353;
   color: white;
   font-size: 20px;
   height: 60px;

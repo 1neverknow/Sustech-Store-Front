@@ -9,7 +9,7 @@
     </div>
     <div class="goods-detail" v-else>
       <el-row class="font">
-        <el-col :span="7" ><div >
+        <el-col justify="right" :span="14"  ><div >
           <img
               class="avatar-img"
               :src="goodsPicture"
@@ -17,10 +17,11 @@
               @click="jumpGoods"
           />
         </div></el-col>
-        <el-col :span="8"><div >
+        <el-col :span="4" ><div >
+<!--        <el-row :span="1"><div >-->
           Price: {{goodsPrice}}
-        </div></el-col>
-        <el-col :span="9"><div >
+<!--        </div></el-row>-->
+<!--        <el-row :span="1"><div >-->
           <div class="button">
             <el-button
                 class="confirm-to-buy"
@@ -28,6 +29,7 @@
             >Confirm to buy!</el-button>
           </div>
         </div></el-col>
+<!--        </div></el-row>-->
       </el-row>
     </div>
   </div>
@@ -137,18 +139,19 @@ export default {
 
 <style scoped>
 .right-goods-wrap {
-  height: 51px;
+  height: 100px;
 }
 .goods-detail {
-  height: 30px;
+  height: 75px;
   line-height: 30px;
   padding: 10px 0;
   margin: 0 15px;
   /*border-bottom: 1px solid #d6d6d6;*/
   text-align: center;
   /*font-size: 14px;*/
-  border:1px solid rgb(191, 203, 217);
-  border-radius: 4px
+  border:1px solid #e28353;
+  border-radius: 4px;
+  background: #fdfaf6;
 }
 /*border-radius: 4px*/
 .el-row {
@@ -181,7 +184,7 @@ export default {
   height: 30px;
   width: 150px;
   line-height: 5px;
-  background-color: rgb(48, 65, 86);
+  background-color: #e28353;
   border-radius: 4px;
   color: rgb(191, 203, 217)
 }
