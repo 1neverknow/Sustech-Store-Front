@@ -225,6 +225,7 @@ export default {
                   isMute: false,
                   isOnTop: false,
                   isOnce: false,
+
                   messages: []
                   // address: item.addressName,
                   // type:item.isDefault==='null'?'Normal':'Default'
@@ -237,6 +238,7 @@ export default {
                   isMute: false,
                   isOnTop: false,
                   isOnce: false,
+
                   messages: [
                     {
                       avatar: item.otherUserPicturePath,
@@ -289,15 +291,7 @@ export default {
       }).then(res => {
         if (res.data.code === 2000) {
           const data = res.data.data
-          console.log(data)
           subscribeMsg = [];
-          // let data = JSON.parse(res.body);
-          console.log(data);
-          // console.log(res.body.length)
-          // let count = data.length - 1;
-          // console.log(count)
-          console.log(data.speakUserId);
-          console.log("##########################")
           let myId = data.speakUserId;
           let yourId = data.otherUserId;
           let myName = data.speakUserName;
@@ -307,11 +301,7 @@ export default {
           let goodsId = data.goodsId;
           let goodsPicture = data.goodsPicturePath;
           let goodsPrice = data.goodsPrice;
-          console.log(myId);
-          console.log(myName);
-          console.log(myPicture);
           for (let item of data.chatContents) {
-            // console.log(item);
             let msg;
             if (item.isSpeakUser) {
               msg = {
@@ -339,26 +329,18 @@ export default {
             id: myId,
             avatar: myPicture,
             nickname: myName.toString(),
-            // gender: "",
-            // alias: "",
-            // region: ""
           }
           yourInformation = {
             id: yourId,
             avatar: yourPicture,
             nickname: yourName.toString(),
-            // gender: "",
-            // alias: "",
-            // region: ""
           }
           goodsInformation = {
             id: goodsId,
             avatar: goodsPicture,
             price: goodsPrice,
           }
-          console.log(subscribeMsg);
-          console.log(myInformation);
-          console.log(goodsInformation);
+          subscribeMsg = [subscribeMsg,goodsInformation]
           this.$store.commit("setInitialHistory", subscribeMsg);
           this.$store.commit("setMyself", myInformation);
           this.$store.commit("setOther", yourInformation);
@@ -383,12 +365,12 @@ export default {
       // console.log(index);
       // console.log(this.chats[index].chatId);
       // this.disconnect();
-      this.$store.commit("setChatId", this.chats[index].chatId);
-      this.$store.commit("setCurrentOnce");
-      if (!this.$store.state.currentOnce) {
+      this.$store.commit("setChatId", this.$store.state.chats[index].chatId);
+      if (!this.$store.state.chats[index].currentOnce) {
         this.getHistory();
-        this.$store.commit("changeCurrentOnce");
+        this.$store.state.chats[index].currentOnce = true;
       }
+      this.$store.commit("setGoods", this.$store.state.chats[index].goodsInformation);
 
       // this.connection();
       // this.commit();

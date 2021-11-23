@@ -70,7 +70,7 @@ export default {
   },
   methods: {
     jumpGoods(){
-      const goodsId = this.$store.state.goods.id
+      const goodsId = this.$store.state.chats[this.$store.state.currentChatId]
       this.$router.push('/goods/' + goodsId)
     },
     handleClick() {
