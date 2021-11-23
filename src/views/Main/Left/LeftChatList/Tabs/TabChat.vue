@@ -35,7 +35,7 @@
           "
         ></pre>
       </div>
-      <div class="chat-info">
+      <div class="chat-info" style="text-align:center">
         <span
             class="chat-info-time"
             :style="{ color: currentChatIndex === index ? '#fff' : '' }"
@@ -45,12 +45,18 @@
                 : getTime(chat.messages[chat.messages.length - 1].time)
           }}</span
         >
-        <span
+        <span :key="unReadCount"
           class="chat-info-count"
-          v-if="setCount()"
+          :style="{ color: currentChatIndex === index ? '#e28353' : '' }"
           >
-          {{unReadCount}}
-        </span>
+          <!--          v-if="judgeCount"-->
+          {{
+            chat.unReadCount === 0
+                ? ""
+                : chat.unReadCount
+          }}
+        </span
+        >
         <div class="chat-info-icon-wrap" v-if="chat.isMute">
           <i
               :class="
@@ -118,7 +124,19 @@ export default {
           return i;
         }
       }
-    }
+    },
+    judgeCount() {
+      const currentChatId = this.$store.state.currentChatId;
+      console.log(currentChatId)
+      for (let chat of this.$store.state.chats) {
+        if (chat.chatId === currentChatId) {
+          console.log(chat.isBuyer)
+          console.log(chat.unReadCount)
+          this.unReadCount = chat.unReadCount
+          return chat.unReadCount !== 0;
+        }
+      }
+    },
   },
   methods: {
     connection() {
@@ -209,9 +227,7 @@ export default {
         if (chat.chatId === currentChatId) {
           console.log(chat.isBuyer)
           console.log(chat.unReadCount)
-          this.unReadCount = chat.unReadCount
-          if (chat.unReadCount===0) return false;
-          else return true;
+          chat.unReadCount=0;
         }
       }
     },
@@ -373,6 +389,7 @@ export default {
           this.$store.commit("setMyself", myInformation);
           this.$store.commit("setOther", yourInformation);
           this.$store.commit("setGoods", goodsInformation);
+          this.$store.state.key1=-this.$store.state.key1;
         }
       })
     },
@@ -393,6 +410,7 @@ export default {
       // console.log(this.chats[index].chatId);
       // this.disconnect();
       this.$store.commit("setChatId", this.$store.state.chats[index].chatId);
+      // this.setCount();
       if (!this.$store.state.chats[index].isOnce) {
         this.getHistory();
         this.$store.state.chats[index].isOnce = true;
@@ -479,11 +497,12 @@ export default {
 }
 
 .chat-info-count{
-  color: #ff0000;
+  color: #eee;
   user-select: none;
   border:1px solid;
-  border-radius:10px;
+  /*border-radius:10px;*/
   background: #ff0000;
+  border-radius:2em;
 }
 
 .chat-info-icon-wrap {

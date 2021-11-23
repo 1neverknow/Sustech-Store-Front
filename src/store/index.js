@@ -34,6 +34,7 @@ export default new Vuex.Store({
         isShowMyInfo: false,
         isShowChatterInfo: false,
         isShowSearch: false,
+        key1:-1,
 
         chatCount: 1,
         currentTabIndex: 0,
@@ -95,7 +96,7 @@ export default new Vuex.Store({
             },
         ],
         currentChatId: -1,
-        currentOnce: false,
+        // currentOnce: false,
         // linkCount:0
 
 
@@ -318,6 +319,21 @@ export default new Vuex.Store({
             state.goods.price = goodsInformation.price;
         },
         addMessage(state, data) {
+            // let temp = {
+            //     avatar:state.other.avatar,
+            //     ctn: userMsg,
+            //     nickname: state.other.nickname,
+            //     sender: false,
+            //     time: new Date(),
+            //     type: "chat"
+            // }
+            // for (let chat of state.chats) {
+            //     if (chat.chatId === state.currentChatId) {
+            //         // chat.messages = [temp].concat(chat.messages);
+            //         chat.messages.push(temp);
+            //         break;
+            //     }
+            // }
             let isIn = false
             for (let chat of this.state.chats) {
                 if (chat.chatId === data.chatId) {
@@ -343,6 +359,8 @@ export default new Vuex.Store({
                     isMute: false,
                     isOnTop: false,
                     isOnce: true,
+                    // isBuyer: ,
+                    noReadCount: 0,
                     messages: []
                 })
                 this.state.linkmans.push({
@@ -351,7 +369,7 @@ export default new Vuex.Store({
                     avatar: data.otherUserPicturePath
                 })
             }
-
+            this.state.key1=-this.state.key1;
         },
         logout(state) {
             state.token = null

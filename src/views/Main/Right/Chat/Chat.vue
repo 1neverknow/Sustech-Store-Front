@@ -2,7 +2,7 @@
   <div class="chat-wrap">
     <right-header></right-header>
     <right-goods></right-goods>
-    <right-content></right-content>
+    <right-content v-if="isReloadData"></right-content>
     <right-footer></right-footer>
   </div>
 </template>
@@ -16,6 +16,12 @@ import WebSocket from "../../../../util/websocket.js"
 
 export default {
   name: "Chat",
+  data () {
+    return {
+      // 刷新标识
+      isReloadData: true
+    }
+  },
   components: {
     RightHeader,
     RightGoods,
@@ -23,7 +29,12 @@ export default {
     RightFooter
   },
   methods: {
-
+    reload () {
+      this.isReloadData = false;
+      this.$nextTick(() => {
+        this.isReloadData = true;
+      })
+    }
   }
 
 };

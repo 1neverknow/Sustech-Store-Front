@@ -364,8 +364,10 @@ export default {
       const ctnInput = document.querySelector("#content-input");
       let ctn = handleMessage(ctnInput).trim();
       console.log( this.$store.state)
+
       stomp.send("/app/chat", {}, JSON.stringify({"body": document.querySelector("#content-input").innerHTML,"chatId": this.$store.state.currentChatId}));
-      stomp.send("app/clear", {}, JSON.stringify({'Authorization': this.$store.getters.getToken,"chatId": this.$store.state.currentChatId}))
+      this.$store.state.key1=-this.$store.state.key1;
+      // stomp.send("app/clear", {}, JSON.stringify({'Authorization': this.$store.getters.getToken,"chatId": this.$store.state.currentChatId}))
       // stomp.send("/app/chat", {}, JSON.stringify({"body": document.querySelector("#content-input").innerHTML}));
 
       if (ctn === "") {
@@ -411,7 +413,7 @@ export default {
 
 <style scoped>
 .wrap {
-  width: 701px;
+  width: 900px;
   height: 180px;
   margin-right: 19px;
   border-top: 1px solid rgb(214, 214, 214);

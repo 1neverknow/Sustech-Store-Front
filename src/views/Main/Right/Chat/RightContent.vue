@@ -7,13 +7,13 @@
     ></info-block>
     <div class="no-chat-wrap" v-if="isNoChat">
       <i class="icon icon-logo"></i>
-      <el-empty description="未选择聊天"></el-empty>
+      <el-empty description="Unselected Chat"></el-empty>
       <!--      <div class="no-chat-text">未选择聊天</div>-->
     </div>
     <div v-else>
-      <div class="no-new-message" v-if="isNoMessage">暂时没有新消息</div>
+      <div class="no-new-message" v-if="isNoMessage">There is no new information at the moment！</div>
       <div v-else>
-        <div v-for="(msg, index) in messages" :key="'msg' + index">
+        <div v-for="(msg, index) in messages" :key="key1">
           <p v-if="msg.type === 'notice'" class="msg-notice">{{ msg.ctn }}</p>
           <div v-if="msg.type === 'chat'" class="msg-chat">
             <p class="msg-notice msg-time" v-if="isShowTime(index)">
@@ -75,6 +75,9 @@ export default {
   computed: {
     isNoChat() {
       return this.$store.state.currentChatId === -1;
+    },
+    key1(){
+      return this.$store.state.key1
     },
     isNoMessage() {
       const currentChatId = this.$store.state.currentChatId;
@@ -145,10 +148,12 @@ export default {
       return sender;
     },
     time(date) {
-      const d = new Date(date);
-      const h = d.getHours() < 10 ? "0" + d.getHours() : d.getHours();
-      const m = d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes();
-      return `${d}`;
+      const y = date.getFullYear();
+      const m = date.getMonth()+1;
+      const d = date.getDate();
+      const hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+      const min = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+      return `${y}/${m}/${d} ${hour}:${min}`;
     },
     handleShowChatterInfo(event, index) {
       const { clientX: x, clientY: y } = event;
