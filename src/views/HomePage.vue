@@ -10,7 +10,7 @@
             </div>
           </div>
           <div class="user-info-list">
-            欢迎观临！！
+            {{this.$store.getters.getBasic_Info.sign}}
           </div>
         </el-card>
         <el-card >

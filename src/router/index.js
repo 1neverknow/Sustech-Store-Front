@@ -35,6 +35,7 @@ import Search from "@/views/Search"
 import Main from "@/views/Main/Main";
 import ST from "@/views/test"
 import SHP from '@/views/SearchHomePage'
+import UserComments from "@/views/UserComments";
 
 
 Vue.use(VueRouter)
@@ -102,11 +103,19 @@ const routes = [
       },
       {
         path: '/publish',
-        name: 'Publish',
+        name: 'PB',
         meta: {
           requireAuth: true
         },
         component: Publish
+      },
+      {
+        path: '/ucomments',
+        name: 'UComments',
+        meta: {
+          requireAuth: true
+        },
+        component: UserComments
       },
       {
         path: '/goods/:goodsId/edit',
