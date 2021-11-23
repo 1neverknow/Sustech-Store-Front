@@ -10,11 +10,15 @@
     <div class="goods-detail" v-else>
       <el-row class="font">
         <el-col :span="7" ><div >
-          显示图片
+          <img
+              class="avatar-img"
+              :src="goodsPicture"
+              style="width: 102.4px;height:76.8px"
+              @click="jumpGoods"
+          />
         </div></el-col>
         <el-col :span="8"><div >
-          GoodsID:
-          price:
+          Price: {{goodsPrice}}
         </div></el-col>
         <el-col :span="9"><div >
           <div class="button">
@@ -51,15 +55,26 @@ export default {
   computed:{
     isNoChat() {
       return this.$store.state.currentChatId === -1;
-    }
+    },
     // ,
     // isShowDeal(){
     //   return this.$store.state.isShowMembers;
     // }
+    goodsPicture(){
+      return this.$store.state.goods.avatar;
+    },
+    goodsPrice(){
+      return this.$store.state.goods.price;
+    }
+
   },
   methods: {
+    jumpGoods(){
+      const goodsId = this.$store.state.goods.id
+      this.$router.push('/goods/' + goodsId)
+    },
     handleClick() {
-      const goodsId = this.$store.goods.id
+      const goodsId = this.$store.state.goods.id
       this.$router.push('/deal/' + goodsId)
     }
     // // 通过路由获取商品id
