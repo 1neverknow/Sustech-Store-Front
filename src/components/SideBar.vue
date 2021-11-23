@@ -57,9 +57,9 @@
         </el-menu-item>
 
 
-        <el-menu-item index="StuEvent" >
-          <i class="el-icon-date"></i>
-          <span slot="title">Account security</span>
+        <el-menu-item index="UComments" >
+          <i class="el-icon-s-comment"></i>
+          <span slot="title">My Comments</span>
         </el-menu-item>
 
 
@@ -73,6 +73,11 @@
 <!--          <i class="el-icon-search"></i>-->
 <!--          <span slot="title">Search</span>-->
 <!--        </el-menu-item>-->
+
+        <el-menu-item index="PB" >
+          <i class="el-icon-s-release"></i>
+          <span slot="title">Publish</span>
+        </el-menu-item>
 
         <el-menu-item index="MR" >
           <i class="el-icon-s-release"></i>

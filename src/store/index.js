@@ -360,6 +360,7 @@ export default new Vuex.Store({
             sessionStorage.removeItem('basic_info')
             sessionStorage.removeItem('query_good_list')
             sessionStorage.removeItem('search_content')
+            sessionStorage.removeItem('role')
         },
         removeLoginInfo(state) {
             state.loginInfo = null
