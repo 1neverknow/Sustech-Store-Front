@@ -255,6 +255,8 @@ export default {
       for (let i in this.photos) {
         await this.uploadPicture(i)
       }
+      console.log('/goods/', this.goods.goodsId)
+      this.$router.push('/goods/' + this.goods.goodsId)
     },
     submitInfo() {
       return new Promise(resolve => {
@@ -285,8 +287,7 @@ export default {
                 message: 'Success!',
                 type: 'success',
               })
-              console.log('/goods/', this.goods.goodsId)
-              this.$router.push('/goods/' + this.goods.goodsId)
+
             })
             resolve('done');
           }
