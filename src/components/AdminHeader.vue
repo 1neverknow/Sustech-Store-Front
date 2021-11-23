@@ -45,6 +45,10 @@
           </el-menu-item>
         </el-submenu>
 
+        <el-menu-item index="Event">
+          Event
+        </el-menu-item>
+
 
       </el-menu>
     </div>

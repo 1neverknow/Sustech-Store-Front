@@ -22,6 +22,7 @@ import AdminComplainUser from "@/views/AdminComplainUser"
 import AppealingDealAll from "@/views/AppealingDealAll";
 import ComplainGoodsAll from "@/views/ComplainGoodsAll";
 import ComplainUserAll from "@/views/ComplainUserAll";
+import Event from "@/views/Event";
 import Announced from "@/views/Announced"
 import MainPage from "@/views/MainPage";
 import Account from "@/views/Account";
@@ -226,11 +227,14 @@ const routes = [
     },
     component: AppealingDealAll
 
+  },{
+    path: '/event',
+    name: 'Event',
+    meta: {
+      requireAuth: true
+    },
+    component: Event
   },
-
-
-
-
 
   // {
   //   path: '/user/collection',
