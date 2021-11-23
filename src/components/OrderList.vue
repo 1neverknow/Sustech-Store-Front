@@ -108,14 +108,12 @@
                     v-bind:queryType="dealType"
                 ></Shipment>
               </el-dialog>
-            </template>
-
-            <template v-else-if="stage===2 && dealType==='buy'">
-              <!--一键退款-->
-              <Refund
-                  @refresh="refresh"
-                  v-bind:dealId="scope.row.dealId"
-              ></Refund>
+              <template v-if="dealType==='buy'">
+                <Refund
+                    @refresh="refresh"
+                    v-bind:dealId="scope.row.dealId"
+                ></Refund>
+              </template>
             </template>
 
             <template v-else-if="stage===3">

@@ -143,6 +143,7 @@ export default {
       labelPosition: 'left',
       freeDelivery: true, // 是否包邮
       goods: {
+        goodsId: 0,
         introduce: '',
         isSell: true,
         labels: [],
@@ -182,13 +183,13 @@ export default {
         this.$router.push('/none')
         return
       }
-      this.goodsId = goodsId
+      this.goods.goodsId = goodsId
       this.getDetails()
     },
     getDetails() {
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/goods/' + this.goodsId,
+        url: 'http://localhost:8081/goods/' + this.goods.goodsId,
       })
           .then(res => {
             const productDetails = res.data.data
@@ -201,33 +202,15 @@ export default {
             this.freeDelivery = productDetails.postage === 0
           })
     },
-    // getPicture(picturePaths) {
-    //   for (let i in picturePaths) {
-    //     const photoFile = this.dataURLtoFile(picturePaths[i].path, 'pictureFile_'+i)
-    //     console.log(photoFile)
-    //     this.photos.push(photoFile)
-    //   }
-    // },
-    // dataURLtoFile(dataUrl, fileName){
-    //   var arr = dataUrl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-    //       bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-    //   while(n--){
-    //     u8arr[n] = bstr.charCodeAt(n);
-    //   }
-    //   return new File([u8arr], fileName, {type:mime});
-    // },
     changeTag(tags) {
       this.goods.tags = tags
     },
     handleRemove(file, fileList) {
-      for (let i in fileList) {
-        if (fileList[i] === file) {
-          fileList = fileList.splice(i, 1)
-          break
-        }
-      }
-      console.log(file, fileList)
-      this.photos = fileList
+      console.log('file', file, 'fileList', fileList)
+      const tmp_path = file.response
+      console.log(tmp_path)
+      const i = this.photos.findIndex(item => item.uid === file.uid)
+      this.photos.splice(i, 1)
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
@@ -276,10 +259,9 @@ export default {
     submitInfo() {
       return new Promise(resolve => {
             this.$axios.post('http://localhost:8081/goods/edit', this.goods)
-                .then((res) => {
-                  this.goodsId = res.data.data
-                  resolve('done');
-                })
+              .then((res) => {
+                resolve('done');
+              })
           }
       )
     },
@@ -292,7 +274,7 @@ export default {
             newRequest({
               method: "POST",
               url: 'http://localhost:8081/goods/upload/picture?'
-                  + 'goodsId=' + this.goodsId,
+                  + 'goodsId=' + this.goods.goodsId,
               data: photoData,
               headers: {
                 "Content-Type": "multipart/form-data",
@@ -303,7 +285,8 @@ export default {
                 message: 'Success!',
                 type: 'success',
               })
-              this.$router.push('/goods/' + this.goodsId)
+              console.log('/goods/', this.goods.goodsId)
+              this.$router.push('/goods/' + this.goods.goodsId)
             })
             resolve('done');
           }
