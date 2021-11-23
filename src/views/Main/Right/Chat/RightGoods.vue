@@ -59,8 +59,7 @@ export default {
   },
   methods: {
     handleClick() {
-      console.log('go to deal')
-      const goodsId = this.$store.state.goods.id
+      const goodsId = this.$store.goods.id
       this.$router.push('/deal/' + goodsId)
     }
     // // 通过路由获取商品id

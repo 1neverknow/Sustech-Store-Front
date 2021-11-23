@@ -213,7 +213,10 @@ export default {
             let linkmanList = []
             // console.log(toDate(data))
             let count = 0
-            data.forEach((item) => {
+            const chatHis = data.chatHistories
+            this.$store.state.myself.nickname = data.userName
+            this.$store.state.myself.avatar = data.picturePath
+            chatHis.forEach((item) => {
               if(item.lastMessageContent==null){
                 chatList.push({
                   chatId: item.chatId,
