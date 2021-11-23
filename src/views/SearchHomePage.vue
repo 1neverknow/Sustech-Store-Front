@@ -34,16 +34,16 @@
       <div class="bs-sysMsg">
         <i class="el-alert__icon el-icon-warning"></i>
         <div class="msg__content">
-          <el-carousel height="20px"  indicator-position="none" :autoplay="true">
+          <el-carousel height="20px" indicator-position="none" :autoplay="true">
             <el-carousel-item v-for="item in systemMsg" :key="item.id">
-              {{item.title}}
+              {{ item.title }}
             </el-carousel-item>
           </el-carousel>
         </div>
       </div>
 
-      <el-collapse v-model="judge" @click="judge===['1']?judge=true:judge=['1']">
-        <el-collapse-item name="1" >
+<!--      <el-collapse v-model="judge" @click="judge===['1']?judge=true:judge=['1']">-->
+<!--        <el-collapse-item name="1">-->
           <div style="margin-top: 10px">
             <el-carousel indicator-position="outside" height="500px" autoplay interval="2000">
               <el-carousel-item v-for="carousel in carousels" :key="carousels">
@@ -55,145 +55,141 @@
 
             </el-carousel>
           </div>
-        </el-collapse-item>
-      </el-collapse>
+<!--        </el-collapse-item>-->
+<!--      </el-collapse>-->
 
 
-      <div class="search_all" style="margin-top: 10px">
-        <el-form :inline="true" :model="formInline" class="demo-form-inline" ref="ruleForm"
-                 :rules="rules">
+<!--      <div class ="bottom">-->
+      <el-card style="opacity: 0.8">
+        <div class="search_all" style="margin-top: 10px">
+          <el-form :inline="true" :model="formInline" class="demo-form-inline" ref="ruleForm"
+                   :rules="rules">
 
-          <el-form-item label="Search Type">
-            <el-select v-model="formInline.region" placeholder="Search Users or Goods">
-              <el-option label="Users" value="users"></el-option>
-              <el-option label="Goods" value="goods"></el-option>
-            </el-select>
-          </el-form-item>
+            <el-form-item label="Search Type">
+              <el-select v-model="formInline.region" placeholder="Search Users or Goods">
+                <el-option label="Users" value="users"></el-option>
+                <el-option label="Goods" value="goods"></el-option>
+              </el-select>
+            </el-form-item>
 
-          <el-form-item>
-            <el-input v-model="formInline.content" placeholder="Please input the search content"></el-input>
-          </el-form-item>
+            <el-form-item>
+              <el-input v-model="formInline.content" placeholder="Please input the search content"></el-input>
+            </el-form-item>
 
-          <el-form-item>
-            <el-button type="primary" @click="onsubmit('ruleForm')">Search</el-button>
-          </el-form-item>
-        </el-form>
-
-      </div>
-
-      <div class="goods" v-show="type">
-        <el-alert
-            right
-            type="info"
-            :closable="false">
-          <template #default="title">
-            <p>asd</p>
-          </template>
-        </el-alert>
-
-
-        <el-col>
-          <el-row>
-            <div id="DailyRecom">
-              <!--     每日推荐 -->
-              <div v-for="item in list">
-                <div>
-                  <img class="img_sc" :src="item.picture_path" alt="">
-                  <p class="p_sc">
-                    {{ item.name }}
-                  </p>
-                  <p class="price_sc">
-                    {{ item.price }}
-                  </p>
-                  <p class="p_sc">
-<!--                    <el-button type="text" class="button" icon="el-icon-star-off" @click="addCollection()">添加收藏-->
-<!--                    </el-button>-->
-                    <el-button style="float: inside" type="text" class="button" icon="el-icon-goods" @click="queryGoods(item.goods_id)">Check The Details
-                    </el-button>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </el-row>
-
-          <el-row>
-            <div class="pagination" style="float: bottom"
-            >
-              <el-pagination
-                  background
-                  layout="prev, pager, next"
-                  :page-count="goodsPage"
-                  @current-change="handleGoodsCurrentChange">
-              </el-pagination>
-            </div>
-          </el-row>
-        </el-col>
-      </div>
-
-      <div class="user" v-show="!type">
-        <div v-for="item in user_list" style="margin: 10px">
-          <el-card style="opacity: 0.8">
-            <el-container>
-              <el-aside width="200px">
-                <div class="search_user_image">
-                  <router-link :to="'/user/'+item.id">
-                    <img :src="item.picturePath">
-                  </router-link>
-                </div>
-              </el-aside>
-              <el-container>
-                <el-header>
-                  <el-descriptions class="margin-top" :column="3" border>
-                    <!--                <template slot="extra">-->
-                    <!--                  <router-link to="/pi_modify">-->
-                    <!--                    <el-button type="primary" size="medium">See details</el-button>-->
-                    <!--                  </router-link>-->
-                    <!--                </template>-->
-
-                    <el-descriptions-item label-style="width:15%" content-style="width:15%">
-                      <template slot="label">
-                        <i class="el-icon-user"></i>
-                        User Name
-                      </template>
-                      {{ item.userName }}
-                    </el-descriptions-item>
-
-                    <el-descriptions-item label-style="width:15%" content-style="width:15%">
-                      <template slot="label">
-                        <i class="el-icon-message"></i>
-                        Email
-                      </template>
-                      {{ item.email }}
-                    </el-descriptions-item>
-
-                    <el-descriptions-item label-style="width:15%" content-style="width:15%">
-                      <template slot="label">
-                        <i class="el-icon-cherry"></i>
-                        Credit
-                      </template>
-                      {{ item.credit }}
-                    </el-descriptions-item>
-
-                  </el-descriptions>
-                </el-header>
-
-                <el-main>
-                  <el-row class="good_item">
-                    <div v-for="good in item.display_list">
-                      <el-col :span="180" class="im">
-                        <img :src="good.picturePath" @click="toGoods(good.goodsId)">
-                      </el-col>
-                    </div>
-                  </el-row>
-                </el-main>
-
-              </el-container>
-            </el-container>
-          </el-card>
+            <el-form-item>
+              <el-button type="primary" @click="onsubmit('ruleForm')">Search</el-button>
+            </el-form-item>
+          </el-form>
 
         </div>
 
-      </div>
+        <div class="goods" v-show="type">
+
+
+          <el-col>
+            <el-row>
+              <div id="DailyRecom">
+                <!--     每日推荐 -->
+                <div v-for="item in list">
+                  <div>
+                    <img class="img_sc" :src="item.picture_path" alt="">
+                    <p class="p_sc">
+                      {{ item.name }}
+                    </p>
+                    <p class="price_sc">
+                      {{ item.price }}
+                    </p>
+                    <p class="p_sc">
+                      <!--                    <el-button type="text" class="button" icon="el-icon-star-off" @click="addCollection()">添加收藏-->
+                      <!--                    </el-button>-->
+                      <el-button style="float: inside" type="text" class="button" icon="el-icon-goods"
+                                 @click="queryGoods(item.goods_id)">Check The Details
+                      </el-button>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </el-row>
+
+            <el-row>
+              <div class="pagination" style="float: bottom"
+              >
+                <el-pagination
+                    background
+                    layout="prev, pager, next"
+                    :page-count="goodsPage"
+                    @current-change="handleGoodsCurrentChange">
+                </el-pagination>
+              </div>
+            </el-row>
+          </el-col>
+        </div>
+
+        <div class="user" v-show="!type">
+          <div v-for="item in user_list" style="margin: 10px">
+            <el-card style="opacity: 0.8">
+              <el-container>
+                <el-aside width="200px">
+                  <div class="search_user_image">
+                    <router-link :to="'/user/'+item.id">
+                      <img :src="item.picturePath">
+                    </router-link>
+                  </div>
+                </el-aside>
+                <el-container>
+                  <el-header>
+                    <el-descriptions class="margin-top" :column="3" border>
+                      <!--                <template slot="extra">-->
+                      <!--                  <router-link to="/pi_modify">-->
+                      <!--                    <el-button type="primary" size="medium">See details</el-button>-->
+                      <!--                  </router-link>-->
+                      <!--                </template>-->
+
+                      <el-descriptions-item label-style="width:15%" content-style="width:15%">
+                        <template slot="label">
+                          <i class="el-icon-user"></i>
+                          User Name
+                        </template>
+                        {{ item.userName }}
+                      </el-descriptions-item>
+
+                      <el-descriptions-item label-style="width:15%" content-style="width:15%">
+                        <template slot="label">
+                          <i class="el-icon-message"></i>
+                          Email
+                        </template>
+                        {{ item.email }}
+                      </el-descriptions-item>
+
+                      <el-descriptions-item label-style="width:15%" content-style="width:15%">
+                        <template slot="label">
+                          <i class="el-icon-cherry"></i>
+                          Credit
+                        </template>
+                        {{ item.credit }}
+                      </el-descriptions-item>
+
+                    </el-descriptions>
+                  </el-header>
+
+                  <el-main>
+                    <el-row class="good_item">
+                      <div v-for="good in item.display_list">
+                        <el-col :span="180" class="im">
+                          <img :src="good.picturePath" @click="toGoods(good.goodsId)">
+                        </el-col>
+                      </div>
+                    </el-row>
+                  </el-main>
+
+                </el-container>
+              </el-container>
+            </el-card>
+
+          </div>
+        </div>
+      </el-card>
+<!--      </div>-->
 
     </el-main>
   </el-container>
@@ -268,8 +264,8 @@ export default {
       user_list: [],
       carousels: [],
       systemMsg: [
-        {id:1,title:'本周ooad要中期答辩！！'},
-        {id:2,title:'不要忘记体测！！'},
+        {id: 1, title: '本周ooad要中期答辩！！'},
+        {id: 2, title: '不要忘记体测！！'},
       ],
       list: [
         // {
@@ -449,8 +445,8 @@ export default {
       })
 
     },
-    toGoods(id){
-      this.$router.push('/goods/'+id)
+    toGoods(id) {
+      this.$router.push('/goods/' + id)
     }
   }
 }
@@ -458,7 +454,7 @@ export default {
 
 <style scoped>
 .main_header {
-  background-color: #a0e7fc;
+  background-color: #e2f4e5;
   color: #333;
   text-align: center;
   line-height: 60px;
@@ -520,6 +516,11 @@ export default {
   border: 1px solid #919191;
   transition: all 0.5s;
 }
+.bottom{
+  background-image: url(../assets/background1.png);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
 
 #DailyRecom > div:hover {
   border: 1px solid #ff0000;
@@ -580,8 +581,9 @@ export default {
   height: 150px;
   border: 1px red;
 }
-.im img{
-  cursor:pointer;
+
+.im img {
+  cursor: pointer;
   transition: all 0.5s;
 }
 
@@ -589,6 +591,7 @@ export default {
   border: 1px solid #ff0000;
   transform: translate(0, -10px);
 }
+
 .bs-sysMsg {
   position: relative;
   display: flex;
@@ -603,16 +606,21 @@ export default {
   align-items: center;
   transition: opacity .2s;
 }
+
 .bs-sysMsg .msg__content {
   display: table-cell;
   padding: 0 8px;
   width: 100%;
 }
+
 .bs-sysMsg .msg__content a.item {
   color: #e6a23c;
   font-size: 14px;
   opacity: 0.75;
 }
-.bs-sysMsg .msg__content a.item:hover{text-decoration: underline;}
+
+.bs-sysMsg .msg__content a.item:hover {
+  text-decoration: underline;
+}
 
 </style>
