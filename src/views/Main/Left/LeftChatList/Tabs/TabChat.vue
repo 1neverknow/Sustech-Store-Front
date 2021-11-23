@@ -126,7 +126,7 @@ export default {
           , function (frame) {
             //用户模式
             stomp.subscribe("/user/queue", function (res) {
-              let data = res.body;
+              let data = JSON.parse(res.body);
               console.log(data);
               store.commit("addMessage", data);
               // document.querySelector("#userMsg").val(res.body);
@@ -190,7 +190,6 @@ export default {
             //   // setConnect(true);
           }
       );
-      this.commit();
     },
     getChatList(){
         console.log(this.$store.getters.getToken)
@@ -210,16 +209,28 @@ export default {
           if (res.data.code === 2000) {
             const data = res.data.data
             console.log(data)
-            list=[]
+            let chatList=[]
+            let linkmanList = []
             // console.log(toDate(data))
+            let count = 0
             data.forEach((item) => {
-              console.log(item.lastMessageDate)
-              console.log( toDate(item.lastMessageDate))
-              if (toDate(item.lastMessageDate) != null) {
-                let chatList = {
+              if(item.lastMessageContent==null){
+                chatList.push({
                   chatId: item.chatId,
-                  linkmanIndex: 0,
-                  linkmanId: item.otherUserId,
+                  linkmanIndex: count,
+                  linkmanId: item.chatId,
+                  isMute: false,
+                  isOnTop: false,
+                  isOnce: false,
+                  messages: []
+                  // address: item.addressName,
+                  // type:item.isDefault==='null'?'Normal':'Default'
+                })
+              }else {
+                chatList.push({
+                  chatId: item.chatId,
+                  linkmanIndex: count,
+                  linkmanId: item.chatId,
                   isMute: false,
                   isOnTop: false,
                   isOnce: false,
@@ -231,36 +242,28 @@ export default {
                       time: toDate(item.lastMessageDate),
                       type: "chat"
                     }
-                  ],
+                  ]
                   // address: item.addressName,
                   // type:item.isDefault==='null'?'Normal':'Default'
-                }
-                console.log(chatList)
-                list.push(chatList)
-              }else{
-                let chatList = {
-                  chatId: item.chatId,
-                  linkmanIndex: 0,
-                  linkmanId: item.otherUserId,
-                  isMute: false,
-                  isOnTop: false,
-                  isOnce: false,
-                  messages:
-                    {
-                      avatar: item.otherUserPicturePath,
-                      nickname: item.otherUserName.toString(),
-                      ctn: "",
-                      time: "",
-                      type: "chat"
-                    }
-                }
-                console.log(chatList)
-                this.$store.commit("addChat",chatList)
+                })
               }
+              linkmanList.push({
+                id: chatList.chatId,
+                // type: "A",
+                nickname: item.otherUserName.toString(),
+                avatar: item.otherUserPicturePath
+              })
+              count++
               // this.$store.commit("setChatId", item.dealId);
             })
-            this.$store.commit("setInitialChatList", list);
-
+            this.$store.state.linkmans = linkmanList
+            this.$store.state.chats = chatList
+            console.log("#####################")
+            console.log(linkmanList)
+            console.log(chatList)
+            // for (let item = 0;item<chatList.length;item++){
+            //   this.handleChangeChat(item);
+            // }
           } else {
             this.$alert(res.data.message, 'Tip', {
               confirmButtonText: 'OK'
@@ -271,7 +274,7 @@ export default {
     getHistory() {
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/chat/history/' + this.currentChatId,
+        url: 'http://localhost:8081/chat/history/' + this.$store.state.currentChatId,
         headers: {'authorization': this.$store.getters.getToken},
         transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
           let ret = '';
@@ -367,7 +370,7 @@ export default {
       // setConnect(false);
     },
     commit() {
-      this.$store.commit("setInitialChatList", list);
+      // this.$store.commit("setInitialChatList", list);
       // this.$store.commit("setCurrentOnce", true);
     },
 
@@ -379,7 +382,7 @@ export default {
       // this.disconnect();
       this.$store.commit("setChatId", this.chats[index].chatId);
       this.$store.commit("setCurrentOnce");
-      if (!this.state.currentOnce) {
+      if (!this.$store.state.currentOnce) {
         this.getHistory();
         this.$store.commit("changeCurrentOnce");
       }

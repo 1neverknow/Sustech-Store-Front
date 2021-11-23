@@ -4,6 +4,7 @@ import avatar from "../assets/default.png";
 import group from "../assets/default_group.png";
 import user from "../assets/user.jpeg";
 import el from "element-ui/src/locale/lang/el";
+import {toDate} from "element-ui/src/utils/date-util";
 
 Vue.use(Vuex)
 
@@ -323,7 +324,7 @@ export default new Vuex.Store({
             console.log(chatList.messages.nickname)
 
             let linkman= {
-                id: chatList.linkmanId,
+                id: chatList.chatId,
                 // type: "A",
                 nickname: chatList.messages.nickname,
                 avatar:chatList.messages.avatar
@@ -335,60 +336,23 @@ export default new Vuex.Store({
             console.log(this.state.linkmans)
             // state.chatCount += 1;
         },
-        setInitialChatList(state, chatList) {
-            console.log(chatList.length)
-            console.log("#####################")
-            let count=-1;
-            for (let item of chatList) {
-                let linkman= {
-                    id: item.linkmanId,
-                    nickname: item.messages.nickname,
-                    avatar:item.messages.avatar
-                }
-                this.state.linkmans.push(linkman)
-            }
-            for (let item of this.state.linkmans) {
-                if (chatList.linkmanId===item.id){
-                    break;
-                }
-                count++;
-            }
-            for (let i = 0; i < chatList.length; i++) {
-                console.log('fuck')
-                let list = chatList[i];
-                list.linkmanIndex=count;
-                // let chatId=list.chatId;
-                // state.currentTabIndex = 0;
-                // state.currentRight = 0;
-                // console.log(list)
-                // for (let i = 0; i < state.chats.length; i++) {
-                //     let chat = state.chats[i];
-                //     // let temp=chat.messages;
-                //     if (chat.chatId === chatId) {
-                //         // console.log(chat.messages)
-                //         chat.messages.push(list.messages)
-                //         // console.log(chat.messages)
-                //         // chat.messages.push();
-                //         // state.chats = [chat].concat(state.chats);
-                //         // state.currentChatId=chatId;
-                //         break;
-                //     }
-                // }
-                state.chats = [list].concat(state.chats);
-                // state.currentChatId=chatId;
-                // console.log(state.chats)
-            }
-            console.log(state.chats)
-        },
+        // setInitialChatList(state, list) {
+        //     this.state.linkmans = list[1]
+        //     this.state.chats = list[0]
+        //     console.log("#####################")
+        //     console.log(this.state.linkmans)
+        //     console.log(state.chats)
+        // },
         setInitialHistory(state, subscribeMsg) {
 
             console.log("History")
             console.log(subscribeMsg);
             for (let chat of state.chats) {
                 if (chat.chatId === state.currentChatId) {
-                    for (let msg of subscribeMsg) {
-                        chat.messages = [msg].concat(chat.messages);
-                    }
+                    chat.messages = subscribeMsg.reverse()
+                    // for (let msg of subscribeMsg) {
+                    //     chat.messages = [msg].concat(chat.messages);
+                    // }
                     // chat.messages.push(msg);
                     break;
                 }
@@ -409,21 +373,39 @@ export default new Vuex.Store({
             state.goods.avatar = goodsInformation.avatar;
             state.goods.price = goodsInformation.price;
         },
-        addMessage(state, userMsg) {
-            let temp = {
-                avatar: state.other.avatar,
-                ctn: userMsg,
-                nickname: state.other.nickname,
-                sender: false,
-                time: new Date(),
-                type: "chat"
-            }
-            for (let chat of state.chats) {
-                if (chat.chatId === state.currentChatId) {
+        addMessage(state, data) {
+            let isIn = false
+            for (let chat of this.state.chats) {
+                if (chat.chatId === data.chatId) {
                     // chat.messages = [temp].concat(chat.messages);
-                    chat.messages.push(temp);
+                    chat.messages.push({
+                        avatar: this.state.linkmans[chat.linkmanIndex].avatar,
+                        ctn: data.body,
+                        nickname: this.state.linkmans[chat.linkmanIndex].nickname,
+                        sender: false,
+                        time: toDate(data.date),
+                        type: "chat"
+                    });
+                    isIn = true
                     break;
                 }
+            }
+            console.log(this.state.chats)
+            if(!isIn){
+                this.state.chats.push({
+                    chatId: data.chatId,
+                    linkmanIndex: this.state.linkmans.length,
+                    linkmanId:data.chatId,
+                    isMute: false,
+                    isOnTop: false,
+                    isOnce: true,
+                    messages: []
+                })
+                this.state.linkmans.push({
+                    id: data.chatId,
+                    nickname: data.otherUserName,
+                    avatar: data.otherUserPicturePath
+                })
             }
 
         },
