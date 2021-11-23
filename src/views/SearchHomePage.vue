@@ -414,7 +414,7 @@ export default {
                 res.data.data.forEach(item => {
                   this.$axios({
                     method: 'get',
-                    url: 'http://localhost:8081/user/announceGoods/' + item.userId + '/0',
+                    url: 'http://localhost:8081/user/announceGoods/' + item.userId + '/2',
                   }).then(res => {
                     if (res.data.code === 2000) {
                       res.data.data.forEach(good => {

@@ -93,7 +93,7 @@ const routes = [
       },
       {
         path: '/user/announced',
-        name: 'Announced',
+        name: 'MR',
         meta: {
           requireAuth: true
         },

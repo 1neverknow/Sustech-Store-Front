@@ -188,7 +188,7 @@ export default {
 
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/user/announceGoods/' + this.userId + '/0',
+        url: 'http://localhost:8081/user/announceGoods/' + this.userId + '/2',
       }).then(res => {
         if (res.data.code === 2000) {
           console.log(res.data.data)
