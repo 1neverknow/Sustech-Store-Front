@@ -171,8 +171,8 @@ export default {
   background-image: url("../assets/imgs/bg.jpg");
   background-color: #f5f5f5;
   margin-top: -3%;
-  margin-left: -2.5%;
-  width: 105%
+  /*margin-left: -2.5%;*/
+  width: 100%
 }
 .collection .collection-header {
   background-color: #fff;

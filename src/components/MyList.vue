@@ -3,7 +3,7 @@
 <template>
   <div id="list" class="myList">
     <el-row class="goods-list">
-      <ul style="list-style: none">
+      <ul style="list-style: none; margin-top: -10px">
         <!--      productID是商品编号！-->
         <li
             v-for="(item,index) in showList"
@@ -30,7 +30,7 @@
                   :to="{path: '/goods/'+ item.goodsId}"
                   class="router-link-active">
                 <img
-                    style="width: 120px; height: 120px; text-align: center"
+                    style="padding-top: 10px;width: 120px; height: 120px; text-align: center"
                     :src="item.picture"
                 >
                 <h2>{{item.title}}</h2>
@@ -55,41 +55,41 @@
             </div>
           </template>
           <template v-else class="offGoods">
-            <template v-if="type==='collection'">
-              <el-popconfirm
-                  confirm-button-text="OK"
-                  cancel-button-text="No, Thanks"
-                  icon="el-icon-question"
-                  icon-color="red"
-                  title="Are you sure to remove this goods?"
-                  @confirm="confirmDelete(item.goodsId)"
-              >
-                <i class="el-icon-close delete" slot="reference" v-show="true"></i>
-              </el-popconfirm>
-            </template>
-            <!--        点击后跳转至商品详情-->
-            <div>
-              <router-link
-                  :to="{path: '/goods/'+ item.goodsId}"
-                  class="router-link-active">
-                <img
-                    style="width: 120px; height: 120px; text-align: center"
-                    :src="item.picture"
+              <template v-if="type==='collection'">
+                <el-popconfirm
+                    confirm-button-text="OK"
+                    cancel-button-text="No, Thanks"
+                    icon="el-icon-question"
+                    icon-color="red"
+                    title="Are you sure to remove this goods?"
+                    @confirm="confirmDelete(item.goodsId)"
                 >
-                <h2>{{item.title}}</h2>
-                <h4></h4>
-                <p>
-                  <span>￥{{item.price}}</span>
-                </p>
-              </router-link>
-              <el-alert
-                  title="off shelves"
-                  type="error"
-                  center show-icon
-                  :closable="false"
-              ></el-alert>
-            </div>
-          </template>
+                  <i class="el-icon-close delete" slot="reference" v-show="true"></i>
+                </el-popconfirm>
+              </template>
+              <!--        点击后跳转至商品详情-->
+              <div>
+                <router-link
+                    :to="{path: '/goods/'+ item.goodsId}"
+                    class="router-link-active">
+                  <img
+                      style="width: 120px; height: 120px; text-align: center"
+                      :src="item.picture"
+                  >
+                  <h2>{{item.title}}</h2>
+                  <h4></h4>
+                  <p>
+                    <span>￥{{item.price}}</span>
+                  </p>
+                </router-link>
+                <el-alert
+                    title="off shelves"
+                    type="error"
+                    center show-icon
+                    :closable="false"
+                ></el-alert>
+              </div>
+            </template>
         </li>
       </ul>
     </el-row>
@@ -150,26 +150,6 @@ export default {
       this.editVisible = value
     },
   },
-  // mounted() {
-  //   this.queryInfo.total = this.total
-  //   console.log('mounted show list')
-  //   this.loadShowList()
-  // },
-  // watch: {
-  //   'list': function(newVal, oldVal) {
-  //     this.loadShowList()
-  //   },
-  //   'offlist': function(newVal, oldVal) {
-  //     this.loadShowList()
-  //   },
-  //   'queryInfo.pagenum': function (newVal, oldVal) {
-  //     this.loadShowList()
-  //   },
-  //   'queryInfo.pagesize': function (newVal, oldVal) {
-  //     this.loadShowList()
-  //   }
-  // },
-
 }
 </script>
 
@@ -181,12 +161,18 @@ export default {
   width: 234px;
   height: 280px;
   padding: 10px 0;
-  margin: 0 0 14.5px 50px;
-  background-color: white;
+  margin: 20px 0 15px 50px;
   -webkit-transition: all 0.2s linear;
   transition: all 0.2s linear;
   position: relative;
+
+  border-radius: 20px;
+  -moz-box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1), 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1), 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1), 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  background-color: #fff;
 }
+
 .myList ul li:hover {
   z-index: 2;
   -webkit-box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
