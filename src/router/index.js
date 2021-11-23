@@ -114,7 +114,7 @@ const routes = [
           requireAuth: true
         },
         component: EditGoods
-      }
+      },
     ]
   },
   {

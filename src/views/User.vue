@@ -85,7 +85,7 @@
           <!--     每日推荐 -->
           <div v-for="item in display_goods" @click="queryGoods(item.goodsId)">
             <div>
-              <img class="img_sc" :src="item.picture_path" alt="">
+              <img class="img_sc" :src="item.picturePath" alt="">
               <p class="p_sc">
                 ¥{{ item.price }}   {{ item.title }}
               </p>
@@ -120,7 +120,6 @@ export default {
   name: "User",
   data() {
     return {
-
       userId: '',
       user_name: '',
       phone: '',
@@ -168,7 +167,6 @@ export default {
             + this.userId,
       }).then(res => {
         if (res.data.code === 2002) {
-          console.log("denglu")
           this.$router.push('/')
         } else if (res.data.code === 2001) {
           console.log(1)
@@ -198,6 +196,7 @@ export default {
             this.goods.push(good)
             if(this.display_goods.length<12){
               this.display_goods.push(good)
+              console.log(good)
             }
           })
           this.goodsPage = Math.ceil(this.goods.length/12)

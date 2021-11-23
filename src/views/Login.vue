@@ -202,6 +202,18 @@ export default {
     getBasicInfo() {
       this.$axios({
         method: 'get',
+        url: 'http://localhost:8081/admin/appealing/allDeal',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(res => {
+        if(res.data.code === 2000){
+          this.$store.commit('SET_ROLE','管理员')
+        }
+      })
+
+      this.$axios({
+        method: 'get',
         url: 'http://localhost:8081/user/me',
         headers: {
           'Content-Type': 'application/json',

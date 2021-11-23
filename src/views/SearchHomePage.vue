@@ -21,7 +21,7 @@
         <div class="have-login" v-if="this.$store.getters.getToken!==null">
           <div class="user-image">
             <router-link to="/" style="text-decoration: none">
-              <img :src="'http://localhost:8081/'+ this.$store.getters.getBasic_Info.picturePath"/>
+              <img :src=" this.$store.getters.getBasic_Info.picturePath"/>
             </router-link>
 
           </div>
@@ -106,9 +106,9 @@
                     {{ item.price }}
                   </p>
                   <p class="p_sc">
-                    <el-button type="text" class="button" icon="el-icon-star-off" @click="addCollection()">添加收藏
-                    </el-button>
-                    <el-button type="text" class="button" icon="el-icon-goods" @click="queryGoods(item.goods_id)">查看详情
+<!--                    <el-button type="text" class="button" icon="el-icon-star-off" @click="addCollection()">添加收藏-->
+<!--                    </el-button>-->
+                    <el-button style="float: inside" type="text" class="button" icon="el-icon-goods" @click="queryGoods(item.goods_id)">Check The Details
                     </el-button>
                   </p>
                 </div>
@@ -228,7 +228,7 @@ export default {
           res.data.data.forEach(item => {
             this.list.push({
               goods_id: item.goodsId,
-              picture_path: 'http://localhost:8081/' + item.picturePath,
+              picture_path: item.picturePath,
               price: '¥' + item.price,
               name: item.title
             })
@@ -426,7 +426,7 @@ export default {
 
                   let search_user = {
                     userName: item.userName,
-                    picturePath: 'http://localhost:8081/' + item.picturePath,
+                    picturePath: item.picturePath,
                     email: item.email,
                     credit: item.credit,
                     id: item.userId,

@@ -23,7 +23,7 @@
               <el-dropdown-item command="user">
                 <router-link to="/account" style="text-decoration: none">Account Page</router-link>
               </el-dropdown-item>
-              <el-dropdown-item divided command="loginout">Log out</el-dropdown-item>
+              <el-dropdown-item divided command="" @click.native="logout()">Log out</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -41,14 +41,33 @@ export default {
   mounted() {
     console.log("test3")
     console.log(this.$store.getters.getBasic_Info)
-    this.imageUrl = 'http://localhost:8081/' + this.$store.getters.getBasic_Info.picturePath
+    this.imageUrl = this.$store.getters.getBasic_Info.picturePath
   },
   data () {
     return {
       imageUrl : ''
     }
   },
-  methods (){
+  methods :{
+    logout() {
+      this.$confirm('Are you sure to Log out?', 'Tips', {
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+        this.$store.commit('logout')
+        this.$message({
+          type: 'success',
+          message: 'You have successfully log out'
+        });
+        this.$router.push("/login")
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'You have Cancel the operation'
+        });
+      });
+    }
   }
 }
 </script>

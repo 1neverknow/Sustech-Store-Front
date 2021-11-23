@@ -13,6 +13,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         token: localStorage.getItem('token'),
+        role:'',
         // 后端发送过来的用户信息
         // userInfo: JSON.parse(localStorage.getItem('userInfo')),
         userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
@@ -140,6 +141,10 @@ export default new Vuex.Store({
         SET_SEARCH_CONTENT: (state, content) => {
             state.search_content = content
             sessionStorage.setItem('search_content', content)
+        },
+        SET_ROLE: (state, content) => {
+            state.role = content
+            sessionStorage.setItem('role', content)
         },
         // SET_State: (state) => {
         //     state.state = '已搜索'
@@ -349,6 +354,7 @@ export default new Vuex.Store({
             state.basic_info = {}
             state.query_good_list = []
             state.search_content = []
+            state.role = ''
             localStorage.removeItem('token')
             sessionStorage.removeItem('userInfo')
             sessionStorage.removeItem('basic_info')
@@ -384,6 +390,9 @@ export default new Vuex.Store({
         getContent: state => {
             return state.search_content
         },
+        getRole: state =>{
+            return state.role
+        }
         // getState: state =>{
         //     return state.state
         // }

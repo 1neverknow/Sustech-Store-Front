@@ -175,7 +175,7 @@ export default {
       edit_image: false,
       dialogImageUrl: '',
       dialogVisible: false,
-      imageUrl : 'http://localhost:8081/' + this.$store.getters.getBasic_Info.picturePath,
+      imageUrl :  this.$store.getters.getBasic_Info.picturePath,
 
       ME_form: {
         old_email: '208347209@qq.com',
@@ -253,7 +253,7 @@ export default {
       if(this.BI_form.image_path!=='')
         formData.append('photo', this.BI_form.image_path);
       else formData.append('photo',null)
-      this.$axios({
+      axios.create()({
         method: 'post',
         url: 'http://localhost:8081/user/upload/face',
         headers: {
@@ -261,18 +261,11 @@ export default {
           'Content-Type': 'multipart/form-data'
         },
         data: formData,
-        transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
-          var ret = '';
-          for (var it in data) {
-            // 如果要发送中文 编码
-            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-          }
-          return ret.substring(0, ret.length - 1)
-        }]
       }).then(res => {
         console.log(res)
         if (res.data.code === 2000) {
           this.getBasicInfo()
+          console.log("更改图片成功")
         }
       })
     },
