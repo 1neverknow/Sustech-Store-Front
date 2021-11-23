@@ -363,7 +363,8 @@ export default {
       // stomp.send("/app/chat", {}, JSON.stringify({"body":document.querySelector("#content-input")}));
       const ctnInput = document.querySelector("#content-input");
       let ctn = handleMessage(ctnInput).trim();
-      stomp.send("/app/chat", {}, JSON.stringify({"body": document.querySelector("#content-input").innerHTML,"chatId": this.currentChatId}));
+      console.log( this.$store.state)
+      stomp.send("/app/chat", {}, JSON.stringify({"body": document.querySelector("#content-input").innerHTML,"chatId": this.$store.state.currentChatId}));
       // stomp.send("/app/chat", {}, JSON.stringify({"body": document.querySelector("#content-input").innerHTML}));
 
       if (ctn === "") {
