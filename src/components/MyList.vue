@@ -116,8 +116,8 @@ export default {
                 message: 'Remove successfully',
                 type: 'success',
               })
+              this.$emit('refresh')
             })
-        this.$emit('refresh')
       } else if (this.type === 'announcement') {
         this.$axios.delete("http://localhost:8081/goods/delete?goodsId=" + goodsId)
             .then(res => {
@@ -125,8 +125,8 @@ export default {
                 message: 'Remove successfully',
                 type: 'success',
               })
+              this.$emit('refresh')
             })
-        this.$emit('refresh')
       }
     },
     handleSizeChange(newSize) {
