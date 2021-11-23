@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     jumpGoods(){
-      const goodsId = this.$store.state.chats[this.$store.state.currentChatId]
+      const goodsId = this.$store.state.goods.id
       this.$router.push('/goods/' + goodsId)
     },
     handleClick() {
