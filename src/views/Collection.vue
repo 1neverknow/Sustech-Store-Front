@@ -16,9 +16,9 @@
 <!--      有收藏物品-->
       <div v-if="collectList.length > 0">
         <MyList
-            v-bind:total="total"
             v-bind:type="'collection'"
-            v-bind:list="collectList"
+            v-bind:showList="showList"
+            @refresh="refresh"
         ></MyList>
       </div>
 <!--      收藏列表为空-->
@@ -28,7 +28,22 @@
         </div>
       </div>
     </el-card>
-    <el-footer></el-footer>
+    <el-footer class="footer">
+      <!-- 分页区域 -->
+      <el-pagination
+          class="pagination"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="queryInfo.pagenum"
+          :page-sizes="[4, 8, 12, 16]"
+          :page-size="queryInfo.pagesize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="queryInfo.total"
+          style="float:right;"
+          background
+      >
+      </el-pagination>
+    </el-footer>
   </div>
 </template>
 
@@ -40,7 +55,12 @@ export default {
   data() {
     return {
       collectList: [],
-      total: 0,
+      showList: [],
+      queryInfo: {
+        pagenum: 1,
+        pagesize: 8,
+        total: 0,
+      },
     }
   },
   methods: {
@@ -48,11 +68,13 @@ export default {
       this.getCollectList()
     },
     getCollectList() {
+      this.collectList = []
+      this.showList = []
       console.log('get collection list')
       this.$axios.get('http://localhost:8081/user/collection')
         .then(res => {
           const collection_data = res.data.data
-          this.total = collection_data.length
+          this.queryInfo.total = collection_data.length
           for (let i in collection_data) {
             const item = collection_data[i]
             this.collectList.push({
@@ -67,11 +89,41 @@ export default {
               isSell: item.isSell
             })
           }
+          this.loadShowList()
         })
     },
+    loadShowList() {
+      this.showList = []
+      let fromIdx = (this.queryInfo.pagenum - 1) * this.queryInfo.pagesize
+      let toIdx = fromIdx + this.queryInfo.pagesize
+      console.log('from', fromIdx, 'to', toIdx)
+      if (this.queryInfo.total < toIdx) {
+        toIdx = this.queryInfo.total
+      }
+      for (let i = fromIdx; i < toIdx; i++) {
+        console.log(this.collectList[i])
+        this.showList.push(this.collectList[i])
+      }
+    },
+    handleSizeChange(newSize) {
+      this.queryInfo.pagesize = newSize
+      this.loadShowList()
+    },
+    handleCurrentChange(newPage) {
+      this.queryInfo.pagenum = newPage
+      this.loadShowList()
+    },
+    refresh() {
+      this.getCollectList()
+    }
   },
   mounted() {
     this.activate()
+  },
+  watch: {
+    'collectList': function(newVal, oldVal) {
+      this.loadShowList()
+    },
   }
 }
 </script>
@@ -143,6 +195,13 @@ export default {
 .collection .collect-empty .empty p {
   margin: 0 0 20px;
   font-size: 20px;
+}
+.collection .footer {
+  margin-top: 50px;
+  margin-right: 50px;
+  margin-bottom: 50px;
+  text-align: right;
+  /*float: right;*/
 }
 /* 收藏列表为空的时候显示的内容CSS END */
 </style>

@@ -3,7 +3,7 @@
     <el-container>
       <el-header class="page-header">
         <div class="title">
-          <p>{{title}}</p>
+          <p style="margin-left: 5%">{{title}}</p>
           <div class="list">
             <ul>
               <li><router-link to="/">Homepage</router-link></li>
@@ -13,12 +13,25 @@
                 @click="toUserpage($store.getters.getUser.userId)"
               >User Page
               </el-button></li>
-              <li><el-button
-                  type="text"
-                  class="route-btn"
-                  @click="changeComplainVisible(true)"
-              >Complain this goods
-              </el-button></li>
+              <li>
+                <template v-if="goodsState===0">
+                  <el-button
+                      type="text"
+                      class="route-btn"
+                      @click="changeComplainVisible(true)"
+                  >Complain this goods
+                  </el-button>
+                </template>
+                <template v-else>
+                  <el-button
+                      type="text"
+                      class="route-btn"
+                      @click="changeComplainVisible(true)"
+                      disabled
+                  >Complain this goods
+                  </el-button>
+                </template>
+              </li>
             </ul>
           </div>
         </div>
@@ -34,11 +47,12 @@
             v-bind:id="goodsId"
         ></ComplaintForm>
       </el-dialog>
-      <el-main class="main">
-        <el-row>
+
+      <div class="main">
+        <el-card class="main-content-wrap">
           <!--左侧商品图-->
-            <div class="block">
-            <el-carousel height="560px" style="margin-left: 30px; ">
+          <div class="block">
+            <el-carousel height="560px" style="margin-left: 10%; ">
               <el-carousel-item v-for="item in picturePath" :key="item.id">
                 <el-image
                     style="height: 500px; margin-top: 50px;"
@@ -48,54 +62,66 @@
               </el-carousel-item>
             </el-carousel>
 
-              <el-tag
-                  v-for="item in labels"
-                  :key="item.id"
-                  :disable-transitions="false"
-                  effect="dark"
-                  type="success"
-                  class="tags"
-              >
-                ● {{ item }}
-              </el-tag>
+            <el-tag
+                v-for="item in labels"
+                :key="item.id"
+                :disable-transitions="false"
+                effect="dark"
+                type="success"
+                class="tags"
+            >
+              ● {{ item }}
+            </el-tag>
           </div>
-
-          <!--      右侧内容区-->
-            <div class="content">
-              <h1 class="name">{{title}}</h1>
-              <p class="intro">{{introduce}}</p>
-              <p class="announce">
-                <span class="name">{{announcer.userName}}</span>
-                <span class="time">
-                  --
-                Announced in {{announceTime}}
-                </span>
-              </p>
-              <div class="price">
-                <span>￥{{price}}</span>
+          <!--右侧内容区-->
+          <div class="content">
+            <h1 class="name">{{title}}</h1>
+            <p class="intro">{{introduce}}</p>
+            <p class="announce">
+              <span class="name">{{announcer.userName}}</span>
+              <span class="time">
+                --
+              Announced in {{announceTime}}
+              </span>
+            </p>
+            <div class="price">
+              <span>￥{{price}}</span>
+            </div>
+            <template v-if="goodsState === 1">
+              <el-col :offset="12" :sm="18" :lg="10"
+                      style="margin-top: -43%;"
+              >
+                <el-result
+                    icon="error"
+                    title="Sold-Out"
+                    sub-title="The goods had been off shelves!"
+                >
+                </el-result>
+              </el-col>
+            </template>
+            <!--              这一部分改成announcer信息-->
+            <!--              avatar，信誉分，性别，name，id-->
+            <div class="announcer-info">
+              <el-avatar class="announcer-avatar" :size="40" :src="'http://localhost:8081/' + announcer.avatar"></el-avatar>
+              <span>
+                <router-link class="announcer-name" :to="{path: '/user/' + announcer.userId}">{{announcer.userName}}</router-link>
+              </span>
+              <span class="gender">
+                {{announcer.gender}}
+              </span>
+              <span class="UID">
+                  <span>UID: {{announcer.userId}}</span>
+              </span>
+              <div class="credit">
+                Sustech credit: {{announcer.credits}}
               </div>
-<!--              这一部分改成announcer信息-->
-<!--              avatar，信誉分，性别，name，id-->
-              <div class="announcer-info">
-                <el-avatar class="announcer-avatar" :size="40" :src="'http://localhost:8081/' + announcer.avatar"></el-avatar>
-                <span>
-                  <router-link class="announcer-name" :to="{path: '/user/' + announcer.userId}">{{announcer.userName}}</router-link>
-                </span>
-                <span class="gender">
-                  {{announcer.gender}}
-                </span>
-                <span class="UID">
-                    <span>UID: {{announcer.userId}}</span>
-                </span>
-                <div class="credit">
-                  Sustech信誉{{announcer.credits}}
-                </div>
-                <div class="sign">
-                  " {{announcer.sign}} "
-                </div>
+              <div class="sign">
+                " {{announcer.sign}} "
               </div>
-              <!--      内容区底部按钮-->
-              <div class="button">
+            </div>
+            <!--      内容区底部按钮-->
+            <div class="button">
+              <template v-if="goodsState === 0">
                 <el-button
                     class="buy"
                     icon="el-icon-goods"
@@ -103,56 +129,80 @@
                     @click="wantIt"
                 >I Want This
                 </el-button>
-                <template v-if="!inCollection">
-                  <el-button
-                      class="like"
-                      icon="el-icon-star-off"
-                      @click="addCollect"
-                  >Add to Collection
-                  </el-button>
-                </template>
-                <template v-else>
-                  <el-button
-                      class="like"
-                      icon="el-icon-star-on"
-                      @click="removeFromCollection"
-                  >Remove from Collection
-                  </el-button>
-                </template>
-              </div>
-              <div class="pro-policy">
-                <ul>
-                  <li>
-                    <i class="el-icon-circle-check"></i> {{want}} people want
-                  </li>
-                  <li>
-                    <i class="el-icon-view"></i> {{view}} views
-                  </li>
-                </ul>
-              </div>
-            </div>
-        </el-row>
+              </template>
+              <template v-else>
+                <el-button
+                    class="buy"
+                    icon="el-icon-goods"
+                    :disabled="state"
+                    @click="wantIt"
+                    disabled
+                >I Want This
+                </el-button>
+              </template>
 
-        <el-collapse v-model="activeNames" class="collapse">
-          <el-collapse-item name="1" style="margin-left: 10%;">
-            <template #title >
-              <h2 style="margin-right: 10px">Comments </h2>
-              <i class="header-icon el-icon-info"></i>
-            </template>
-            <GoodsComment
-                @refresh="refreshComment"
-                v-bind:goodsId="goodsId"
-                v-bind:comments="comments"
-            ></GoodsComment>
-          </el-collapse-item>
-          <el-collapse-item name="2" style="margin-left: 10%;">
-            <template #title>
-              <h2 style="margin-right: 10px">More </h2>
-              <i class="header-icon el-icon-search"></i>
-            </template>
-          </el-collapse-item>
-        </el-collapse>
-      </el-main>
+              <template v-if="!inCollection && goodsState === 0">
+                <el-button
+                    class="like"
+                    icon="el-icon-star-off"
+                    @click="addCollect"
+                >Add to Collection
+                </el-button>
+              </template>
+              <template v-else-if="!inCollection && goodsState === 1">
+                <el-button
+                    class="like"
+                    icon="el-icon-star-off"
+                    @click="addCollect"
+                    disabled
+                >Add to Collection
+                </el-button>
+              </template>
+              <template v-else>
+                <el-button
+                    class="like"
+                    icon="el-icon-star-on"
+                    @click="removeFromCollection"
+                >Remove from Collection
+                </el-button>
+              </template>
+            </div>
+            <div class="pro-policy">
+              <ul>
+                <li>
+                  <i class="el-icon-circle-check"></i> {{want}} people want
+                </li>
+                <li>
+                  <i class="el-icon-view"></i> {{view}} views
+                </li>
+              </ul>
+            </div>
+          </div>
+        </el-card>
+
+        <div class="footer">
+          <el-collapse v-model="activeNames" class="collapse">
+            <el-collapse-item name="1">
+              <template #title >
+                <h2 style="margin-right: 10px; padding-left: 10%">Comments </h2>
+                <i class="header-icon el-icon-info"></i>
+              </template>
+              <GoodsComment
+                  @refresh="refreshComment"
+                  v-bind:goodsId="goodsId"
+                  v-bind:goodsState="goodsState"
+                  v-bind:comments="comments"
+              ></GoodsComment>
+            </el-collapse-item>
+            <el-collapse-item name="2">
+              <template #title>
+                <h2 style="margin-right: 10px; padding-left: 10%">More </h2>
+                <i class="header-icon el-icon-search"></i>
+              </template>
+            </el-collapse-item>
+          </el-collapse>
+        </div>
+      </div>
     </el-container>
   </div>
 </template>
@@ -181,7 +231,7 @@ export default {
       want: '',  // “我想要”的人数,
       announceTime: '',
       view: '',
-      stage: 0,
+      goodsState: 0,
       activeNames: '1',
       inCollection: false,
       complainVisible: false,
@@ -216,6 +266,7 @@ export default {
         this.view = productDetails.view
         this.want = productDetails.want
         this.announceTime = productDetails.announceTime
+        this.goodsState = productDetails.goodsState
         this.getComments(this.goodsId)
         this.checkCollection(this.goodsId)
       })
@@ -402,13 +453,24 @@ export default {
 
 /* 主要内容CSS */
 #details .main {
+  background-image: url("../assets/imgs/bg.jpg");
   width: 100%;
   margin-top: -30px;
 }
+#details .main .main-content-wrap {
+  margin-top: -50px;
+  margin-left: 5%;
+  /*background-color: whitesmoke;*/
+  width: 90%;
+  background: rgba(255, 255, 255, 0.85);
+}
+
 #details .main .block {
   float: left;
-  margin-left: 150px;
+  margin-left: 5%;
   margin-top: 50px;
+
+  margin-bottom: 100px;
   width: 560px;
   height: 560px;
 }
@@ -427,24 +489,25 @@ export default {
 
 #details .main .content {
   float: right;
-  margin-right: 150px;
+  margin-right: 5%;
   margin-top: 50px;
   width: 640px;
 }
 #details .main .content .name {
+  padding-top: 2%;
   height: 30px;
   line-height: 30px;
-  font-size: 30px;
+  font-size: 40px;
   font-weight: normal;
   color: #212121;
 }
 #details .main .content .intro {
   color: #b0b0b0;
-  padding-top: 10px;
+  /*padding-top: 10px;*/
   margin: auto;
 }
 #details .main .content .announce {
-  padding-top: 10px;
+  /*padding-top: 10px;*/
 }
 #details .main .content .announce .name {
   font-size: 17px;
@@ -459,7 +522,7 @@ export default {
   font-size: 18px;
   color: #ff6700;
   border-bottom: 1px solid #e0e0e0;
-  padding: 25px 0 25px;
+  padding: 15px 0 25px;
 }
 #details .main .content .price .del {
   font-size: 14px;
@@ -545,8 +608,11 @@ export default {
   /*margin: auto;*/
   color: #b0b0b0;
 }
-
-#details .main .collapse {
-  margin-top: 50px;
+#details .main .footer {
+  background: rgba(255, 255, 255, 0.8);
+}
+#details .main .footer .collapse {
+  margin-top: 10px;
+  background-color: whitesmoke;
 }
 </style>

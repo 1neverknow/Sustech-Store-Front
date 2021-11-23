@@ -9,8 +9,11 @@
                   autofocus
                   placeholder="Write down your comment...">
         </el-input>
-        <div class="btn-control">
+        <div v-if="goodsState === 0" class="btn-control">
           <el-button class="btn" type="success" round @click="commitComment">Submit</el-button>
+        </div>
+        <div v-else class="btn-control">
+          <el-button class="btn" type="success" round @click="commitComment" disabled>Submit</el-button>
         </div>
       </div>
     </transition>
@@ -40,7 +43,7 @@
 import Element from 'element-ui'
 export default {
   name: "GoodsComment",
-  props: ['goodsId','comments'],
+  props: ['goodsId','comments','goodsState'],
   data() {
     return {
       commentForm: {

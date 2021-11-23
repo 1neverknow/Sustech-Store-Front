@@ -73,21 +73,6 @@ export default {
   methods: {
     activate() {
       this.getOrderList(-1)
-      this.loadShowList()
-    },
-    loadShowList() {
-      console.log('show list loading')
-      this.showList = []
-      let fromIdx = (this.queryInfo.pagenum - 1) * this.queryInfo.pagesize
-      let toIdx = fromIdx + this.queryInfo.pagesize
-      if (this.total < toIdx) {
-        toIdx = this.total
-      }
-      console.log('from ', fromIdx, '; to ', toIdx)
-      for (let i = fromIdx; i < toIdx; i++) {
-        console.log(this.orderList[i])
-        this.showList.push(this.orderList[i])
-      }
     },
     handleClick(tab) {
       console.log(tab.label)
@@ -289,7 +274,6 @@ export default {
     },
     refresh() {
       this.getOrderList(this.queryInfo.queryStage)
-      this.loadShowList()
     }
   },
   watch: {

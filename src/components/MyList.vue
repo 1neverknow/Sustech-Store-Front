@@ -15,7 +15,7 @@
                 icon="el-icon-question"
                 icon-color="red"
                 title="Are you sure to remove this goods?"
-                @confirm="confirmEvent(index)"
+                @confirm="confirmDelete(item.goodsId)"
             >
               <i class="el-icon-close delete" slot="reference" v-show="true"></i>
             </el-popconfirm>
@@ -49,18 +49,19 @@
               </template>
             </div>
           </template>
-          <template v-else
-          class="offGoods">
-            <el-popconfirm
-                confirm-button-text="OK"
-                cancel-button-text="No, Thanks"
-                icon="el-icon-question"
-                icon-color="red"
-                title="Are you sure to remove this goods?"
-                @confirm="confirmEvent(index)"
-            >
-              <i class="el-icon-close delete" slot="reference" v-show="true"></i>
-            </el-popconfirm>
+          <template v-else class="offGoods">
+            <template v-if="type==='collection'">
+              <el-popconfirm
+                  confirm-button-text="OK"
+                  cancel-button-text="No, Thanks"
+                  icon="el-icon-question"
+                  icon-color="red"
+                  title="Are you sure to remove this goods?"
+                  @confirm="confirmDelete(item.goodsId)"
+              >
+                <i class="el-icon-close delete" slot="reference" v-show="true"></i>
+              </el-popconfirm>
+            </template>
             <!--        点击后跳转至商品详情-->
             <div>
               <router-link
@@ -76,43 +77,16 @@
                   <span>￥{{item.price}}</span>
                 </p>
               </router-link>
-              <template>
-                <el-alert
-                    title="off shelves"
-                    type="error"
-                    center show-icon
-                    :closable="false"
-                ></el-alert>
-                <!--                <el-button-->
-<!--                    type="primary"-->
-<!--                    icon="el-icon-edit"-->
-<!--                    size="small"-->
-<!--                    style="margin-left: 10%; margin-top: 5%; width: 80%"-->
-<!--                    plain-->
-<!--                    round-->
-<!--                >Edit</el-button>-->
-              </template>
+              <el-alert
+                  title="off shelves"
+                  type="error"
+                  center show-icon
+                  :closable="false"
+              ></el-alert>
             </div>
           </template>
         </li>
       </ul>
-    </el-row>
-
-    <el-row class="pagination">
-      <!-- 分页区域 -->
-      <el-pagination
-          class="pagination"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="queryInfo.pagenum"
-          :page-sizes="[4, 8, 12, 16]"
-          :page-size="queryInfo.pagesize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="queryInfo.total"
-          style="float:right;"
-          background
-      >
-      </el-pagination>
     </el-row>
 
   </div>
@@ -125,45 +99,16 @@ import Element from "element-ui";
 export default {
   name: "MyList",
   // list为父组件传来的列表
-  props: ['type', 'list', 'offlist', 'total'],
+  props: ['type', 'showList'],
   data() {
     return{
-      showList: [],
-      queryInfo: {
-        query: '',
-        pagenum: 1,
-        pagesize: 8,
-        total: 0,
-      },
       editVisible: false,
       editGoodsId: 0,
     }
   },
   methods: {
-    loadShowList() {
-      this.showList = []
-      let fromIdx = (this.queryInfo.pagenum - 1) * this.queryInfo.pagesize
-      let toIdx = fromIdx + this.queryInfo.pagesize
-      console.log('from', fromIdx, 'to', toIdx)
-      if (this.total < toIdx) {
-         toIdx = this.total
-      }
-      if (toIdx <= this.list.length) {
-        for (let i = fromIdx; i < toIdx; i++) {
-          console.log(this.list[i])
-          this.showList.push(this.list[i])
-        }
-      } else {
-        for (let i = fromIdx; i < this.list.length; i++) {
-          this.showList.push(this.list[i])
-        }
-        for (let i = 0; i < toIdx - this.list.length; i++) {
-          this.showList.push(this.offlist[i])
-        }
-      }
-    },
-    confirmEvent(index) {
-      const goodsId = this.list[index].goodsId
+    confirmDelete(goodsId) {
+      console.log('delete goods: ' + goodsId)
       if (this.type === 'collection') {
         this.$axios.delete("http://localhost:8081/user/collection?goodsId=" + goodsId)
             .then(res => {
@@ -171,8 +116,8 @@ export default {
                 message: 'Remove successfully',
                 type: 'success',
               })
-              this.list.splice(index, 1)
             })
+        this.$emit('refresh')
       } else if (this.type === 'announcement') {
         this.$axios.delete("http://localhost:8081/goods/delete?goodsId=" + goodsId)
             .then(res => {
@@ -180,10 +125,9 @@ export default {
                 message: 'Remove successfully',
                 type: 'success',
               })
-              this.list.splice(index, 1)
             })
+        this.$emit('refresh')
       }
-      this.refresh()
     },
     handleSizeChange(newSize) {
       this.queryInfo.pagesize = newSize
@@ -200,15 +144,27 @@ export default {
     changeEditVisible(value) {
       this.editVisible = value
     },
-    refresh() {
-      this.$emit('refresh')
-    }
   },
-  mounted() {
-    this.queryInfo.total = this.total
-    console.log('mounted show list')
-    this.loadShowList()
-  }
+  // mounted() {
+  //   this.queryInfo.total = this.total
+  //   console.log('mounted show list')
+  //   this.loadShowList()
+  // },
+  // watch: {
+  //   'list': function(newVal, oldVal) {
+  //     this.loadShowList()
+  //   },
+  //   'offlist': function(newVal, oldVal) {
+  //     this.loadShowList()
+  //   },
+  //   'queryInfo.pagenum': function (newVal, oldVal) {
+  //     this.loadShowList()
+  //   },
+  //   'queryInfo.pagesize': function (newVal, oldVal) {
+  //     this.loadShowList()
+  //   }
+  // },
+
 }
 </script>
 
