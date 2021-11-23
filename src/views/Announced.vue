@@ -173,7 +173,7 @@ export default {
     },
     refresh() {
       this.getAnnounceList()
-    }
+    },
   },
   mounted() {
     this.activate()
