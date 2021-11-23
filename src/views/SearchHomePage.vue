@@ -5,7 +5,7 @@
         <div class="user-image">
           <img src="@/assets/pic.png"/>
         </div>
-        <p style="margin-left: 10px">Sustech XianYu</p>
+        <p style="margin-left: 10px">Sustech Store</p>
       </div>
       <div class="header-right" style="float: right;padding-right: 50px">
         <div class="not-login" v-if="this.$store.getters.getToken===null">
@@ -31,8 +31,19 @@
     </el-header>
 
     <el-main class="sh_mail">
+      <div class="bs-sysMsg">
+        <i class="el-alert__icon el-icon-warning"></i>
+        <div class="msg__content">
+          <el-carousel height="20px"  indicator-position="none" :autoplay="true">
+            <el-carousel-item v-for="item in systemMsg" :key="item.id">
+              {{item.title}}
+            </el-carousel-item>
+          </el-carousel>
+        </div>
+      </div>
+
       <el-collapse v-model="judge" @click="judge===['1']?judge=true:judge=['1']">
-        <el-collapse-item name="1" title="Collapse this">
+        <el-collapse-item name="1" >
           <div style="margin-top: 10px">
             <el-carousel indicator-position="outside" height="500px" autoplay interval="2000">
               <el-carousel-item v-for="carousel in carousels" :key="carousels">
@@ -106,11 +117,13 @@
           </el-row>
 
           <el-row>
-            <div class="pagination" style="float: bottom">
+            <div class="pagination" style="float: bottom"
+            >
               <el-pagination
                   background
                   layout="prev, pager, next"
-                  :total="70">
+                  :page-count="goodsPage"
+                  @current-change="handleGoodsCurrentChange">
               </el-pagination>
             </div>
           </el-row>
@@ -119,11 +132,13 @@
 
       <div class="user" v-show="!type">
         <div v-for="item in user_list" style="margin: 10px">
-          <el-card style="opacity: 0.5">
+          <el-card style="opacity: 0.8">
             <el-container>
               <el-aside width="200px">
                 <div class="search_user_image">
-                  <img :src="item.picturePath">
+                  <router-link :to="'/user/'+item.id">
+                    <img :src="item.picturePath">
+                  </router-link>
                 </div>
               </el-aside>
               <el-container>
@@ -163,9 +178,15 @@
                 </el-header>
 
                 <el-main>
-                  <p>发布列表</p>
-
+                  <el-row class="good_item">
+                    <div v-for="good in item.display_list">
+                      <el-col :span="180" class="im">
+                        <img :src="good.picturePath" @click="toGoods(good.goodsId)">
+                      </el-col>
+                    </div>
+                  </el-row>
                 </el-main>
+
               </el-container>
             </el-container>
           </el-card>
@@ -195,7 +216,7 @@ export default {
   },
   mounted() {
     console.log(this.$store.getters.getGood_list)
-    if (this.$store.getters.getGood_list===null||this.$store.getters.getGood_list.length===0) {
+    if (this.$store.getters.getGood_list === null || this.$store.getters.getGood_list.length === 0) {
       console.log(123)
       this.$axios({
         method: 'get',
@@ -207,7 +228,7 @@ export default {
           res.data.data.forEach(item => {
             this.list.push({
               goods_id: item.goodsId,
-              picture_path: item.picturePath,
+              picture_path: 'http://localhost:8081/' + item.picturePath,
               price: '¥' + item.price,
               name: item.title
             })
@@ -240,13 +261,16 @@ export default {
   name: "SHP",
   data() {
     return {
+      goodsPage: 0,
       type: true,
       state: false,
       judge: ['1'],
-      user_list: [
-
-      ],
+      user_list: [],
       carousels: [],
+      systemMsg: [
+        {id:1,title:'本周ooad要中期答辩！！'},
+        {id:2,title:'不要忘记体测！！'},
+      ],
       list: [
         // {
         //   goods_id: 1,
@@ -275,6 +299,27 @@ export default {
     }
   },
   methods: {
+    handleGoodsCurrentChange(val) {
+      this.state = true
+      this.list = []
+      console.log(this.list.length)
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/searchGoods/' + this.formInline.content + '/' + val,
+      }).then(res => {
+        if (res.data.code === 2000) {
+          console.log(res.data.data)
+          res.data.data.forEach(item => {
+            this.list.push({
+              goods_id: item.goodsId,
+              picture_path: item.picturePath,
+              price: '¥' + item.price,
+              name: item.title
+            })
+          })
+        }
+      })
+    },
     logout() {
       this.$confirm('Are you sure to Log out?', 'Tips', {
         confirmButtonText: 'Yes',
@@ -303,28 +348,39 @@ export default {
       this.$router.push('/goods/' + id)
     },
     addCollection() {
-        // 需要先验证用户是否已经登陆
-        if (!this.$store.getters.getUser) {
-          Element.Message({
-            message: 'Please login first',
-            type: 'error',
-          })
-          return
-        }
-        this.$axios.put("http://localhost:8081/user/collection?goodsId="
-            + this.goodsId).then(res => {
-          Element.Message({
-            message: 'Add product to collection successfully',
-            type: 'success',
-          })
-          this.inCollection = true
+      // 需要先验证用户是否已经登陆
+      if (!this.$store.getters.getUser) {
+        Element.Message({
+          message: 'Please login first',
+          type: 'error',
         })
+        return
+      }
+      this.$axios.put("http://localhost:8081/user/collection?goodsId="
+          + this.goodsId).then(res => {
+        Element.Message({
+          message: 'Add product to collection successfully',
+          type: 'success',
+        })
+        this.inCollection = true
+      })
 
     },
     onsubmit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+
           if (this.formInline.region === 'goods') {
+            this.type = true
+            this.$axios({
+              method: 'get',
+              url: 'http://localhost:8081/searchGoods/' + this.formInline.content,
+            }).then(res => {
+              if (res.data.code === 2000) {
+                this.goodsPage = Math.ceil(res.data.data / 10)
+              }
+            })
+
             this.state = true
             this.list = []
             console.log(this.list.length)
@@ -347,21 +403,39 @@ export default {
           } else if (this.formInline.region === 'users') {
             this.state = false
             this.type = false
-            this.user_list =[]
-            console.log(this.user_list)
+            this.user_list = []
             this.$axios({
               method: 'get',
               url: 'http://localhost:8081/searchUser/' + this.formInline.content + '/1',
             }).then(res => {
               if (res.data.code === 2000) {
-                console.log(res.data.data)
+                let goods = []
+                let displayGoods = []
                 res.data.data.forEach(item => {
-                  this.user_list.push({
-                    userName: item.userName,
-                    picturePath: 'http:/localhost::8081/'+item.picturePath,
-                    email: item.email,
-                    credit: item.credit
+                  this.$axios({
+                    method: 'get',
+                    url: 'http://localhost:8081/user/announceGoods/' + item.userId + '/0',
+                  }).then(res => {
+                    if (res.data.code === 2000) {
+                      res.data.data.forEach(good => {
+                        if (displayGoods.length < 7) displayGoods.push(good)
+                        goods.push(good)
+                      })
+                    }
                   })
+
+                  let search_user = {
+                    userName: item.userName,
+                    picturePath: 'http://localhost:8081/' + item.picturePath,
+                    email: item.email,
+                    credit: item.credit,
+                    id: item.userId,
+                    good_list: goods,
+                    display_list: displayGoods
+                  }
+
+                  this.user_list.push(search_user)
+                  console.log(this.user_list)
                 })
               }
             })
@@ -374,6 +448,9 @@ export default {
         }
       })
 
+    },
+    toGoods(id){
+      this.$router.push('/goods/'+id)
     }
   }
 }
@@ -489,10 +566,53 @@ export default {
   height: 500px;
   width: 1000px;
 }
+
 .search_user_image img {
   display: block;
   width: 200px;
   height: 200px;
   border-radius: 50%;
 }
+
+.good_item img {
+  display: block;
+  width: 150px;
+  height: 150px;
+  border: 1px red;
+}
+.im img{
+  cursor:pointer;
+  transition: all 0.5s;
+}
+
+.im img:hover {
+  border: 1px solid #ff0000;
+  transform: translate(0, -10px);
+}
+.bs-sysMsg {
+  position: relative;
+  display: flex;
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  border-radius: 2px;
+  color: #e6a23c;
+  background-color: #fdf6ec;
+  overflow: hidden;
+  opacity: 1;
+  align-items: center;
+  transition: opacity .2s;
+}
+.bs-sysMsg .msg__content {
+  display: table-cell;
+  padding: 0 8px;
+  width: 100%;
+}
+.bs-sysMsg .msg__content a.item {
+  color: #e6a23c;
+  font-size: 14px;
+  opacity: 0.75;
+}
+.bs-sysMsg .msg__content a.item:hover{text-decoration: underline;}
+
 </style>

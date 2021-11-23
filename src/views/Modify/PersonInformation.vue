@@ -200,7 +200,7 @@ export default {
         user_name: this.$store.getters.getBasic_Info.userName,
         picture: this.$store.getters.getBasic_Info.picturePath,
         email: this.$store.getters.getBasic_Info.email,
-        gender: this.$store.getters.getBasic_Info.gender,
+        gender: this.$store.getters.getBasic_Info.gender===0?'Man':this.$store.getters.getBasic_Info.gender===1?'Woman':'Secret',
         birthday: this.$store.getters.getBasic_Info.birthday,
         credit: this.$store.getters.getBasic_Info.credit,
         id_card: this.$store.getters.getBasic_Info.id_card,
@@ -272,7 +272,7 @@ export default {
       }).then(res => {
         console.log(res)
         if (res.data.code === 2000) {
-
+          this.getBasicInfo()
         }
       })
     },
@@ -290,40 +290,54 @@ export default {
       return (isPNG || isJPG) && isLt2M;
     },
 
-    submitBIForm(formName) {
-      console.log(this.BI_form.birthday)
-      this.$refs[formName].validate((valid) => {
-        //创建 formData 对象
-        let formData = new FormData();
-        // 向 formData 对象中添加文件
-        if(this.BI_form.image_path!=='')
-          formData.append('photo', this.BI_form.image_path);
-        else formData.append('photo',null)
-        const newRequest = axios.create({
-          baseUrl: "http://localhost:8081"//请求地址
-        });
+    getBasicInfo() {
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/user/me',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(res => {
+        if (res.data.code === 2000) {
+          this.$store.commit("SET_Basic_Info",res.data.data)
+          console.log(this.$store.getters.getBasic_Info)
+        }
+      })
+    },
 
+    submitBIForm(formName) {
+      this.$refs[formName].validate((valid) => {
         let gender = 0
         if(this.BI_form.gender==='Woman') gender = 1
         else if (this.BI_form.gender === 'Secret') gender = 2
-        newRequest({
-          method: "POST",
-          url: "/user/update"
-              + '?birthday=' + this.BI_form.birthday
-              + '&gender=' + gender
-              + '&name=' + this.BI_form.user_name
-              + '&sign=' + this.BI_form.PersonalitySignature,
-          data: formData,
-          headers: {
-            "Content-Type":
-                "multipart/form-data",
-            'Authorization': this.$store.getters.getToken
-          }
+        let user = {
+          birthday: this.BI_form.birthday,
+          gender: gender,
+          name: this.BI_form.user_name,
+          sign: this.BI_form.PersonalitySignature
+        }
+
+        this.$axios({
+          method: 'put',
+          headers : {
+            'Content-Type': 'application/json',
+          },
+          url: 'http://localhost:8081/user/update',
+          data: JSON.stringify(user),
+
         }).then(res => {
-          this.$message({
-            type: 'success',
-            message: 'Modify the information successfully'
-          });
+          if(res.data.code===2000){
+            this.$message({
+              type: 'success',
+              message: 'Modify the information successfully'
+            });
+            this.getBasicInfo()
+          }else if(res.data.code===4001){
+            this.$message({
+              type: 'error',
+              message: res.data.message
+            });
+          }
         });
       });
     },

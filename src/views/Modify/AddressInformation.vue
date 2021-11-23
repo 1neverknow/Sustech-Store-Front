@@ -290,7 +290,6 @@ export default {
 
     },
 
-    // 方法有问题
     editRequest(item,index){
       let address = {
         addressId : this.tableData[item].database_id,
@@ -315,6 +314,7 @@ export default {
           });
           this.edit_list.splice(index,1)
           this.oldData.splice(index,1)
+          this.tableData[item].edit_ornot = false
         } else {
           this.$message({
             type: 'info',
