@@ -24,7 +24,25 @@
       <!---->
       <el-col :span="12">
         <div style="height: 100%">
-          <el-calendar v-model="value">
+          <el-calendar class="el-calendar" style="margin-left: 0; margin-right: 0">
+            <template
+                slot="dateCell"
+                slot-scope="{date, data}" class="calItem">
+              <div class="dayItem" @click="dialogVisible = true;calClick(data)">
+                {{ data.day.split('-')[2] }}
+              </div>
+              <div v-for="(item,index) in calendarData" :key="index">
+                <div v-if="(item.years).indexOf(data.day.split('-').slice(0)[0])!==-1
+              && (item.months).indexOf(data.day.split('-').slice(1)[0])!==-1 && (item.days).indexOf(data.day.split('-').slice(2).join('-'))!==-1">
+                  <el-tooltip :content="item.things" placement="left-start">
+                    <div class="mark">
+                      {{item.things}}
+                    </div>
+                  </el-tooltip>
+                </div>
+                <div v-else></div>
+              </div>
+            </template>
           </el-calendar>
         </div>
       </el-col>
@@ -44,11 +62,35 @@ export default {
         '@/assets/logo.png',
         '@/assets/pic.png',
         '@/assets/lazy.png'
+      ],
+      eachDay:{
+        years:'',
+        months:'',
+        days:'',
+        id:0,
+        things:''
+      },
+      calendarData: [
       ]
     }
   },
   mounted() {
     this.imageUrl =this.$store.getters.getBasic_Info.picturePath
+    const _this = this
+    _this.$axios.get("http://localhost:8081/calender").then(res => {
+      console.log(res)
+      console.log("!!!!!!!")
+      _this.result = res.data.data
+      for (let item of _this.result){
+        _this.eachDay.years=item.date.substr(0,4)
+        _this.eachDay.months=item.date.substr(-5,2)
+        _this.eachDay.days=item.date.substr(-2)
+        _this.eachDay.things=item.description
+        _this.id=item.id
+        _this.calendarData.push(_this.eachDay)
+        _this.eachDay= {}
+      }
+    })
 
   },
   methods: {
