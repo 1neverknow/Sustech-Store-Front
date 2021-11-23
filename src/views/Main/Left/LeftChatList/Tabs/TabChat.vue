@@ -275,6 +275,87 @@ export default {
             })
           }
         })
+      console.log(this.$store.getters.getToken)
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/chat/list',
+        headers: {'authorization': this.$store.getters.getToken},
+        transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
+          var ret = '';
+          for (var it in data) {
+            // 如果要发送中文 编码
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+          }
+          return ret.substring(0, ret.length - 1)
+        }]
+      }).then(res => {
+        if (res.data.code === 2000) {
+          const data = res.data.data
+          console.log(data)
+          let chatList=[]
+          let linkmanList = []
+          // console.log(toDate(data))
+          let count = 0
+          const chatHis = data.chatHistories
+          this.$store.state.myself.nickname = data.userName
+          this.$store.state.myself.avatar = data.picturePath
+          chatHis.forEach((item) => {
+            if(item.lastMessageContent==null){
+              chatList.push({
+                chatId: item.chatId,
+                linkmanIndex: count,
+                linkmanId: item.chatId,
+                isMute: false,
+                isOnTop: false,
+                isOnce: false,
+                messages: []
+                // address: item.addressName,
+                // type:item.isDefault==='null'?'Normal':'Default'
+              })
+            }else {
+              chatList.push({
+                chatId: item.chatId,
+                linkmanIndex: count,
+                linkmanId: item.chatId,
+                isMute: false,
+                isOnTop: false,
+                isOnce: false,
+                messages: [
+                  {
+                    avatar: item.otherUserPicturePath,
+                    nickname: item.otherUserName.toString(),
+                    ctn: item.lastMessageContent,
+                    time: toDate(item.lastMessageDate),
+                    type: "chat"
+                  }
+                ]
+                // address: item.addressName,
+                // type:item.isDefault==='null'?'Normal':'Default'
+              })
+            }
+            linkmanList.push({
+              id: chatList.chatId,
+              // type: "A",
+              nickname: item.otherUserName.toString(),
+              avatar: item.otherUserPicturePath
+            })
+            count++
+            // this.$store.commit("setChatId", item.dealId);
+          })
+          this.$store.state.linkmans = linkmanList
+          this.$store.state.chats = chatList
+          console.log("#####################")
+          console.log(linkmanList)
+          console.log(chatList)
+          // for (let item = 0;item<chatList.length;item++){
+          //   this.handleChangeChat(item);
+          // }
+        } else {
+          this.$alert(res.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        }
+      })
     },
     getHistory() {
       this.$axios({

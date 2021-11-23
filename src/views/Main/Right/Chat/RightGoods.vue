@@ -38,7 +38,6 @@
 import Vue from "vue";
 import InfoBlock from "@/components/InfoBlock";
 import Element from "element-ui";
-
 export default {
   name: "RightFoods",
   data() {
@@ -66,7 +65,6 @@ export default {
     goodsPrice(){
       return this.$store.state.goods.price;
     }
-
   },
   methods: {
     jumpGoods(){
@@ -138,11 +136,9 @@ export default {
 </script>
 
 <style scoped>
-
 .right-goods-wrap {
   height: 51px;
 }
-
 .goods-detail {
   height: 30px;
   line-height: 30px;
@@ -189,9 +185,7 @@ export default {
   border-radius: 4px;
   color: rgb(191, 203, 217)
 }
-
 .font{
   font-size: 15px;
 }
-
 </style>
