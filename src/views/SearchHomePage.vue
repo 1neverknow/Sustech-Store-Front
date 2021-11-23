@@ -216,7 +216,7 @@ export default {
       console.log(123)
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/goods/random',
+        url: 'http://localhost:8081/goods/recommend',
       }).then(res => {
         if (res.data.code === 2000) {
           console.log("asdasd")
