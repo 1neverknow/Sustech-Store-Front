@@ -1,5 +1,15 @@
 <template>
   <div>
+    <el-header class="page-header">
+      <div class="title">
+        <div class="list">
+          <ul>
+            <li><router-link to="/sh">Homepage</router-link></li>
+            <li><router-link to="/">User Page</router-link></li>
+          </ul>
+        </div>
+      </div>
+    </el-header>
     <el-card>
       <el-container>
         <el-aside width="200px">
@@ -175,7 +185,7 @@ export default {
           this.phone = data.phone
           this.picture = data.picturePath
           this.email = data.email
-          this.gender = data.gender
+          this.gender = data.gender===0?'Man':data.gender===1?'Woman':'Secret'
           this.birthday = data.birthday
           this.credit = data.credit
           this.PersonalitySignature = data.sign
@@ -275,5 +285,16 @@ export default {
   position: absolute;
   margin-top: 2px;
   text-align: center;
+}
+.title {
+  color: #fff;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+}
+.list {
+  margin-right: -20%;
+  height: 64px;
+  float: right;
 }
 </style>

@@ -24,9 +24,9 @@
               <el-input type="password" v-model="ruleForm.confirm"></el-input>
             </el-form-item>
 
-            <div class="submit-btn">
+            <el-form-item class="submit-btn">
               <el-button type="primary" style="margin-top: 30px" @click="submitForm('ruleForm')">Submit</el-button>
-            </div>
+            </el-form-item>
 
           </el-form>
         </el-main>
@@ -190,6 +190,6 @@ export default {
   margin-bottom: 10px;
 }
 .reset-wrap .special-effect {
-  margin-top: -50%;
+  margin-top: -52%;
 }
 </style>

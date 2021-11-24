@@ -201,24 +201,6 @@ export default {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     },
-    beforeUpload(file) {
-      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
-      const isLt2M = file.size / 1024 / 1024 < 2
-      if (!isJPG) {
-        Element.Message({
-          message: 'Picture must be JPG/PNG format!',
-          type: 'error',
-        })
-        return false
-      }
-      if (!isLt2M) {
-        Element.Message({
-          message: 'Picture size can not exceed 2MB!',
-          type: 'error',
-        })
-        return false
-      }
-    },
     OnChange(file, fileList) {
       const isType = file.type === 'image/jpeg' || 'image/png'
       const isLt5M = file.size / 1024 / 1024 < 5

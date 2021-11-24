@@ -97,6 +97,7 @@ export default {
         .then(() => {
           this.$axios.get('http://120.24.4.97:8081/user/charge/' + chargeId)
           .then(res => {
+
             Element.Message({
               type: 'success',
               message: 'Charge Success',

@@ -12,10 +12,13 @@
       <el-form-item label="Photo" prop="photo">
         <el-upload
             class="upload-demo"
-            :on-success="handleSuccess"
+            :file-list="photo"
             :before-upload="beforeUpload"
             drag
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action="#"
+            :on-change="OnChange"
+            accept="image/jpeg,image/png"
+            :auto-upload="false"
             multiple
         >
           <el-icon class="el-icon-upload"><upload-filled /></el-icon>
@@ -24,7 +27,7 @@
           </div>
           <template #tip>
             <div class="el-upload__tip">
-              jpg/png files with a size less than 500kb
+              jpg/png files with a size less than 5MB
             </div>
           </template>
         </el-upload>
@@ -70,7 +73,7 @@ export default {
   methods: {
     beforeUpload(file) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
-      const isLt2M = file.size / 1024 / 1024 < 2
+      const isLt5M = file.size / 1024 / 1024 < 5
       if (!isJPG) {
         Element.Message({
           message: 'File must be JPG/PNG format!',
@@ -78,15 +81,36 @@ export default {
         })
         return false
       }
-      if (!isLt2M) {
+      if (!isLt5M) {
         Element.Message({
-          message: 'Picture size can not exceed 2MB!',
+          message: 'Picture size can not exceed 5MB!',
           type: 'error',
         })
         return false
       }
     },
     handleSuccess(res, file) {
+      this.photo = file.raw
+    },
+    OnChange(file, fileList) {
+      const isType = file.type === 'image/jpeg' || 'image/png'
+      const isLt5M = file.size / 1024 / 1024 < 5
+      if (!isType) {
+        Element.Message({
+          message: 'File should be JPG/PNG',
+          type: 'error',
+        })
+        fileList.pop()
+        return
+      }
+      if (!isLt5M) {
+        Element.Message({
+          message: 'Size of picture should be less than 5M',
+          type: 'error',
+        })
+        fileList.pop()
+        return
+      }
       this.photo = file.raw
     },
     submitForm(formName) {

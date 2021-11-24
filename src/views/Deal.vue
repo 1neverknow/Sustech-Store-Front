@@ -172,19 +172,25 @@ export default {
       })
     },
     getGoodsInfo(goodsAbbreviation) {
-      this.goodsList[0].goodsId = goodsAbbreviation.goodsId
-      this.goodsList[0].goodsName = goodsAbbreviation.title
-      this.goodsList[0].goodsPicture = goodsAbbreviation.picturePath[0].path
-      this.goodsList[0].sellerId = goodsAbbreviation.announcer.userId
-      this.goodsList[0].price = goodsAbbreviation.price
-      this.goodsList[0].number = 1
+      this.goodsList.push({
+        goodsId: goodsAbbreviation.goodsId,
+        goodsName: goodsAbbreviation.title,
+        goodsPicture: goodsAbbreviation.picturePath[0].path,
+        sellerId: goodsAbbreviation.announcer.userI,
+        price: goodsAbbreviation.price,
+        number: 1,
+      })
       this.dealInfo.postage = goodsAbbreviation.postage
     },
     getAddressInfo() {
       this.$axios.get('http://120.24.4.97:8081/user/address/')
       .then(res => {
+        console.log('address', res.data.data)
         // const addresses = res.data.data
         this.userInfo.addresses = res.data.data
+        if (res.data.data !== null) {
+          this.dealInfo.confirmAddress = res.data.data[0].addressId
+        }
       })
     },
     addDeal() {

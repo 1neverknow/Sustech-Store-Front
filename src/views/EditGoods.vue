@@ -11,6 +11,26 @@
     </div>
 
     <el-card class="content">
+      <div v-if="oldPhotos.length > 0" class="block">
+        <el-carousel :interval="4000" type="card" height="150px">
+          <el-carousel-item v-for="item in oldPhotos" :key="item.id">
+            <el-image
+                style="height: 150px; margin-left: 50px"
+                :src="item"
+                fit="contain"
+            ></el-image>
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+
+      <div v-if="oldPhotos.length > 0" style="margin-left: 40%; margin-top: 3%">
+        <el-button
+            type="danger"
+            @click="clearPicture"
+            round
+        >Clear all picture</el-button>
+      </div>
+
       <el-form
           ref="goods"
           :model="goods"
@@ -148,6 +168,7 @@ export default {
         postage: 0,
       },
       goodsId: 0,
+      oldPhotos: [],
       photos: [],
       rules: {
         title:[
@@ -183,6 +204,7 @@ export default {
       this.getDetails()
     },
     getDetails() {
+      console.log('get details')
       this.$axios({
         method: 'get',
         url: 'http://120.24.4.97:8081/goods/' + this.goods.goodsId,
@@ -197,6 +219,21 @@ export default {
             this.goods.postage = productDetails.postage
             this.freeDelivery = productDetails.postage === 0
           })
+    },
+    getPicture(picturePaths) {
+      for (let i in picturePaths) {
+        this.oldPhotos.push(picturePaths[i].path)
+      }
+    },
+    clearPicture() {
+      this.$axios.delete('http://120.24.4.97:8081/goods/picture/' + this.goods.goodsId)
+      .then(res => {
+        Element.Message({
+          message: 'Delete all pictures!',
+          type: 'success',
+        })
+        this.oldPhotos = []
+      })
     },
     changeTag(tags) {
       this.goods.tags = tags
@@ -293,10 +330,6 @@ export default {
                 'Authorization': this.$store.getters.getToken
               }
             }).then(res => {
-              Element.Message({
-                message: 'Success!',
-                type: 'success',
-              })
             })
             resolve('done');
           }
@@ -385,6 +418,16 @@ export default {
   width: 50%;
   margin-bottom: 50px;
   margin-top: 70px;
-  margin-left: 15%;
+  margin-left: 25%;
+}
+
+.publish .content .block {
+  margin-left: 20%;
+  margin-bottom: -2%;
+  width: 50%;
+}
+
+.publish .content .block .clear-all-picture {
+  margin-left: 50%;
 }
 </style>

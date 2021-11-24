@@ -87,7 +87,7 @@
             <div class="price">
               <span>￥{{price}}</span>
             </div>
-            <template v-if="goodsState === 1">
+            <template v-if="goodsState === 1 || goodsState === 2">
               <el-col :offset="11" :sm="18" :lg="10"
                       style="margin-top: -40%;"
               >
@@ -158,7 +158,7 @@
                 >Add to Collection
                 </el-button>
               </template>
-              <template v-else-if="!inCollection && goodsState === 1">
+              <template v-else-if="!inCollection">
                 <el-button
                     class="like"
                     icon="el-icon-star-off"
@@ -477,6 +477,8 @@ export default {
 #details .page-header .title .list li {
   float: left;
   margin-left: 50px;
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
+  'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
 }
 #details .page-header .title .list li a {
   font-size: 14px;
