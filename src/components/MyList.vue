@@ -11,7 +11,7 @@
             style="height: 270px"
         >
           <template v-if="item.goodsState === 0">
-            <template v-if="type !== 'searchLabel'">
+            <template v-if="type !== 'searchLabel' && type !== 'recommend'">
               <el-popconfirm
                   confirm-button-text="OK"
                   cancel-button-text="No, Thanks"

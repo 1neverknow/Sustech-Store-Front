@@ -153,7 +153,7 @@ export default {
       freeDelivery: true, // 是否包邮
       goods: {
         introduce: 'aaaaaaaaaa',
-        isSell: true,
+        isSell: 'Sell',
         labels: [],
         price: 999,
         title: '300 Mana Stone',
@@ -178,6 +178,9 @@ export default {
         price: [
           {validator: validatePrice, trigger: 'blur',},
           { type: 'number', message: 'price must be a number' },
+        ],
+        isSell: [
+          {required: true, message: 'Type is required', trigger: 'blur'},
         ]
       },
       dialogImageUrl: '',

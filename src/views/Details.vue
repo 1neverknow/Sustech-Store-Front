@@ -104,8 +104,6 @@
                 </el-result>
               </el-col>
             </template>
-            <!--              这一部分改成announcer信息-->
-            <!--              avatar，信誉分，性别，name，id-->
             <div class="announcer-info">
               <el-avatar class="announcer-avatar" :size="40" :src="announcer.avatar"></el-avatar>
               <span>
@@ -188,10 +186,10 @@
         <div class="footer">
           <el-collapse v-model="activeNames" class="collapse">
             <el-collapse-item name="1">
-              <tecplate #title >
+              <template #title >
                 <h2 style="margin-right: 10px; padding-left: 10%">Comments </h2>
                 <i class="header-icon el-icon-info"></i>
-              </tecplate>
+              </template>
               <GoodsComment
                   @refresh="refreshComment"
                   v-bind:goodsId="goodsId"
@@ -199,11 +197,17 @@
                   v-bind:comments="comments"
               ></GoodsComment>
             </el-collapse-item>
+
             <el-collapse-item name="2">
               <template #title>
                 <h2 style="margin-right: 10px; padding-left: 10%">More </h2>
                 <i class="header-icon el-icon-search"></i>
               </template>
+              <MyList
+                  v-bind:showList="recommendList"
+                  v-bind:type="'recommend'"
+                  @refresh="getRecommend"
+              ></MyList>
             </el-collapse-item>
           </el-collapse>
         </div>
@@ -240,6 +244,8 @@ export default {
       activeNames: '1',
       inCollection: false,
       complainVisible: false,
+
+      recommendList: [],
     }
   },
   methods: {
@@ -252,6 +258,7 @@ export default {
       }
       this.goodsId = goodsId
       this.getDetails()
+      this.getRecommend()
     },
     // 获取商品详情
     getDetails() {
@@ -312,6 +319,29 @@ export default {
           this.comments = res.data.data
         } else {
           this.comments = []
+        }
+      })
+    },
+    getRecommend() {
+      this.recommendList = []
+      console.log('get recommended goods')
+      this.$axios.get('http://localhost:8081/goods/recommend')
+      .then(res => {
+        let counter = 0
+        const max = 4
+        while (counter < max && counter < res.data.data.length) {
+          const item = res.data.data[counter]
+          counter += 1
+          if (item.goodsId === this.goodsId) {
+            continue
+          }
+          this.recommendList.push({
+            goodsId: item.goodsId,
+            picture: item.picturePath,
+            price: item.price,
+            title: item.title,
+            goodsState: item.goodsState,
+          })
         }
       })
     },
@@ -545,6 +575,8 @@ export default {
   margin: 50px 0 50px;
   width: 440px;
   height: 100px;
+
+  border-radius: 10px;
 }
 #details .main .content .announcer-info span {
   line-height: 30px;
@@ -623,5 +655,72 @@ export default {
 #details .main .footer .collapse {
   margin-top: 5%;
   background-color: whitesmoke;
+}
+
+#DailyRecom {
+  box-sizing: border-box;
+  margin-left: 10%;
+  padding: 0;
+}
+
+#DailyRecom > div {
+  float: left;
+  width: 200px;
+  height: 320px;
+  margin: 10px 10px 13px 12px;
+  padding: 8px;
+  border: 1px solid #919191;
+  transition: all 0.5s;
+}
+.bottom{
+  background-image: url(../assets/background1.png);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+#DailyRecom > div:hover {
+  border: 1px solid #ff0000;
+  transform: translate(0, -10px);
+}
+
+#DailyRecom > div > img, .img_sc {
+  width: 180px;
+  height: 165px;
+}
+
+#DailyRecom > div > p, .p_sc {
+  width: 180px;
+  font-size: 15px;
+  text-align: justify;
+  /* text-indent: 2rem; */
+}
+
+.price_sc {
+  width: 180px;
+  font-size: 15px;
+  text-align: right;
+  /* text-indent: 2rem; */
+}
+
+#DailyRecom > div > p:nth-of-type(1), .p_sc:nth-of-type(1) {
+  overflow: hidden;
+  width: 180px;
+  height: 60px;
+  margin-top: 5px;
+}
+
+#DailyRecom > div > p:nth-of-type(2), .p_sc:nth-of-type(2) {
+  position: absolute;
+  margin-top: 2px;
+  text-align: center;
+}
+
+.el-button:hover {
+  color: #1cce66;
+}
+
+.ca_img {
+  height: 500px;
+  width: 1000px;
 }
 </style>
