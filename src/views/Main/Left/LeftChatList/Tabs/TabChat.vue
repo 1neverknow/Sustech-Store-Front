@@ -137,7 +137,7 @@ export default {
   methods: {
     connection() {
       console.log("1111111111111")
-      let url = "http://localhost:8081/webSocket"
+      let url = "http://120.24.4.97:8081/webSocket"
       let socket = new SockJS(url);
       stomp = Stomp.over(socket);
       console.log("22222222222222")
@@ -231,7 +231,7 @@ export default {
       console.log(this.$store.getters.getToken)
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/chat/list',
+        url: 'http://120.24.4.97:8081/chat/list',
         headers: {'authorization': this.$store.getters.getToken},
         transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
           var ret = '';
@@ -342,7 +342,7 @@ export default {
     getHistory(index) {
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/chat/history/' + this.$store.state.chats[index].chatId,
+        url: 'http://120.24.4.97:8081/chat/history/' + this.$store.state.chats[index].chatId,
         headers: {'authorization': this.$store.getters.getToken},
         transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
           let ret = '';

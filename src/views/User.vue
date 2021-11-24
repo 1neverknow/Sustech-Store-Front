@@ -163,7 +163,7 @@ export default {
     getDetails() {
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/user/information/'
+        url: 'http://120.24.4.97:8081/user/information/'
             + this.userId,
       }).then(res => {
         if (res.data.code === 2002) {
@@ -188,7 +188,7 @@ export default {
 
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/user/announceGoods/' + this.userId + '/2',
+        url: 'http://120.24.4.97:8081/user/announceGoods/' + this.userId + '/2',
       }).then(res => {
         if (res.data.code === 2000) {
           console.log(res.data.data)

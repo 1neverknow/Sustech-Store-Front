@@ -23,9 +23,9 @@ export default {
     send() {
       // 获取收藏夹数据
       const newRequest = axios.create({
-        baseUrl: "http://localhost:8081"//请求地址
+        baseUrl: "http://120.24.4.97:8081"//请求地址
       });
-      newRequest.put("http://localhost:8081/user/activate/" + this.activateCode)
+      newRequest.put("http://120.24.4.97:8081/user/activate/" + this.activateCode)
         .then(res => {
           this.content = 'Activate account successfully! You can close this page'
       })

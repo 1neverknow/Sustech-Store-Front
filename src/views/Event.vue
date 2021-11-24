@@ -78,7 +78,7 @@ export default {
     },
     add(){
       const _this=this
-      _this.$axios.put("http://localhost:8081/admin/calendar",{
+      _this.$axios.put("http://120.24.4.97:8081/admin/calendar",{
         date:_this.formData.data,description:_this.formData.content}).then(res=>{
         let date = _this.formData.data.split('-')
         let a =  {
@@ -94,13 +94,13 @@ export default {
     deleteEvent(id,index){
       const _this=this
       console.log("zxyzxy:"+id)
-      _this.$axios.delete("http://localhost:8081/admin/calendar?eventId="+id)
+      _this.$axios.delete("http://120.24.4.97:8081/admin/calendar?eventId="+id)
       _this.calendarData.splice(index,1)
   },
 },
   mounted() {
     const _this = this
-    _this.$axios.get("http://localhost:8081/calender").then(res => {
+    _this.$axios.get("http://120.24.4.97:8081/calender").then(res => {
       console.log(res)
       _this.calendarData = []
       _this.result = res.data.data

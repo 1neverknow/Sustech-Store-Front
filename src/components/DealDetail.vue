@@ -121,7 +121,7 @@ export default {
       }
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/deal/' + this.dealId,
+        url: 'http://120.24.4.97:8081/deal/' + this.dealId,
       }).then(res => {
         const info = res.data.data
         console.log(info)

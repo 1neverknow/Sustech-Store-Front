@@ -101,7 +101,7 @@ export default {
   mounted() {
     this.$axios({
       method: 'get',
-      url: 'http://localhost:8081/user/charge/history',
+      url: 'http://120.24.4.97:8081/user/charge/history',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -147,7 +147,7 @@ export default {
 
     this.$axios({
       method: 'get',
-      url: 'http://localhost:8081/user/consume/history',
+      url: 'http://120.24.4.97:8081/user/consume/history',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -211,7 +211,7 @@ export default {
           }
       )
           .then(() => {
-            this.$axios.get('http://localhost:8081/user/charge/' + chargeId)
+            this.$axios.get('http://120.24.4.97:8081/user/charge/' + chargeId)
                 .then(res => {
                   Element.Message({
                     type: 'success',

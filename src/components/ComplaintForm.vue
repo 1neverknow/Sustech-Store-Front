@@ -98,11 +98,11 @@ export default {
           let url = ''
           let method = 'POST'
           if (this.type === 'goods') {
-            url = 'http://localhost:8081/goods/complain?'
+            url = 'http://120.24.4.97:8081/goods/complain?'
                     + 'content=' + this.ruleForm.content
                     + '&goodsId=' + this.id
           } else if(this.type === 'deal') {
-            url = 'http://localhost:8081/deal/appealing/'
+            url = 'http://120.24.4.97:8081/deal/appealing/'
                 + this.id
                 + '?content=' + this.ruleForm.content
             method = 'GET'

@@ -235,7 +235,7 @@ export default {
     initial(){
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/user/address',
+        url: 'http://120.24.4.97:8081/user/address',
         headers : {
           'Content-Type': 'application/json',
           'authorization' :this.$store.getters.getToken
@@ -301,7 +301,7 @@ export default {
 
       this.$axios({
         method: 'put',
-        url: 'http://localhost:8081/user/address',
+        url: 'http://120.24.4.97:8081/user/address',
         headers : {
           'Content-Type': 'application/json',
         },
@@ -337,7 +337,7 @@ export default {
         headers : {
           'Content-Type': 'application/json',
         },
-        url: 'http://localhost:8081/user/address',
+        url: 'http://120.24.4.97:8081/user/address',
         data:JSON.stringify(address),
         // transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
         //   var ret = '';
@@ -391,7 +391,7 @@ export default {
     deleteRequest(index){
       this.$axios({
         method: 'delete',
-        url: 'http://localhost:8081/user/address?addressId='+ this.tableData[index].database_id,
+        url: 'http://120.24.4.97:8081/user/address?addressId='+ this.tableData[index].database_id,
         headers : {
           'Content-Type': 'application/json',
         },

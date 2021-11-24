@@ -127,7 +127,7 @@ export default {
             content: this.ruleForm.password,
             checkCode: null,
           }
-          this.$axios.post('http://localhost:8081/user/security', commitForm)
+          this.$axios.post('http://120.24.4.97:8081/user/security', commitForm)
               .then(res => {
                 Element.Message({
                   message: 'Reset Success!',

@@ -117,7 +117,7 @@ export default {
     confirmDelete(goodsId) {
       console.log('delete goods: ' + goodsId)
       if (this.type === 'collection') {
-        this.$axios.delete("http://localhost:8081/user/collection?goodsId=" + goodsId)
+        this.$axios.delete("http://120.24.4.97:8081/user/collection?goodsId=" + goodsId)
             .then(res => {
               Element.Message({
                 message: 'Remove successfully',
@@ -126,7 +126,7 @@ export default {
               this.$emit('refresh')
             })
       } else if (this.type === 'announcement') {
-        this.$axios.delete("http://localhost:8081/goods/delete?goodsId=" + goodsId)
+        this.$axios.delete("http://120.24.4.97:8081/goods/delete?goodsId=" + goodsId)
             .then(res => {
               Element.Message({
                 message: 'Remove successfully',

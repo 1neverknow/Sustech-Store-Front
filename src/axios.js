@@ -5,7 +5,7 @@ import router from "@/router";
 
 // 为交互请求添加域名信息（默认IP。端口号）
 // 后端接收的端口号
-axios.defaults.baseURL='http://localhost:8081'
+axios.defaults.baseURL='http://120.24.4.97:8081'
 
 
 // 配置axios全局拦截 (发起请求时的配置)

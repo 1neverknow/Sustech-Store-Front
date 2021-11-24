@@ -77,7 +77,7 @@ export default {
     //   console.log(this.$store.getters.getToken)
     //   this.$axios({
     //     method: 'get',
-    //     url: 'http://localhost:8081/chat/list',
+    //     url: 'http://120.24.4.97:8081/chat/list',
     //     headers: {'authorization': this.$store.getters.getToken},
     //     transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
     //       var ret = '';
@@ -208,6 +208,6 @@ export default {
 
 .left-chat-list-tab-wrap::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background-color: ;
+  background-color:#aaa ;
 }
 </style>

@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     addAddress() {
-        this.$axios.post('http://localhost:8081/user/address', this.addressForm).then((res)=>{
+        this.$axios.post('http://120.24.4.97:8081/user/address', this.addressForm).then((res)=>{
           Element.Message({
             message: 'Success!',
             type: 'success',

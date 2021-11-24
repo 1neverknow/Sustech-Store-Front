@@ -132,7 +132,7 @@ export default {
     getAllBuyOrder() {
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/user/buyDeal',
+        url: 'http://120.24.4.97:8081/user/buyDeal',
       }).then(res => {
         const orders = res.data.data
         console.log('get buying deal', orders)
@@ -166,7 +166,7 @@ export default {
     getAllSellOrder() {
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/user/sellDeal',
+        url: 'http://120.24.4.97:8081/user/sellDeal',
       }).then(res => {
         const orders = res.data.data
         console.log('get selling deal', orders)
@@ -207,7 +207,7 @@ export default {
     getBuyStageOrder(stage) {
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/user/buyDeal/' + stage
+        url: 'http://120.24.4.97:8081/user/buyDeal/' + stage
       }).then(res => {
         const orders = res.data.data
         this.total = orders.length
@@ -239,7 +239,7 @@ export default {
     getSellStageOrder(stage) {
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/user/sellDeal/' + stage
+        url: 'http://120.24.4.97:8081/user/sellDeal/' + stage
       }).then(res => {
         const orders = res.data.data
         this.total = orders.length

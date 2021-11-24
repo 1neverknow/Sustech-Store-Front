@@ -71,7 +71,7 @@ export default {
         return
       }
       this.commentForm.goodsId = this.goodsId
-      this.$axios.post('http://localhost:8081/goods/comment', this.commentForm)
+      this.$axios.post('http://120.24.4.97:8081/goods/comment', this.commentForm)
           .then((res)=>{
             Element.Message({
               message: 'Comment success!',
@@ -82,7 +82,7 @@ export default {
     },
     deleteComment(commentId) {
       console.log(commentId)
-      this.$axios.delete('http://localhost:8081/goods/comment?commentId=' + commentId)
+      this.$axios.delete('http://120.24.4.97:8081/goods/comment?commentId=' + commentId)
           .then((res)=>{
             Element.Message({
               message: 'Delete success!',

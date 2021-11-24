@@ -182,7 +182,7 @@ export default {
   },
   methods: {
     // initWebSocket() {
-    //   let url = "http://localhost:8081/webSocket"
+    //   let url = "http://120.24.4.97:8081/webSocket"
     //   let socket = new SockJS(url);
     //   this.$websocket.stomp = Stomp.over(socket);
     //   // stomp = Stomp.over(socket);
@@ -300,7 +300,7 @@ export default {
       const newRequest = axios.create();
       newRequest({
         method: "POST",
-        url: 'http://localhost:8081/chat/picture/'+this.$store.state.currentChatId,
+        url: 'http://120.24.4.97:8081/chat/picture/'+this.$store.state.currentChatId,
         data: photoData,
         headers: {
           "Content-Type": "multipart/form-data",

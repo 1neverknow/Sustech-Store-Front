@@ -116,7 +116,7 @@ export default {
   },
   methods: {
     // initWebSocket() {
-    //   let url = "http://localhost:8081/webSocket"
+    //   let url = "http://120.24.4.97:8081/webSocket"
     //   let socket = new SockJS(url);
     //   stomp = Stomp.over(socket);
     //   stomp.connect(

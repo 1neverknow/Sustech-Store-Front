@@ -156,7 +156,7 @@ export default {
           const _this = this
 
           const newRequest = axios.create();
-          newRequest.post('http://localhost:8081/user/register', this.ruleForm)
+          newRequest.post('http://120.24.4.97:8081/user/register', this.ruleForm)
               .then((res)=>{
             // 验证成功后，弹窗提示前往邮箱查看，并跳转到register页面
             Element.Message({

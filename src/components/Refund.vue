@@ -33,7 +33,7 @@ export default {
     },
     refund() {
       console.log(this.dealId)
-      this.$axios.put('http://localhost:8081/deal/refund/' + this.dealId)
+      this.$axios.put('http://120.24.4.97:8081/deal/refund/' + this.dealId)
         .then(res => {
           Element.Message({
             message: 'Success!',

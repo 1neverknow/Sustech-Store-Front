@@ -148,7 +148,7 @@ export default {
   mounted() {
     this.imageUrl = this.$store.getters.getBasic_Info.picturePath
     const _this = this
-    _this.$axios.get("http://localhost:8081/calender").then(res => {
+    _this.$axios.get("http://120.24.4.97:8081/calender").then(res => {
       console.log(res)
       console.log("!!!!!!!")
       _this.result = res.data.data

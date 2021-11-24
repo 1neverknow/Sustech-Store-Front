@@ -216,7 +216,7 @@ export default {
       console.log(123)
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/goods/recommend',
+        url: 'http://120.24.4.97:8081/goods/recommend',
       }).then(res => {
         if (res.data.code === 2000) {
           console.log("asdasd")
@@ -244,7 +244,7 @@ export default {
     }
     this.$axios({
       method: 'get',
-      url: 'http://localhost:8081/carousel',
+      url: 'http://120.24.4.97:8081/carousel',
     }).then(res => {
       if (res.data.code === 2000) {
         res.data.data.forEach(item => {
@@ -301,7 +301,7 @@ export default {
       console.log(this.list.length)
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/searchGoods/' + this.formInline.content + '/' + val,
+        url: 'http://120.24.4.97:8081/searchGoods/' + this.formInline.content + '/' + val,
       }).then(res => {
         if (res.data.code === 2000) {
           console.log(res.data.data)
@@ -352,7 +352,7 @@ export default {
         })
         return
       }
-      this.$axios.put("http://localhost:8081/user/collection?goodsId="
+      this.$axios.put("http://120.24.4.97:8081/user/collection?goodsId="
           + this.goodsId).then(res => {
         Element.Message({
           message: 'Add product to collection successfully',
@@ -370,7 +370,7 @@ export default {
             this.type = true
             this.$axios({
               method: 'get',
-              url: 'http://localhost:8081/searchGoods/' + this.formInline.content,
+              url: 'http://120.24.4.97:8081/searchGoods/' + this.formInline.content,
             }).then(res => {
               if (res.data.code === 2000) {
                 this.goodsPage = Math.ceil(res.data.data / 10)
@@ -382,7 +382,7 @@ export default {
             console.log(this.list.length)
             this.$axios({
               method: 'get',
-              url: 'http://localhost:8081/searchGoods/' + this.formInline.content + '/1',
+              url: 'http://120.24.4.97:8081/searchGoods/' + this.formInline.content + '/1',
             }).then(res => {
               if (res.data.code === 2000) {
                 console.log(res.data.data)
@@ -402,7 +402,7 @@ export default {
             this.user_list = []
             this.$axios({
               method: 'get',
-              url: 'http://localhost:8081/searchUser/' + this.formInline.content + '/1',
+              url: 'http://120.24.4.97:8081/searchUser/' + this.formInline.content + '/1',
             }).then(res => {
               if (res.data.code === 2000) {
                 let goods = []
@@ -410,7 +410,7 @@ export default {
                 res.data.data.forEach(item => {
                   this.$axios({
                     method: 'get',
-                    url: 'http://localhost:8081/user/announceGoods/' + item.userId + '/2',
+                    url: 'http://120.24.4.97:8081/user/announceGoods/' + item.userId + '/2',
                   }).then(res => {
                     if (res.data.code === 2000) {
                       res.data.data.forEach(good => {

@@ -132,7 +132,7 @@ export default {
         if (valid) {
           this.$axios({
             method: 'get',
-            url: 'http://localhost:8081/user/checkEmail?'
+            url: 'http://120.24.4.97:8081/user/checkEmail?'
                 + "checkCode=" + this.ruleForm.varifycode
                 + "&email=" + this.ruleForm.email,
           }).then(res => {
@@ -161,7 +161,7 @@ export default {
         if (!error) {
           this.$axios({
             method: 'get',
-            url: 'http://localhost:8081/user/sendCode?email=' + this.ruleForm.email,
+            url: 'http://120.24.4.97:8081/user/sendCode?email=' + this.ruleForm.email,
           }).then(res => {
             var countDown = setInterval(() => {
               if (this.count < 1) {
