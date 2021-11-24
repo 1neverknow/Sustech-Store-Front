@@ -29,7 +29,7 @@ export default {
   },
   methods: {
     submit() {
-      this.isAgree = this.isAgree === 1
+      this.isAgree = this.isAgree === '1'
       this.$axios.put('http://localhost:8081/deal/agreeRefund/'
         + this.dealId
         + '?agree=' + this.isAgree)

@@ -126,9 +126,9 @@ export default {
     return {
       labelPosition: 'top',
       ruleForm: {
-        username:'mithra',
-        email: 'c001hewanning@qq.com',
-        password: '123',
+        username:'',
+        email: '',
+        password: '',
         gender: 2,
       },
       accept: '',

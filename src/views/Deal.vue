@@ -123,25 +123,16 @@ export default {
       dealInfo: {
         dealId: '',
         stage: 0,    // 订单状态
-        postage: 10, // 邮费 or 包邮
+        postage: 0, // 邮费 or 包邮
         confirmAddress: 1, // 选中的地址
         total: '',
       },
       userInfo: {
-        buyId: 11111,  //买家id
+        buyId: -1,  //买家id
         addresses: [
         ],  // 可选地址
       },
-      goodsList: [
-        {
-          sellerId: 22222, // 卖家id
-          goodsId: 111111, // 商品id,
-          goodsName: 'Mana Stone',
-          goodsPicture: '',
-          price: 111111, // 商品单价
-          number: 1111,  // 购买的商品数
-        }
-      ],
+      goodsList: [],
       addressForm: {
         recipientName: '',
         phone: '',

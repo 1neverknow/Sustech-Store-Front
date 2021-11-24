@@ -10,7 +10,6 @@ import User from "@/views/User";
 import Details from "@/views/Details";
 import Collection from "@/views/Collection";
 import Activate from "@/views/Activate"
-import Contact from "@/views/Contact";
 import Deal from "@/views/Deal"
 import Publish from "@/views/Publish"
 import Order from "@/views/Order"
@@ -175,14 +174,6 @@ const routes = [
     path: '/goods/:goodsId',
     name: 'Details',
     component: Details
-  },
-  {
-    path: '/product/contact',
-    name: 'Contact',
-    meta: {
-      requireAuth: true
-    },
-    component: Contact
   },
   {
     path: '/deal/:goodsId',

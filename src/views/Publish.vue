@@ -147,11 +147,11 @@ export default {
       labelPosition: 'left',
       freeDelivery: true, // 是否包邮
       goods: {
-        introduce: 'aaaaaaaaaa',
-        isSell: 'Sell',
+        introduce: '',
+        isSell: '',
         labels: [],
-        price: 999,
-        title: '300 Mana Stone',
+        price: '',
+        title: '',
         postage: 0,
       },
       goodsId: -1,
