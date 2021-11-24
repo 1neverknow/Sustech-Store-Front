@@ -200,7 +200,7 @@ export default {
 
 .info-nickname {
   color: #e28353;
-  font-size: 18px;
+  font-size: 20px;
 }
 
 .info-icon-wrap {
