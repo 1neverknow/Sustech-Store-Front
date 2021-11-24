@@ -239,7 +239,7 @@ export default new Vuex.Store({
                 if (chat.chatId === state.currentChatId) {
                     // chat.messages = []
                     chat.messages.push(msg);
-                    chat.unReadCount=chat.unReadCount+1;
+                    // chat.unReadCount=chat.unReadCount+1;
                     break;
                 }
             }
@@ -288,22 +288,11 @@ export default new Vuex.Store({
             const goodsInformation = subscribeMsg[1];
             for (let index = 0;index< state.chats.length;index++) {
                 if (state.chats[index].chatId === state.currentChatId) {
-                    state.chats[index] = {
-                        chatId: state.chats[index].chatId,
-                        linkmanIndex: state.chats[index].linkmanIndex,
-                        linkmanId:state.chats[index].linkmanId,
-                        isMute: false,
-                        isOnTop: false,
-                        isOnce: this.state.chats[index].isOnce,
-                        isBuyer: subscribeMsg[2],
-                        unReadCount: 0,
-                        goodsInformation: {
-                            avatar: goodsInformation.avatar,
-                            price: goodsInformation.price,
-                            id: goodsInformation.id,
-                        },
-                        messages: []
-                    }
+                    state.chats[index].isBuyer = subscribeMsg[2];
+                    state.chats[index].goodsInformation.avatar = goodsInformation.avatar;
+                    state.chats[index].goodsInformation.price = goodsInformation.price;
+                    state.chats[index].goodsInformation.id = goodsInformation.id;
+                    state.chats[index].unReadCount = 0;
                     state.chats[index].messages = msg.reverse()
                     // for (let msg of subscribeMsg) {
                     //     chat.messages = [msg].concat(chat.messages);
@@ -357,6 +346,7 @@ export default new Vuex.Store({
                         type: "chat"
                     });
                     isIn = true
+                    chat.unReadCount ++;
                     break;
                 }
             }

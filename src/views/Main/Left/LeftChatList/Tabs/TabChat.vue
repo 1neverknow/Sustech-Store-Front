@@ -290,6 +290,11 @@ export default {
                 isOnce: false,
                 isBuyer: item.isBuyer,
                 unReadCount: 0,
+                goodsInformation: {
+                  avatar: 0,
+                  price: 0,
+                  id: 0,
+                },
                 messages: []
                 // address: item.addressName,
                 // type:item.isDefault==='null'?'Normal':'Default'
@@ -332,6 +337,11 @@ export default {
                 isOnce: false,
                 isBuyer: item.isBuyer,
                 unReadCount: item.unreadCount,
+                goodsInformation: {
+                  avatar: 0,
+                  price: 0,
+                  id: 0,
+                },
                 messages: [
                   {
                     avatar: item.otherUserPicturePath,
