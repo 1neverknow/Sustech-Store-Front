@@ -248,7 +248,7 @@ export default {
           this.user_name = this.$store.getters.getBasic_Info.userName,
               this.picture = this.$store.getters.getBasic_Info.picturePath,
               this.email = this.$store.getters.getBasic_Info.email,
-              this.gender = this.$store.getters.getBasic_Info.gender,
+              this.gender = this.$store.getters.getBasic_Info.gender===0?'Man':this.$store.getters.getBasic_Info.gender===1?'Woman':'Secret',
               this.birthday = this.$store.getters.getBasic_Info.birthday,
               this.credit = this.$store.getters.getBasic_Info.credit,
               this.id_card = this.$store.getters.getBasic_Info.id_card,
