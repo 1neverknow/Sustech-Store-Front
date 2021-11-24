@@ -13,36 +13,81 @@
             {{ this.$store.getters.getBasic_Info.sign }}
           </div>
         </el-card>
-        <el-card>
-          <el-carousel indicator-position="outside" autoplay interval="2000">
-            <!--            <el-carousel-item v-for="url in items" :key="url">-->
-            <!--              <div class="cat-img">-->
-            <!--                <img :src="url" >-->
-            <!--&lt;!&ndash;                <img src="../assets/cat/majiang/1.png">&ndash;&gt;-->
-            <!--              </div>-->
-            <!--            </el-carousel-item>-->
-            <el-carousel-item>
-              <div class="cat-img">
-                <img src="../assets/cat/majiang/1.png">
-              </div>
-            </el-carousel-item>
-            <el-carousel-item>
-              <div class="cat-img">
-                <img src="../assets/cat/majiang/2.png">
-              </div>
-            </el-carousel-item>
-            <el-carousel-item>
-              <div class="cat-img">
-                <img src="../assets/cat/majiang/3.png">
-              </div>
-            </el-carousel-item>
-            <el-carousel-item>
-              <div class="cat-img">
-                <img src="../assets/cat/majiang/4.png">
-              </div>
-            </el-carousel-item>
-          </el-carousel>
+        <el-card style="height: 390px">
+          <div v-show="!judge" class="cat-all-img">
+            <a target="_blank" href="https://mp.weixin.qq.com/s/0S6C-zduKXrWrzNheqe0fA">
+              <img src="../assets/cat/all.png">
+            </a>
+            <el-alert center @click.native="displayCat()"
+                      title="Click to see our school cat!!"
+                      type="warning">
+            </el-alert>
+          </div>
+
+          <div v-show="judge">
+            <el-carousel indicator-position="outside" autoplay interval="2000" v-show="tabPosition==='majiang'">
+              <el-carousel-item>
+                <div class="cat-img">
+                  <img src="../assets/cat/majiang/1.png">
+                </div>
+              </el-carousel-item>
+              <el-carousel-item>
+                <div class="cat-img">
+                  <img src="../assets/cat/majiang/2.png">
+                </div>
+              </el-carousel-item>
+              <el-carousel-item>
+                <div class="cat-img">
+                  <img src="../assets/cat/majiang/4.png">
+                </div>
+              </el-carousel-item>
+            </el-carousel>
+
+            <el-carousel indicator-position="outside" autoplay interval="2000" v-show="tabPosition==='guopi'">
+              <el-carousel-item>
+                <div class="cat-img">
+                  <img src="../assets/cat/guopi/1.png">
+                </div>
+              </el-carousel-item>
+              <el-carousel-item>
+                <div class="cat-img">
+                  <img src="../assets/cat/guopi/2.png">
+                </div>
+              </el-carousel-item>
+              <el-carousel-item>
+                <div class="cat-img">
+                  <img src="../assets/cat/guopi/3.png">
+                </div>
+              </el-carousel-item>
+            </el-carousel>
+
+            <el-carousel indicator-position="outside" autoplay interval="2000" v-show="tabPosition==='hanhan'">
+              <el-carousel-item>
+                <div class="cat-img">
+                  <img src="../assets/cat/hanhan/1.png">
+                </div>
+              </el-carousel-item>
+              <el-carousel-item>
+                <div class="cat-img">
+                  <img src="../assets/cat/hanhan/2.png">
+                </div>
+              </el-carousel-item>
+              <el-carousel-item>
+                <div class="cat-img">
+                  <img src="../assets/cat/hanhan/3.png">
+                </div>
+              </el-carousel-item>
+            </el-carousel>
+
+            <el-radio-group v-model="tabPosition" style="margin-bottom: 30px;margin-left: 130px">
+              <el-radio-button label="majiang">majiang</el-radio-button>
+              <el-radio-button label="hanhan">hanhan</el-radio-button>
+              <el-radio-button label="guopi">guopi</el-radio-button>
+            </el-radio-group>
+          </div>
         </el-card>
+
+
       </el-col>
       <!---->
       <el-col :span="12">
@@ -78,6 +123,7 @@ export default {
   name: "HomePage",
   data() {
     return {
+      judge : false,
       imageUrl: '',
       value: new Date(),
       items: [
@@ -86,6 +132,8 @@ export default {
         '../assets/cat/majiang/3.png',
         '../assets/cat/majiang/4.png'
       ],
+      tabPosition: 'majiang',
+
 
       eachDay: {
         years: '',
@@ -116,7 +164,12 @@ export default {
     })
 
   },
-  methods: {}
+  methods: {
+    displayCat(){
+      console.log(123)
+      this.judge = !this.judge
+    }
+  }
 }
 </script>
 
@@ -182,6 +235,12 @@ export default {
 .cat-img img {
   width: 570px;
   height: 300px;
+}
+
+.cat-all-img img {
+  margin-left: 30px;
+  width: 480px;
+  height: 320px;
 }
 
 </style>

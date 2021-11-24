@@ -1,16 +1,23 @@
 <template>
   <div>
     <el-card>
-      <el-row :gutter="20" >
-        <el-col :span="6" style="text-align: center;margin:0 0 10px 10px" >
-          <i class="el-icon-wallet"> Money</i>  {{this.$store.getters.getBasic_Info.money}}
+      <el-row :gutter="20">
+        <el-col :span="6" style="text-align: center;margin:0 0 10px 10px">
+          <i class="el-icon-wallet"> Money</i> {{ this.$store.getters.getBasic_Info.money }}
         </el-col>
         <el-col :span="6" style="background-color:#f0f9eb;text-align: center;margin:0 0 10px 10px">
-          <i class="el-icon-back" > Outcome</i>  {{this.consume_money}}
+          <i class="el-icon-back"> Outcome</i> {{ this.consume_money }}
         </el-col>
         <el-col :span="6" style="background-color:oldlace;text-align: center;margin:0 0 10px 10px">
-          <i class="el-icon-right"> Income</i>  {{this.charge_money}}
+          <i class="el-icon-right"> Income</i> {{ this.charge_money }}
         </el-col>
+
+        <el-col :span="4">
+          <el-button @click="charge_display()" type="primary" icon="el-icon-collection-tag" circle style="margin-top: -10px;margin-left: 20px">
+            Charge
+          </el-button>
+        </el-col>
+
 
       </el-row>
     </el-card>
@@ -50,7 +57,16 @@
 
     <!--    </div>&ndash;&gt;-->
 
+    <el-dialog  :visible.sync="chargeVisible" append-to-body>
+      <Charge
+          v-if="chargeVisible"
+          @changeVisible="changeChargeVisible"
+          @chargeConfirm="chargeConfirm"
+          v-bind:dealId="dealId"
+      ></Charge>
+    </el-dialog>
   </div>
+
 
 
 </template>
@@ -64,13 +80,24 @@
   background: #f0f9eb;
 }
 
+.el-table .refund-row {
+  background: #c5cbf5;
+}
+
+.el-table .sell-row {
+  background: #fac0e2;
+}
+
 </style>
 
 <script>
 //  import router from '../router'
+import Charge from "@/components/Charge";
+import Element from "element-ui";
 
 export default {
   name: 'AccountList',
+  components: {Charge},
   mounted() {
     this.$axios({
       method: 'get',
@@ -82,15 +109,38 @@ export default {
       if (res.data.code === 2000) {
         this.pagetotal += res.data.data.length
         res.data.data.forEach((item) => {
-          let onerecord = {
-            money: item.money,
-            inout: 'Charge',
-            recordTime: item.chargeDate,
-            address: item.ipAddress,
-            isTrue: item.isCharge ? 'Yes' : 'No'
+          if (item.ipAddress === '-1') {
+            console.log("refund")
+            let onerecord = {
+              money: item.money,
+              inout: 'Refund',
+              recordTime: item.chargeDate,
+              address: '',
+              isTrue: 'Yes'
+            }
+            this.tableData.push(onerecord)
+          }else if (item.ipAddress === '-2') {
+            let onerecord = {
+              money: item.money,
+              inout: 'Sell Money',
+              recordTime: item.chargeDate,
+              address: '',
+              isTrue: 'Yes'
+            }
+            this.tableData.push(onerecord)
+          }
+            else {
+            let onerecord = {
+              money: item.money,
+              inout: 'Charge',
+              recordTime: item.chargeDate,
+              address: item.ipAddress,
+              isTrue: 'Yes'
+            }
+            this.tableData.push(onerecord)
           }
           this.charge_money += item.money
-          this.tableData.push(onerecord)
+
         })
       }
     })
@@ -122,19 +172,60 @@ export default {
 
   data() {
     return {
+      chargeVisible:false,
       tableData: [],
       charge_money: 0,
       consume_money: 0,
+      dealId :1,
     }
   },
   methods: {
+    charge_display(){
+      this.chargeVisible = !this.chargeVisible
+    },
     tableRowClassName({row, rowIndex}) {
       if (row.inout === 'Charge') {
         return 'warning-row';
-      } else {
+      } else if(row.inout === 'Refund'){
+        return 'refund-row';
+      }else if(row.inout === 'Sell Money'){
+        return 'sell-row';
+      }
+      else {
         return 'success-row';
       }
-    }
+    },
+    changeChargeVisible(value) {
+      this.chargeVisible = value
+    },
+    chargeConfirm(value) {
+      const chargeId = value
+      console.log(value)
+      Element.MessageBox.confirm(
+          'Have you finished charge?',
+          'Warning',
+          {
+            confirmButtonText: 'YES',
+            cancelButtonText: 'Cancel',
+            type: 'warning',
+          }
+      )
+          .then(() => {
+            this.$axios.get('http://localhost:8081/user/charge/' + chargeId)
+                .then(res => {
+                  Element.Message({
+                    type: 'success',
+                    message: 'Charge Success',
+                  })
+                })
+          })
+          .catch(() => {
+            Element.Message({
+              type: 'info',
+              message: 'Charge canceled',
+            })
+          })
+    },
   }
 }
 </script>

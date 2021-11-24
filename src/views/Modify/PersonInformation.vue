@@ -2,11 +2,13 @@
   <div>
 
     <el-upload
+        ref="reload"
         class="avatar-uploader_image"
-        action="https://jsonplaceholder.typicode.com/posts/"
+        action="#"
         :show-file-list="false"
-        :on-success="handleAvatarSuccess"
-        :before-upload="beforeAvatarUpload">
+        :auto-upload="false"
+        :on-change="OnChange"
+    >
       <img v-if="imageUrl" :src="imageUrl" class="avatar">
       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
     </el-upload>
@@ -301,6 +303,54 @@ export default {
     };
   },
   methods: {
+    OnChange(file) {
+      const isType = file.type === 'image/jpeg' || 'image/png'
+      const isLt5M = file.size / 1024 / 1024 < 5
+      if (!isType) {
+        Element.Message({
+          message: 'File should be JPG/PNG',
+          type: 'error',
+        })
+        return
+      }
+      if (!isLt5M) {
+        Element.Message({
+          message: 'Size of picture should be less than 5M',
+          type: 'error',
+        })
+        return
+      }
+      console.log(123124312412)
+      this.imageUrl = URL.createObjectURL(file.raw);
+      this.BI_form.image_path = file.raw;
+
+      //创建 formData 对象
+      let formData = new FormData();
+      // 向 formData 对象中添加文件
+      if (this.BI_form.image_path !== '')
+        formData.append('photo', this.BI_form.image_path);
+      else formData.append('photo', null)
+      axios.create()({
+        method: 'post',
+        url: 'http://localhost:8081/user/upload/face',
+        headers: {
+          'Authorization': this.$store.getters.getToken,
+          'Content-Type': 'multipart/form-data'
+        },
+        data: formData,
+      }).then(res => {
+        console.log(res)
+        if (res.data.code === 2000) {
+          this.getBasicInfo()
+          console.log("更改图片成功")
+          this.$message({
+            type: 'success',
+            message: 'Modify picture successfully!!'
+          });
+        }
+      })
+
+    },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
       this.BI_form.image_path = file.raw;
@@ -324,6 +374,10 @@ export default {
         if (res.data.code === 2000) {
           this.getBasicInfo()
           console.log("更改图片成功")
+          this.$message({
+            type: 'success',
+            message: 'Modify picture successfully!!'
+          });
         }
       })
     },
