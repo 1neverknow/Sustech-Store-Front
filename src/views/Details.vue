@@ -132,7 +132,7 @@
                     icon="el-icon-goods"
                     :disabled="state"
                     @click="wantIt"
-                >I Want This
+                >I Want to Buy / Sell
                 </el-button>
               </template>
               <template v-else>
@@ -188,10 +188,10 @@
         <div class="footer">
           <el-collapse v-model="activeNames" class="collapse">
             <el-collapse-item name="1">
-              <template #title >
+              <tecplate #title >
                 <h2 style="margin-right: 10px; padding-left: 10%">Comments </h2>
                 <i class="header-icon el-icon-info"></i>
-              </template>
+              </tecplate>
               <GoodsComment
                   @refresh="refreshComment"
                   v-bind:goodsId="goodsId"

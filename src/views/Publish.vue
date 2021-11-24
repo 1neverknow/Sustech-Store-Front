@@ -40,6 +40,12 @@
                   type="textarea"
               ></el-input>
             </el-form-item>
+            <el-form-item label="Type">
+              <el-radio-group v-model="goods.isSell">
+                <el-radio label="Sell"></el-radio>
+                <el-radio label="Buy"></el-radio>
+              </el-radio-group>
+            </el-form-item>
             <el-form-item label="Free Delivery" prop="delivery">
               <el-switch v-model="freeDelivery"></el-switch>
             </el-form-item>
@@ -242,6 +248,7 @@ export default {
     },
     submitInfo() {
       return new Promise(resolve => {
+          this.goods.isSell = this.goods.isSell === 'Sell'
           this.$axios.post('http://localhost:8081/goods/add', this.goods)
               .then((res) => {
             this.goodsId = res.data.data
@@ -266,10 +273,6 @@ export default {
             'Authorization': store.getters.getToken
           }
         }).then(res => {
-          Element.Message({
-            message: 'Success!',
-            type: 'success',
-          })
           this.$router.push('/goods/' + this.goodsId)
         })
         resolve('done');

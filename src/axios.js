@@ -64,11 +64,11 @@ axios.interceptors.response.use(response => {
             router.push("/login")
         }
         // 错误提示（弹窗）
-        Element.Message({
-            showClose: true,
-            message: error.message,
-            type: 'error',
-        })
+        // Element.Message({
+        //     showClose: true,
+        //     message: error.message,
+        //     type: 'error',
+        // })
         // 阻止进入后续逻辑
         return Promise.reject(error)
     }
