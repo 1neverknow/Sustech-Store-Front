@@ -10,7 +10,7 @@
             <li><el-button
                 type="text"
                 class="route-btn"
-                @click="changeComplainVisible()"
+                @click="changeComplainVisible(true)"
             >Complain this User
             </el-button></li>
           </ul>
@@ -246,8 +246,8 @@ export default {
       }
       this.$router.push('/goods/' + id)
     },
-    changeComplainVisible(){
-      this.complainVisible = true
+    changeComplainVisible(val){
+      this.complainVisible = val
     }
   }
 }
