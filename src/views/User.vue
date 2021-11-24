@@ -1,16 +1,36 @@
 <template>
   <div>
-    <el-header class="page-header">
+    <el-header class="page_header">
       <div class="title">
+        <p style="margin-left: 5%">{{title}}</p>
         <div class="list">
           <ul>
             <li><router-link to="/sh">Homepage</router-link></li>
             <li><router-link to="/">User Page</router-link></li>
+            <li><el-button
+                type="text"
+                class="route-btn"
+                @click="changeComplainVisible()"
+            >Complain this User
+            </el-button></li>
           </ul>
         </div>
       </div>
     </el-header>
-    <el-card>
+
+    <el-dialog
+        title="Complain"
+        :visible.sync="complainVisible"
+        width="50%"
+    >
+      <ComplainUser
+          @changeVisible="changeComplainVisible"
+          v-bind:id="userId"
+      ></ComplainUser>
+    </el-dialog>
+
+
+    <el-card style="margin-top: 10px">
       <el-container>
         <el-aside width="200px">
           <div class="search_user_image">
@@ -122,14 +142,18 @@
 
 <script>
 import Element from "element-ui";
-
+import Complain from "@/components/ComplaintForm";
+import ComplainUserAll from "@/views/ComplainUserAll";
+import ComplainUser from "@/components/ComplainUser";
 export default {
+  components: {ComplainUserAll, Complain,ComplainUser},
   mounted() {
     this.activate()
   },
   name: "User",
   data() {
     return {
+      complainVisible:false,
       userId: '',
       user_name: '',
       phone: '',
@@ -222,6 +246,9 @@ export default {
       }
       this.$router.push('/goods/' + id)
     },
+    changeComplainVisible(){
+      this.complainVisible = true
+    }
   }
 }
 </script>
@@ -296,5 +323,60 @@ export default {
   margin-right: -20%;
   height: 64px;
   float: right;
+}
+
+.page_header {
+  height: 300px;
+  width: 105%;
+  margin-left: -2%;
+  /*margin-top: -20px;*/
+  z-index: 4;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  -webkit-box-shadow: 0 5px 5px rgba(0, 0, 0, 0.07);
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.07);
+}
+ .page_header .title {
+  margin-top: -30px;
+  width: 1225px;
+  height: 30px;
+  line-height: 64px;
+  font-size: 25px;
+  font-weight: 400;
+  color: #212121;
+}
+ .page_header .title p {
+  float: left;
+}
+ .page_header .title .list {
+  margin-right: -20%;
+  height: 64px;
+  float: right;
+}
+
+ .page_header .title .list li {
+  float: left;
+  margin-left: 50px;
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
+  'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+}
+ .page_header .title .list li a {
+  font-size: 14px;
+  color: #616161;
+}
+ .page_header .title .list li a:hover {
+  font-size: 14px;
+  color: #ff6700;
+}
+
+ .page_header .title .list li .route-btn {
+  font-size: 14px;
+  color: #616161;
+  text-decoration: underline
+}
+ .page_header .title .list .li .route-btn:hover {
+  font-size: 14px;
+  color: #ff6700;
+  text-decoration: underline
 }
 </style>

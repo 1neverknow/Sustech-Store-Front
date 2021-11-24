@@ -507,7 +507,7 @@ export default {
               // this.$router.push('/account')
               this.$message({
                 type: 'success',
-                message: 'You successfully change your password'
+                message: 'You successfully change your telephone'
               });
             } else {
               this.$message({
