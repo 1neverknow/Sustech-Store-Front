@@ -15,22 +15,24 @@
       </div>
     </div>
 
-    <el-card class="content">
-      <!--      有收藏物品-->
-      <div v-if="list.length > 0">
-        <MyList
-            v-bind:type="'searchLabel'"
-            v-bind:showList="showList"
-            @refresh="refresh"
-        ></MyList>
-      </div>
-      <!--      收藏列表为空-->
-      <div v-else class="collect-empty">
-        <div class="empty">
-          <h2>Your Collection is Empty! 😢</h2>
+    <div class="content-wrapper">
+      <el-card class="content">
+        <!--      有收藏物品-->
+        <div v-if="list.length > 0">
+          <MyList
+              v-bind:type="'searchLabel'"
+              v-bind:showList="showList"
+              @refresh="refresh"
+          ></MyList>
         </div>
-      </div>
-    </el-card>
+        <!--      收藏列表为空-->
+        <div v-else class="collect-empty">
+          <div class="empty">
+            <h2>Your Collection is Empty! 😢</h2>
+          </div>
+        </div>
+      </el-card>
+    </div>
     <template v-if="showList.length <= 4">
       <el-footer class="footer0">
         <!-- 分页区域 -->
@@ -168,9 +170,7 @@ export default {
 
 <style scoped>
 .collection {
-  background-image: url("../assets/imgs/bg.jpg");
   background-color: #f5f5f5;
-  margin-top: -3%;
   /*margin-left: -2.5%;*/
   width: 100%
 }
@@ -180,6 +180,7 @@ export default {
   /*margin-top: -100px;*/
   width: 110%;
   margin-left: -8%;
+  margin-top: -3%;
 }
 .collection .collection-header .header-content {
   width: 1225px;
@@ -207,8 +208,12 @@ export default {
   font-weight: 400;
   color: #212121;
 }
+.collection {
+  background-image: url("../assets/imgs/tcyc.jpg");
+  margin-left: 2%;
+}
 
-.collection .content {
+.collection .content-wrapper .content {
   padding: 20px 0;
   margin-top: 50px;
   margin-left: 15%;
@@ -217,46 +222,26 @@ export default {
   width: 1225px;
   background: rgba(255, 255, 255, 0.8);
 }
-.collection .content .pagination {
+.collection .content-wrapper .content .pagination {
   float: bottom;
   margin: auto;
 }
 
-.collection .content .goods-list {
+.collection .content-wrapper .content .goods-list {
   margin-left: -13.7px;
   overflow: hidden;
   height: 700px;
 }
 /* 收藏列表为空的时候显示的内容CSS */
-.collection .collect-empty {
-  width: 1225px;
-  margin: 0 auto;
-}
-.collection .collect-empty .empty {
-  height: 300px;
-  padding: 0 0 130px 558px;
-  margin: 65px 0 0;
-  background: url(../assets/imgs/liuhan.gif) no-repeat 124px 0;
-  color: #b0b0b0;
-  overflow: hidden;
-}
-.collection .collect-empty .empty h2 {
-  margin: 130px -100px 0;
-  font-size: 36px;
-}
-.collection .collect-empty .empty p {
-  margin: 0 0 20px;
-  font-size: 20px;
-}
 .collection .footer0 {
-  margin-top: 180px;
+  margin-top: 190px;
   /*margin-right: 50px;*/
   text-align: right;
   background-color: whitesmoke;
   /*float: right;*/
 }
 .collection .footer1 {
-  margin-top: 80px;
+  margin-top: 40px;
   /*margin-right: 50px;*/
   text-align: right;
   background-color: whitesmoke;

@@ -69,25 +69,20 @@
                 style="width: 300px; margin-top: -20px"
                 :closable="false">
             </el-alert>
+
             <el-form class="avatar-uploader">
-              <el-upload
-                  action="https://jsonplaceholder.typicode.com/posts/"
-                  list-type="picture-card"
-                  :on-success="handleSuccess"
-                  :before-upload="beforeUpload"
-                  :on-preview="handlePictureCardPreview"
-                  :on-remove="handleRemove"
-              >
+
+              <el-upload ref="upload" action="#" multiple :file-list="photos" list-type="picture-card"
+                         :on-preview="handlePictureCardPreview" :on-change="OnChange" :on-remove="handleRemove"
+                         accept="image/jpeg,image/png" :auto-upload="false">
                 <i class="el-icon-plus"></i>
               </el-upload>
-              <el-dialog v-model="dialogVisible">
-                <img width="100%" :src="dialogImageUrl" alt="" />
+              <el-dialog :visible.sync="dialogVisible" append-to-body>
+                <img width="100%" :src="dialogImageUrl" alt="">
               </el-dialog>
+
             </el-form>
 
-            <el-form-item label="goodsImg" prop="goodsImg" hidden>
-              <el-input v-model="photos" clearable></el-input>
-            </el-form-item>
           </el-col>
         </el-row>
 
@@ -183,8 +178,12 @@ export default {
           {required: true, message: 'Type is required', trigger: 'blur'},
         ]
       },
+
       dialogImageUrl: '',
-      dialogVisible: ''
+      dialogVisible: false,
+      limit: 5,
+      hideUpload: false, //是否显示上传图片的加号
+      uploadUrl: '',
     }
   },
   methods: {
@@ -192,7 +191,7 @@ export default {
       this.goods.tags = tags
     },
     handleRemove(file, fileList) {
-      console.log('file', file, 'fileList', fileList)
+      console.log('file', file)
       const tmp_path = file.response
       console.log(tmp_path)
       const i = this.photos.findIndex(item => item.uid === file.uid)
@@ -201,9 +200,6 @@ export default {
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
-    },
-    handleSuccess(res, file) {
-      this.photos.push(file.raw)
     },
     beforeUpload(file) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -222,6 +218,23 @@ export default {
         })
         return false
       }
+    },
+    OnChange(file, fileList) {
+      const isType = file.type === 'image/jpeg' || 'image/png'
+      const isLt5M = file.size / 1024 / 1024 < 5
+      if (!isType) {
+        // this.$message.error('上传头像图片只能是 JPG 格式!');
+        fileList.pop()
+      }
+      if (!isLt5M) {
+        Element.Message({
+          message: 'Size of picture should be less than 5M',
+          type: 'error',
+        })
+        fileList.pop()
+      }
+      this.photos.push(file)
+      this.hideUpload = fileList.length >= this.limit
     },
     validateInfo(formName) {
       if (this.photos.length === 0) {
@@ -264,7 +277,7 @@ export default {
       return new Promise(resolve => {
         // 上传商品图片
         let photoData = new FormData();
-        photoData.append('photos', this.photos[i])
+        photoData.append('photos', this.photos[i].raw)
         const newRequest = axios.create();
         newRequest({
           method: "POST",
