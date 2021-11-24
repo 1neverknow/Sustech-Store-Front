@@ -7,12 +7,7 @@
           <div class="list">
             <ul>
               <li><router-link to="/sh">Homepage</router-link></li>
-              <li><el-button
-                type="text"
-                class="route-btn"
-                @click="toUserpage($store.getters.getUser.userId)"
-              >User Page
-              </el-button></li>
+              <li><router-link to="/">User Page</router-link></li>
               <li>
                 <template v-if="goodsState===0">
                   <el-button

@@ -3,7 +3,7 @@
     <ul>
       <li><router-link to="/sh">Homepage</router-link></li>
       <li>
-        <router-link :to="{path: '/user/'+$store.getters.getUser.userId}">User Page</router-link>
+        <router-link to="/">User Page</router-link>
       </li>
     </ul>
   </div>
