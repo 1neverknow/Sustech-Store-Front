@@ -126,10 +126,9 @@ export default {
                     + 'content=' + this.ruleForm.content
                     + '&goodsId=' + this.id
           } else if(this.type === 'deal') {
-            url = 'http://120.24.4.97:8081/deal/appealing/'
+            url = 'http://120.24.4.97:8081/deal/appealing?dealId='
                 + this.id
-                + '?content=' + this.ruleForm.content
-            method = 'GET'
+                + '&content=' + this.ruleForm.content
           }
           newRequest({
             method: method,

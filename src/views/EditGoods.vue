@@ -213,6 +213,7 @@ export default {
             const productDetails = res.data.data
             this.goods.price = productDetails.price
             this.goods.title = productDetails.title
+            this.goods.isSell = productDetails.isSell
             this.getPicture(productDetails.picturePath)
             this.goods.labels = productDetails.labels
             this.goods.introduce = productDetails.introduce
