@@ -212,15 +212,28 @@ export default {
   },
   mounted() {
     console.log(this.$store.getters.getGood_list)
-    if (this.$store.getters.getGood_list === null || this.$store.getters.getGood_list.length === 0) {
-      console.log(123)
+    if(this.$store.getters.getToken === null) {
+      this.$axios({
+        method: 'get',
+        url: 'http://120.24.4.97:8081/goods/random',
+      }).then(res => {
+        if (res.data.code === 2000) {
+          res.data.data.forEach(item => {
+            this.list.push({
+              goods_id: item.goodsId,
+              picture_path: item.picturePath,
+              price: '¥' + item.price,
+              name: item.title
+            })
+          })
+        }
+      })
+    }else if (this.$store.getters.getGood_list === null || this.$store.getters.getGood_list.length === 0) {
       this.$axios({
         method: 'get',
         url: 'http://120.24.4.97:8081/goods/recommend',
       }).then(res => {
         if (res.data.code === 2000) {
-          console.log("asdasd")
-          console.log(res.data.data)
           res.data.data.forEach(item => {
             this.list.push({
               goods_id: item.goodsId,
