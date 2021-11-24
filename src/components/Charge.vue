@@ -72,10 +72,6 @@ export default {
             + '?money=' + this.rechargeParams.totalAmt
       }).then(res => {
         this.chargeId = res.data.data
-        Element.Message({
-          message: 'Success!',
-          type: 'success',
-        })
         this.$emit('changeVisible', false)
         this.$emit('chargeConfirm', this.chargeId)
       })

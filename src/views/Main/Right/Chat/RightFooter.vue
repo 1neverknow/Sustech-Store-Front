@@ -295,6 +295,7 @@ export default {
       this.hideUpload = fileList.length >= this.limit
       let photoData = new FormData();
       photoData.append('photo', photo.raw)
+      fileList.pop()
       const newRequest = axios.create();
       newRequest({
         method: "POST",
