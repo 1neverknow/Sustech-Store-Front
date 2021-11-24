@@ -1,6 +1,16 @@
 <template>
-  <div class="div">
-    <el-card style="opacity: 0.8">
+  <div>
+    <el-header class="page-header">
+      <div class="title">
+        <div class="list">
+          <ul>
+            <li><router-link to="/sh">Homepage</router-link></li>
+            <li><router-link to="/">User Page</router-link></li>
+          </ul>
+        </div>
+      </div>
+    </el-header>
+    <el-card>
       <el-container>
         <el-aside width="200px">
           <div class="search_user_image">
@@ -55,8 +65,10 @@
 
               <el-descriptions-item label-style="width:15%" content-style="width:15%">
                 <template slot="label">
+                  <i class="el-icon-mobile-phone"></i>
+                  Telephone Number
                 </template>
-
+                {{ phone }}
               </el-descriptions-item>
 
               <el-descriptions-item label-style="width:15%" content-style="width:15%">
@@ -74,39 +86,36 @@
       </el-container>
     </el-card>
 
-    <h3 style="color: #ffffff; text-align: center; font-weight: bolder "  >
+    <h3>
       发布的商品
     </h3>
-    <el-card style="opacity: 0.8;height:700px">
-      <el-col >
-        <el-row>
-          <div id="DailyRecom" >
-            <!--     每日推荐 -->
-            <div v-for="item in display_goods" @click="queryGoods(item.goodsId)">
-              <div>
-                <img class="img_sc" :src="item.picturePath" alt="">
-                <p class="p_sc">
-                  ¥{{ item.price }}   {{ item.title }}
-                </p>
-              </div>
+    <el-col>
+      <el-row>
+        <div id="DailyRecom" >
+          <!--     每日推荐 -->
+          <div v-for="item in display_goods" @click="queryGoods(item.goodsId)">
+            <div>
+              <img class="img_sc" :src="item.picturePath" alt="">
+              <p class="p_sc">
+                ¥{{ item.price }}   {{ item.title }}
+              </p>
             </div>
           </div>
-        </el-row>
+        </div>
+      </el-row>
 
-        <el-row>
-          <div class="pagination" style="float: right"
-          >
-            <el-pagination
-                background
-                layout="prev, pager, next"
-                :page-count="goodsPage"
-                @current-change="handleGoodsCurrentChange">
-            </el-pagination>
-          </div>
-        </el-row>
-      </el-col>
-
-    </el-card>
+      <el-row>
+        <div class="pagination" style="float: right"
+        >
+          <el-pagination
+              background
+              layout="prev, pager, next"
+              :page-count="goodsPage"
+              @current-change="handleGoodsCurrentChange">
+          </el-pagination>
+        </div>
+      </el-row>
+    </el-col>
   </div>
 
 </template>
@@ -277,11 +286,15 @@ export default {
   margin-top: 2px;
   text-align: center;
 }
-.div{
-  font-weight:bold;
-  height: 1000px;
-  background-image: url(../assets/backround2.png);
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
+.title {
+  color: #fff;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+}
+.list {
+  margin-right: -20%;
+  height: 64px;
+  float: right;
 }
 </style>
