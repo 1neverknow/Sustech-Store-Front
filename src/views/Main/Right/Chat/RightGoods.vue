@@ -23,7 +23,7 @@
 <!--        </div></el-row>-->
 <!--        <el-row :span="1"><div >-->
           <div class="button">
-            <el-button :disabled="display()"
+            <el-button :disabled="!display()"
                 class="confirm-to-buy"
                 @click="handleClick"
             >Confirm to buy!</el-button>
@@ -78,7 +78,6 @@ export default {
       this.$router.push('/deal/' + goodsId)
     },
     display() {
-
       const currentChatId = this.$store.state.currentChatId;
       console.log(currentChatId)
       for (let chat of this.$store.state.chats) {
