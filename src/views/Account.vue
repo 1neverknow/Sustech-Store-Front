@@ -177,9 +177,9 @@
           :closable="false">
       </el-alert>
 
-    </el-card>
+<!--    </el-card>-->
 
-    <el-card style="margin-top: 20px">
+<!--    <el-card style="margin-top: 20px">-->
 
 
     </el-card>
@@ -236,6 +236,28 @@ export default {
   // "activateCode": "208347209@qq.comcFLaeLb2Kn8mht1H"
   methods: {
     initialAccount() {
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/user/me',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(res => {
+        if (res.data.code === 2000) {
+          this.$store.commit("SET_Basic_Info", res.data.data)
+          this.user_name = this.$store.getters.getBasic_Info.userName,
+              this.picture = this.$store.getters.getBasic_Info.picturePath,
+              this.email = this.$store.getters.getBasic_Info.email,
+              this.gender = this.$store.getters.getBasic_Info.gender,
+              this.birthday = this.$store.getters.getBasic_Info.birthday,
+              this.credit = this.$store.getters.getBasic_Info.credit,
+              this.id_card = this.$store.getters.getBasic_Info.id_card,
+              this.money = this.$store.getters.getBasic_Info.money,
+              this.phone = this.$store.getters.getBasic_Info.phone,
+              this.PersonalitySignature = this.$store.getters.getBasic_Info.sign,
+              console.log(this.$store.getters.getBasic_Info)
+        }
+      })
       // this.user_name = 'user'
       // this.$axios({
       //   method: 'get',
@@ -280,41 +302,41 @@ export default {
       }).then(res => {
         if (res.data.code === 2000) {
           const data = res.data.data
-          if(data.length>0){
-            this.receiver1=data[0].recipientName
-            this.telephone1=data[0].phone
-            this.address1= data[0].addressName
-            if(data.length>1){
-              this.receiver2=data[1].recipientName
-              this.telephone2=data[1].phone
-              this.address2= data[1].addressName
-              if(data.length>2){
-                this.receiver3=data[2].recipientName
-                this.telephone3=data[2].phone
-                this.address3= data[2].addressName
-              }else{
-                this.receiver3='not yet'
-                this.telephone3='not yet'
-                this.address3='not yet'
+          if (data.length > 0) {
+            this.receiver1 = data[0].recipientName
+            this.telephone1 = data[0].phone
+            this.address1 = data[0].addressName
+            if (data.length > 1) {
+              this.receiver2 = data[1].recipientName
+              this.telephone2 = data[1].phone
+              this.address2 = data[1].addressName
+              if (data.length > 2) {
+                this.receiver3 = data[2].recipientName
+                this.telephone3 = data[2].phone
+                this.address3 = data[2].addressName
+              } else {
+                this.receiver3 = 'not yet'
+                this.telephone3 = 'not yet'
+                this.address3 = 'not yet'
               }
-            }else{
-              this.receiver3='not yet'
-              this.telephone3='not yet'
-              this.address3='not yet'
-              this.receiver2='not yet'
-              this.telephone2='not yet'
-              this.address2='not yet'
+            } else {
+              this.receiver3 = 'not yet'
+              this.telephone3 = 'not yet'
+              this.address3 = 'not yet'
+              this.receiver2 = 'not yet'
+              this.telephone2 = 'not yet'
+              this.address2 = 'not yet'
             }
-          }else{
-            this.receiver1='not yet'
-            this.telephone1='not yet'
-            this.address1='not yet'
-            this.receiver2='not yet'
-            this.telephone2='not yet'
-            this.address2='not yet'
-            this.receiver3='not yet'
-            this.telephone3='not yet'
-            this.address3='not yet'
+          } else {
+            this.receiver1 = 'not yet'
+            this.telephone1 = 'not yet'
+            this.address1 = 'not yet'
+            this.receiver2 = 'not yet'
+            this.telephone2 = 'not yet'
+            this.address2 = 'not yet'
+            this.receiver3 = 'not yet'
+            this.telephone3 = 'not yet'
+            this.address3 = 'not yet'
           }
         } else {
           this.$alert(res.data.message, 'Tip', {

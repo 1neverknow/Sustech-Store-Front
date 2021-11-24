@@ -36,6 +36,7 @@ import Main from "@/views/Main/Main";
 import ST from "@/views/test"
 import SHP from '@/views/SearchHomePage'
 import UserComments from "@/views/UserComments";
+import Payment from "@/views/Payment";
 
 
 Vue.use(VueRouter)
@@ -125,6 +126,14 @@ const routes = [
         },
         component: EditGoods
       },
+      {
+        path: '/payment',
+        name: 'PY',
+        meta: {
+          requireAuth: true
+        },
+        component: Payment
+      }
     ]
   },
   {

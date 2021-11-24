@@ -6,17 +6,40 @@
           <div class="user-info">
             <img :src="imageUrl" class="user-avator" alt/>
             <div class="user-info-cont">
-              <div class="user-info-name">{{this.$store.getters.getBasic_Info.userName}}</div>
+              <div class="user-info-name">{{ this.$store.getters.getBasic_Info.userName }}</div>
             </div>
           </div>
           <div class="user-info-list">
-            {{this.$store.getters.getBasic_Info.sign}}
+            {{ this.$store.getters.getBasic_Info.sign }}
           </div>
         </el-card>
-        <el-card >
+        <el-card>
           <el-carousel indicator-position="outside" autoplay interval="2000">
-            <el-carousel-item v-for="url in items">
-              <image :src=url ></image>
+            <!--            <el-carousel-item v-for="url in items" :key="url">-->
+            <!--              <div class="cat-img">-->
+            <!--                <img :src="url" >-->
+            <!--&lt;!&ndash;                <img src="../assets/cat/majiang/1.png">&ndash;&gt;-->
+            <!--              </div>-->
+            <!--            </el-carousel-item>-->
+            <el-carousel-item>
+              <div class="cat-img">
+                <img src="../assets/cat/majiang/1.png">
+              </div>
+            </el-carousel-item>
+            <el-carousel-item>
+              <div class="cat-img">
+                <img src="../assets/cat/majiang/2.png">
+              </div>
+            </el-carousel-item>
+            <el-carousel-item>
+              <div class="cat-img">
+                <img src="../assets/cat/majiang/3.png">
+              </div>
+            </el-carousel-item>
+            <el-carousel-item>
+              <div class="cat-img">
+                <img src="../assets/cat/majiang/4.png">
+              </div>
             </el-carousel-item>
           </el-carousel>
         </el-card>
@@ -36,7 +59,7 @@
               && (item.months).indexOf(data.day.split('-').slice(1)[0])!==-1 && (item.days).indexOf(data.day.split('-').slice(2).join('-'))!==-1">
                   <el-tooltip :content="item.things" placement="left-start">
                     <div class="mark">
-                      {{item.things}}
+                      {{ item.things }}
                     </div>
                   </el-tooltip>
                 </div>
@@ -57,45 +80,43 @@ export default {
     return {
       imageUrl: '',
       value: new Date(),
-      items:[
-        '../assets/image.png',
-        '@/assets/logo.png',
-        '@/assets/pic.png',
-        '@/assets/lazy.png'
+      items: [
+        "../assets/cat/majiang/1.png",
+        '../assets/cat/majiang/2.png',
+        '../assets/cat/majiang/3.png',
+        '../assets/cat/majiang/4.png'
       ],
-      eachDay:{
-        years:'',
-        months:'',
-        days:'',
-        id:0,
-        things:''
+
+      eachDay: {
+        years: '',
+        months: '',
+        days: '',
+        id: 0,
+        things: ''
       },
-      calendarData: [
-      ]
+      calendarData: []
     }
   },
   mounted() {
-    this.imageUrl =this.$store.getters.getBasic_Info.picturePath
+    this.imageUrl = this.$store.getters.getBasic_Info.picturePath
     const _this = this
     _this.$axios.get("http://localhost:8081/calender").then(res => {
       console.log(res)
       console.log("!!!!!!!")
       _this.result = res.data.data
-      for (let item of _this.result){
-        _this.eachDay.years=item.date.substr(0,4)
-        _this.eachDay.months=item.date.substr(-5,2)
-        _this.eachDay.days=item.date.substr(-2)
-        _this.eachDay.things=item.description
-        _this.id=item.id
+      for (let item of _this.result) {
+        _this.eachDay.years = item.date.substr(0, 4)
+        _this.eachDay.months = item.date.substr(-5, 2)
+        _this.eachDay.days = item.date.substr(-2)
+        _this.eachDay.things = item.description
+        _this.id = item.id
         _this.calendarData.push(_this.eachDay)
-        _this.eachDay= {}
+        _this.eachDay = {}
       }
     })
 
   },
-  methods: {
-
-  }
+  methods: {}
 }
 </script>
 
@@ -156,6 +177,11 @@ export default {
 
 .el-carousel__item:nth-child(2n+1) {
   background-color: #d3dce6;
+}
+
+.cat-img img {
+  width: 570px;
+  height: 300px;
 }
 
 </style>

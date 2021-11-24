@@ -57,6 +57,11 @@
         </el-menu-item>
 
 
+        <el-menu-item index="PY" >
+          <i class="el-icon-money"></i>
+          <span slot="title">Payment</span>
+        </el-menu-item>
+
         <el-menu-item index="UComments" >
           <i class="el-icon-s-comment"></i>
           <span slot="title">My Comments</span>
