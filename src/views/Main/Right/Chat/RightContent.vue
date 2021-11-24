@@ -79,6 +79,9 @@ export default {
     key1(){
       return this.$store.state.key1
     },
+    key1(){
+      return this.$store.state.key1;
+    },
     isNoMessage() {
       const currentChatId = this.$store.state.currentChatId;
       for (let chat of this.$store.state.chats) {
@@ -88,9 +91,11 @@ export default {
       }
     },
     messages() {
+
       const currentChatId = this.$store.state.currentChatId;
       for (let chat of this.$store.state.chats) {
         if (chat.chatId === currentChatId) {
+          console.log(chat.messages)
           return chat.messages;
         }
       }
