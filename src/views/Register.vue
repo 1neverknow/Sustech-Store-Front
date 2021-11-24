@@ -5,13 +5,7 @@
     <el-card class="ms-register">
       <el-container>
         <el-header class="header" style="height: 100px">
-          <router-link to="/user">
-            <el-avatar
-                :size="90"
-                src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-                style="margin: 5px auto; overflow: hidden; border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,.05); position: relative;"
-            ></el-avatar>
-          </router-link>
+          <img src="@/assets/pic.png" style="width: 90px; margin-top: 4px"/>
         </el-header>
         <el-main>
           <el-form
