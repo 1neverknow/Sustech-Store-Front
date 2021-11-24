@@ -3,19 +3,19 @@
   <!--    <input id="userMsg">-->
   <!--    <input id="subscribeMsg">-->
   <!--  </div>-->
-  <div class="left-chat-list-tab-wrap"  :key="unReadCount">
+  <div class="left-chat-list-tab-wrap" :key="getUnReadCount">
     <!--    <input id="userMsg" type="text">-->
     <!--    <input id="subscribeMsg" type="text">-->
     <!--        :key="'chat' + index"-->
     <div
         v-for="(chat, index) in chats"
+        :key="key2"
         class="chat-wrap"
         :class="{
         'chat-wrap-top': chat.isOnTop,
         'chat-wrap-selected': currentChatIndex === index
       }"
         @click="handleChangeChat(index)"
-        :key="key2"
     >
       <div class="chat-avatar">
         <img
@@ -23,21 +23,23 @@
             :src="chat.avatar"
         />
       </div>
-      <div class="chat-msg" >
+      <div class="chat-msg">
         <div class="chat-msg-nickname">
           {{ chat.nickname }}
         </div>
+        <!--        <div-->
+        <!--            class="chat-msg-message"-->
+        <!--        >{{ chat.messages[chat.messages.length - 1].ctn }}</div>-->
         <pre
             class="chat-msg-message"
             v-html="
             chat.messages.length === 0
               ? ''
-              // : chat.messages[0].ctn
               : chat.messages[chat.messages.length - 1].ctn
           "
         ></pre>
       </div>
-      <div class="chat-info" style="text-align:center"  >
+      <div class="chat-info" style="text-align:center">
         <span
             class="chat-info-time"
             :style="{ color: currentChatIndex === index ? '#fff' : '' }"
@@ -46,11 +48,11 @@
         <span class="chat-info-count"
               :style="{ color: currentChatIndex === index ? '#e28353' : 'rgb(246, 233, 215)' }">
 <!--              v-if="judgeCount">-->
-        <!--              >-->
-<!--        v-if="judgeCount">-->
+          <!--              >-->
+          <!--        v-if="judgeCount">-->
         {{ chat.unReadCount !== 0 ? chat.unReadCount : "" }}
         </span
-            >
+        >
         <div class="chat-info-icon-wrap" v-if="chat.isMute">
           <i
               :class="
@@ -86,9 +88,7 @@ global.stomp = null;
 export default {
   name: "TabChat",
   data() {
-    return {
-      unReadCount:0
-    };
+    return {};
   },
   mounted() {
     this.getChatList();
@@ -100,7 +100,7 @@ export default {
   computed: {
     chats() {
       const linkmans = this.$store.state.linkmans;
-      return this.$store.state.chats
+      let s =  this.$store.state.chats
           .map(chat => {
             return {
               ...chat,
@@ -111,6 +111,10 @@ export default {
           .sort((a, b) => {
             return a.isOnTop ? -1 : 0;
           });
+      return s;
+    },
+    getLinkMan(){
+      return this.$store.state.linkmans;
     },
     currentChatIndex() {
       for (let i = 0; i < this.chats.length; i++) {
@@ -123,7 +127,7 @@ export default {
       const currentChatId = this.$store.state.currentChatId;
       console.log(currentChatId)
       for (let chat of this.$store.state.chats) {
-        if (chat.chatId === currentChatId) {
+        if (chat.chatId === this.$store.state.currentChatId) {
           console.log(chat.isBuyer)
           console.log(chat.unReadCount)
           this.unReadCount = chat.unReadCount
@@ -134,11 +138,31 @@ export default {
     key2() {
       return this.$store.state.key2
     },
+    getUnReadCount() {
+      for (let chat of this.$store.state.chats) {
+        if (chat.chatId === this.$store.state.currentChatId) {
+          return chat.unReadCount;
+        }
+      }
+    },
+// }
+// getLastMessage(chat){
+//   return chat.messages.length === 0
+//   // for (let chat of this.$store.state.chats) {
+//   if (chat.chatId === this.$store.state.currentChatId) {
+// this.lastMessage = chat.messages[chat.messages.length - 1].ctn;
+//   }
+// }
+// chat.messages.length === 0
+//     ? ''
+//     // : chat.messages[0].ctn
+//     : chat.messages[chat.messages.length - 1].ctn"
   },
   methods: {
     connection() {
       console.log("1111111111111")
       let url = "http://120.24.4.97:8081/webSocket"
+      // let url = "http://localhost:8081/webSocket"
       let socket = new SockJS(url);
       stomp = Stomp.over(socket);
       console.log("22222222222222")
@@ -216,7 +240,8 @@ export default {
             //   // setConnect(true);
           }
       );
-    },
+    }
+    ,
     setCount() {
       const currentChatId = this.$store.state.currentChatId;
       console.log(currentChatId)
@@ -227,7 +252,8 @@ export default {
           chat.unReadCount = 0;
         }
       }
-    },
+    }
+    ,
     getChatList() {
       console.log(this.$store.getters.getToken)
       this.$axios({
@@ -268,32 +294,32 @@ export default {
                 // address: item.addressName,
                 // type:item.isDefault==='null'?'Normal':'Default'
               })
-            } else if(item.lastMessageContent.toString().includes("8081")){
-              console.log("^^^^^^^^^^^^^^^^^^^^")
-              console.log(item.lastMessageContent)
-              chatList.push({
-                chatId: item.chatId,
-                linkmanIndex: count,
-                linkmanId: item.chatId,
-                isMute: false,
-                isOnTop: false,
-                isOnce: false,
-                isBuyer: item.isBuyer,
-                unReadCount: item.unreadCount,
-                messages: [
-                  {
-                    avatar: item.otherUserPicturePath,
-                    nickname: item.otherUserName.toString(),
-                    ctn: "[图片]",
-                    sender: false,
-                    time: toDate(item.lastMessageDate),
-                    type: "chat"
-                  }
-                ]
-                // address: item.addressName,
-                // type:item.isDefault==='null'?'Normal':'Default'
-              })
-            }else{
+            // } else if (item.lastMessageContent.toString().includes("`<img")) {
+            //   console.log("^^^^^^^^^^^^^^^^^^^^")
+            //   console.log(item.lastMessageContent)
+            //   chatList.push({
+            //     chatId: item.chatId,
+            //     linkmanIndex: count,
+            //     linkmanId: item.chatId,
+            //     isMute: false,
+            //     isOnTop: false,
+            //     isOnce: false,
+            //     isBuyer: item.isBuyer,
+            //     unReadCount: item.unreadCount,
+            //     messages: [
+            //       {
+            //         avatar: item.otherUserPicturePath,
+            //         nickname: item.otherUserName.toString(),
+            //         ctn: "[图片]",
+            //         sender: false,
+            //         time: toDate(item.lastMessageDate),
+            //         type: "chat"
+            //       }
+            //     ]
+            //     // address: item.addressName,
+            //     // type:item.isDefault==='null'?'Normal':'Default'
+            //   })
+            } else {
               // console.log(item.lastMessageContent.toString().includes("<img"))
               console.log("^^^^^^^^^^^^^^^^^^^^")
               console.log(item.lastMessageContent)
@@ -310,7 +336,7 @@ export default {
                   {
                     avatar: item.otherUserPicturePath,
                     nickname: item.otherUserName.toString(),
-                    ctn:item.lastMessageContent,
+                    ctn: item.lastMessageContent,
                     sender: false,
                     time: toDate(item.lastMessageDate),
                     type: "chat"
@@ -344,7 +370,8 @@ export default {
         }
       })
       console.log(this.$store.getters.getToken)
-    },
+    }
+    ,
     getHistory(index) {
       this.$axios({
         method: 'get',
@@ -416,19 +443,24 @@ export default {
           this.$store.commit("setMyself", myInformation);
           this.$store.commit("setOther", yourInformation);
           this.$store.commit("setGoods", goodsInformation);
-          this.$store.state.key1 = this.$store.state.key1+1;
+          stomp.send("/app/clear", {}, JSON.stringify({"body": this.$store.state.currentChatId.toString()}))
+
+          this.$store.state.key1 = this.$store.state.key1 + 1;
         }
       })
-    },
+    }
+    ,
     disconnect() {
       if (stomp != null) {
         stomp.disconnect();
       }
       // setConnect(false);
-    },
+    }
+    ,
     commit() {
 
-    },
+    }
+    ,
 
     handleChangeChat(index) {
 
@@ -436,20 +468,25 @@ export default {
       // console.log(index);
       // console.log(this.chats[index].chatId);
       // this.disconnect();
-      this.unReadCount=0;
+      this.unReadCount = 0;
       console.log(this.unReadCount)
       this.setCount();
+
       if (!this.$store.state.chats[index].isOnce) {
+
         this.getHistory(index);
         this.$store.state.chats[index].isOnce = true;
       } else {
         this.$store.commit("setChatId", this.$store.state.chats[index].chatId);
+        stomp.send("/app/clear", {}, JSON.stringify({"body": this.$store.state.currentChatId.toString()}))
         this.$store.commit("setGoods", this.$store.state.chats[index].goodsInformation);
+
       }
 
       // this.connection();
       // this.commit();
-    },
+    }
+    ,
     getTime(time) {
       const d = time;
       const h = d.getHours() < 10 ? "0" + d.getHours() : d.getHours();

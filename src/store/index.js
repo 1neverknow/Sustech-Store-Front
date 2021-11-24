@@ -37,6 +37,7 @@ export default new Vuex.Store({
         key1:-1,
         key2:-1,
 
+
         chatCount: 1,
         currentTabIndex: 0,
         currentRight: 0,
@@ -231,7 +232,9 @@ export default new Vuex.Store({
             console.log("yeahhhhhhhh!")
             for (let chat of state.chats) {
                 if (chat.chatId === state.currentChatId) {
+                    // chat.messages = []
                     chat.messages.push(msg);
+                    chat.unReadCount=chat.unReadCount+1;
                     break;
                 }
             }
@@ -286,8 +289,9 @@ export default new Vuex.Store({
                         linkmanId:state.chats[index].linkmanId,
                         isMute: false,
                         isOnTop: false,
-                        isOnce: true,
+                        isOnce: this.state.chats[index].isOnce,
                         isBuyer: subscribeMsg[2],
+                        unReadCount: 0,
                         goodsInformation: {
                             avatar: goodsInformation.avatar,
                             price: goodsInformation.price,
@@ -361,7 +365,7 @@ export default new Vuex.Store({
                     isOnTop: false,
                     isOnce: true,
                     // isBuyer: ,
-                    noReadCount: 0,
+                    unReadCount: 0,
                     messages: []
                 })
                 this.state.linkmans.push({

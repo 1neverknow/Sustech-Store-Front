@@ -13,7 +13,7 @@
 <!--          :style="{ visibility: isNoChat ? 'hidden' : 'visible' }"-->
 <!--          @click.stop="handleShowMembers"-->
 <!--        >-->
-          <div class="info-nickname">{{ nickname }}</div>
+          <div class="info-nickname" >{{ nickname }}</div>
 <!--          <div class="info-icon-wrap">-->
 <!--            <i :class="`icon ${isShowMembers ? 'icon-up' : 'icon-down'}`"></i>-->
 <!--          </div>-->
@@ -199,6 +199,7 @@ export default {
 }
 
 .info-nickname {
+  color: #e28353;
   font-size: 18px;
 }
 
