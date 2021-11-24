@@ -235,12 +235,14 @@ export default {
       }).then(res => {
         if (res.data.code === 2000) {
           res.data.data.forEach(item => {
-            this.list.push({
-              goods_id: item.goodsId,
-              picture_path: item.picturePath,
-              price: '¥' + item.price,
-              name: item.title
-            })
+            if(item!==null){
+              this.list.push({
+                goods_id: item.goodsId,
+                picture_path: item.picturePath,
+                price: '¥' + item.price,
+                name: item.title
+              })
+            }
           })
         }
       })
