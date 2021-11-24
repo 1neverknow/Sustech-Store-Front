@@ -11,9 +11,9 @@
     </div>
 
     <el-card class="content">
-      <div class="block">
+      <div v-if="oldPhotos.length > 0" class="block">
         <el-carousel :interval="4000" type="card" height="150px">
-          <el-carousel-item v-for="item in photos" :key="item.id">
+          <el-carousel-item v-for="item in oldPhotos" :key="item.id">
             <el-image
                 style="height: 150px; margin-left: 50px"
                 :src="item"
@@ -21,9 +21,9 @@
             ></el-image>
           </el-carousel-item>
         </el-carousel>
-        </div>
+      </div>
 
-      <div style="margin-left: 40%; margin-top: 3%">
+      <div v-if="oldPhotos.length > 0" style="margin-left: 40%; margin-top: 3%">
         <el-button
             type="danger"
             @click="clearPicture"
@@ -168,6 +168,7 @@ export default {
         postage: 0,
       },
       goodsId: 0,
+      oldPhotos: [],
       photos: [],
       rules: {
         title:[
@@ -203,6 +204,7 @@ export default {
       this.getDetails()
     },
     getDetails() {
+      console.log('get details')
       this.$axios({
         method: 'get',
         url: 'http://120.24.4.97:8081/goods/' + this.goods.goodsId,
@@ -220,7 +222,7 @@ export default {
     },
     getPicture(picturePaths) {
       for (let i in picturePaths) {
-        this.photos.push(picturePaths[i].path)
+        this.oldPhotos.push(picturePaths[i].path)
       }
     },
     clearPicture() {
@@ -230,7 +232,7 @@ export default {
           message: 'Delete all pictures!',
           type: 'success',
         })
-        this.getDetails()
+        this.oldPhotos = []
       })
     },
     changeTag(tags) {
@@ -328,10 +330,6 @@ export default {
                 'Authorization': this.$store.getters.getToken
               }
             }).then(res => {
-              Element.Message({
-                message: 'Success!',
-                type: 'success',
-              })
             })
             resolve('done');
           }
