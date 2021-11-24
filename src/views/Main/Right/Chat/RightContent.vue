@@ -30,14 +30,14 @@
               <img
                   :src="msg.avatar"
                   class="msg-avatar msg-avatar-right"
-                  @click.stop="handleShowChatterInfo($event, index)"
+                  @click.stop="handleClickMe"
               />
             </div>
             <div class="msg-main" v-else>
               <img
                   :src="msg.avatar"
                   class="msg-avatar"
-                  @click.stop="handleShowChatterInfo($event, index)"
+                  @click.stop="handleClickOther"
               />
               <div class="msg-right-wrap">
                 <div class="msg-nickname">{{ msg.nickname }}</div>
@@ -159,13 +159,22 @@ export default {
       const min = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
       return `${y}/${m}/${d} ${hour}:${min}`;
     },
-    handleShowChatterInfo(event, index) {
-      const { clientX: x, clientY: y } = event;
-      this.infoPosition.top = y;
-      this.infoPosition.left = x;
-      this.chatterInfoIndex = index;
-      this.$store.commit("setChatterInfo", true);
-    }
+    // handleShowChatterInfo(event, index) {
+    //
+    //   const { clientX: x, clientY: y } = event;
+    //   this.infoPosition.top = y;
+    //   this.infoPosition.left = x;
+    //   this.chatterInfoIndex = index;
+    //   this.$store.commit("setChatterInfo", true);
+    // }
+    handleClickMe() {
+       const userId = this.$store.state.myself.id
+      this.$router.push('/user/'+userId)
+    },
+    handleClickOther() {
+      const userId = this.$store.state.other.id
+      this.$router.push('/user/'+userId)
+    },
   }
 };
 </script>
