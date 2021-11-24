@@ -175,7 +175,7 @@ export default {
           this.phone = data.phone
           this.picture = data.picturePath
           this.email = data.email
-          this.gender = data.gender
+          this.gender = data.gender===0?'Man':data.gender===1?'Woman':'Secret'
           this.birthday = data.birthday
           this.credit = data.credit
           this.PersonalitySignature = data.sign
