@@ -206,6 +206,7 @@ export default {
               })
               // 验证成功后，跳转到home page
               this.getBasicInfo()
+              this.$store.commit('SET_Pay',false)
             } else {
               Element.Message({
                 message: res.data.message,

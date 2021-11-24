@@ -3,7 +3,7 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="6" style="text-align: center;margin:0 0 10px 10px">
-          <i class="el-icon-wallet"> Money</i> {{ this.$store.getters.getBasic_Info.money }}
+          <i class="el-icon-wallet"> Money</i> {{ this.money }}
         </el-col>
         <el-col :span="6" style="background-color:#f0f9eb;text-align: center;margin:0 0 10px 10px">
           <i class="el-icon-back"> Outcome</i> {{ this.consume_money }}
@@ -98,82 +98,31 @@ import Element from "element-ui";
 export default {
   name: 'AccountList',
   components: {Charge},
+
+  computed: {
+    isFollow () {
+      return this.$store.state.payJudge;　　//需要监听的数据
+    }
+  },
+  watch: {
+    isFollow (newVal, oldVal) {
+      //do something
+      if(newVal){
+        this.getPay()
+        console.log("buzhuodaola")
+        this.$store.commit('SET_Pay',false)
+      }
+    }
+  },
   mounted() {
-    this.$axios({
-      method: 'get',
-      url: 'http://120.24.4.97:8081/user/charge/history',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then(res => {
-      if (res.data.code === 2000) {
-        this.pagetotal += res.data.data.length
-        res.data.data.forEach((item) => {
-          if (item.ipAddress === '-1') {
-            console.log("refund")
-            let onerecord = {
-              money: item.money,
-              inout: 'Refund',
-              recordTime: item.chargeDate,
-              address: '',
-              isTrue: 'Yes'
-            }
-            this.tableData.push(onerecord)
-          }else if (item.ipAddress === '-2') {
-            let onerecord = {
-              money: item.money,
-              inout: 'Sell Money',
-              recordTime: item.chargeDate,
-              address: '',
-              isTrue: 'Yes'
-            }
-            this.tableData.push(onerecord)
-          }
-            else {
-            let onerecord = {
-              money: item.money,
-              inout: 'Charge',
-              recordTime: item.chargeDate,
-              address: item.ipAddress,
-              isTrue: 'Yes'
-            }
-            this.tableData.push(onerecord)
-          }
-          this.charge_money += item.money
-
-        })
-      }
-    })
-
-    this.$axios({
-      method: 'get',
-      url: 'http://120.24.4.97:8081/user/consume/history',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then(res => {
-      if (res.data.code === 2000) {
-        this.pagetotal += res.data.data.length
-        res.data.data.forEach((item) => {
-          let onerecord = {
-            money: item.money,
-            inout: 'Consume',
-            recordTime: item.consumeDate,
-            address: item.ipAddress,
-            isTrue: 'Yes'
-          }
-          this.tableData.push(onerecord)
-          this.consume_money += item.money
-
-        })
-      }
-    })
+    this.getPay()
   },
 
   data() {
     return {
       chargeVisible:false,
       tableData: [],
+      money :0,
       charge_money: 0,
       consume_money: 0,
       dealId :1,
@@ -213,6 +162,9 @@ export default {
           .then(() => {
             this.$axios.get('http://120.24.4.97:8081/user/charge/' + chargeId)
                 .then(res => {
+                  console.log("真的设置pay了")
+                  this.$store.commit('SET_Pay',true)
+
                   Element.Message({
                     type: 'success',
                     message: 'Charge Success',
@@ -226,6 +178,96 @@ export default {
             })
           })
     },
+    getBasicInfo() {
+      this.$axios({
+        method: 'get',
+        url: 'http://120.24.4.97:8081/user/me',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(res => {
+        if (res.data.code === 2000) {
+          this.$store.commit("SET_Basic_Info", res.data.data)
+        }
+        console.log(this.$store.getters.getBasic_Info.money)
+        console.log("fuck you")
+        this.money = res.data.data.money
+      })
+    },
+    getPay(){
+      this.tableData =[]
+      this.consume_money =0
+      this.charge_money = 0
+      this.money = 0
+      this.$axios({
+        method: 'get',
+        url: 'http://120.24.4.97:8081/user/charge/history',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(res => {
+        if (res.data.code === 2000) {
+          this.pagetotal += res.data.data.length
+          res.data.data.forEach((item) => {
+            if (item.ipAddress === '-1') {
+              console.log("refund")
+              let onerecord = {
+                money: item.money,
+                inout: 'Refund',
+                recordTime: item.chargeDate,
+                address: '',
+                isTrue: 'Yes'
+              }
+              this.tableData.push(onerecord)
+            }else if (item.ipAddress === '-2') {
+              let onerecord = {
+                money: item.money,
+                inout: 'Sell Money',
+                recordTime: item.chargeDate,
+                address: '',
+                isTrue: 'Yes'
+              }
+              this.tableData.push(onerecord)
+            }
+            else {
+              let onerecord = {
+                money: item.money,
+                inout: 'Charge',
+                recordTime: item.chargeDate,
+                address: item.ipAddress,
+                isTrue: 'Yes'
+              }
+              this.tableData.push(onerecord)
+            }
+            this.charge_money += item.money
+          })
+        }
+      })
+
+      this.$axios({
+        method: 'get',
+        url: 'http://120.24.4.97:8081/user/consume/history',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(res => {
+        if (res.data.code === 2000) {
+          this.pagetotal += res.data.data.length
+          res.data.data.forEach((item) => {
+            let onerecord = {
+              money: item.money,
+              inout: 'Consume',
+              recordTime: item.consumeDate,
+              address: item.ipAddress,
+              isTrue: 'Yes'
+            }
+            this.tableData.push(onerecord)
+            this.consume_money += item.money
+          })
+        }
+      })
+      this.getBasicInfo()
+    }
   }
 }
 </script>
