@@ -3,7 +3,7 @@
   <!--    <input id="userMsg">-->
   <!--    <input id="subscribeMsg">-->
   <!--  </div>-->
-  <div class="left-chat-list-tab-wrap" >
+  <div class="left-chat-list-tab-wrap"  :key="unReadCount">
     <!--    <input id="userMsg" type="text">-->
     <!--    <input id="subscribeMsg" type="text">-->
     <!--        :key="'chat' + index"-->
@@ -15,6 +15,7 @@
         'chat-wrap-selected': currentChatIndex === index
       }"
         @click="handleChangeChat(index)"
+        :key="key2"
     >
       <div class="chat-avatar">
         <img
@@ -267,30 +268,9 @@ export default {
                 // address: item.addressName,
                 // type:item.isDefault==='null'?'Normal':'Default'
               })
-            } else if(item.lastMessageContent.contains("img")){
-              chatList.push({
-                chatId: item.chatId,
-                linkmanIndex: count,
-                linkmanId: item.chatId,
-                isMute: false,
-                isOnTop: false,
-                isOnce: false,
-                isBuyer: item.isBuyer,
-                unReadCount: item.unreadCount,
-                messages: [
-                  {
-                    avatar: item.otherUserPicturePath,
-                    nickname: item.otherUserName.toString(),
-                    ctn: item.lastMessageContent,
-                    sender: false,
-                    time: toDate(item.lastMessageDate),
-                    type: "chat"
-                  }
-                ]
-                // address: item.addressName,
-                // type:item.isDefault==='null'?'Normal':'Default'
-              })
-            }else{
+            } else if(item.lastMessageContent.toString().includes("8081")){
+              console.log("^^^^^^^^^^^^^^^^^^^^")
+              console.log(item.lastMessageContent)
               chatList.push({
                 chatId: item.chatId,
                 linkmanIndex: count,
@@ -305,6 +285,32 @@ export default {
                     avatar: item.otherUserPicturePath,
                     nickname: item.otherUserName.toString(),
                     ctn: "[图片]",
+                    sender: false,
+                    time: toDate(item.lastMessageDate),
+                    type: "chat"
+                  }
+                ]
+                // address: item.addressName,
+                // type:item.isDefault==='null'?'Normal':'Default'
+              })
+            }else{
+              // console.log(item.lastMessageContent.toString().includes("<img"))
+              console.log("^^^^^^^^^^^^^^^^^^^^")
+              console.log(item.lastMessageContent)
+              chatList.push({
+                chatId: item.chatId,
+                linkmanIndex: count,
+                linkmanId: item.chatId,
+                isMute: false,
+                isOnTop: false,
+                isOnce: false,
+                isBuyer: item.isBuyer,
+                unReadCount: item.unreadCount,
+                messages: [
+                  {
+                    avatar: item.otherUserPicturePath,
+                    nickname: item.otherUserName.toString(),
+                    ctn:item.lastMessageContent,
                     sender: false,
                     time: toDate(item.lastMessageDate),
                     type: "chat"
