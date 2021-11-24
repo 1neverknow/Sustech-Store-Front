@@ -43,7 +43,7 @@ import LeftHeader from "./Left/LeftHeader";
 import LeftSearch from "./Left/LeftSearch";
 import LeftTab from "./Left/LeftChatList/LeftTab";
 import Chat from "./Right/Chat/Chat";
-import LinkmanInfo from "./Right/LinkmanInfo/LinkmanInfo";
+// import LinkmanInfo from "./Right/LinkmanInfo/LinkmanInfo";
 import LeftChatList from "./Left/LeftChatList";
 // import Orange from "./assets/orange.jpeg"
 export default {
@@ -53,12 +53,11 @@ export default {
     LeftSearch,
     LeftTab,
     // LeftChatList,
-    Chat,
-    LinkmanInfo
+    Chat
   },
   data() {
     return {
-      tabs: [Chat, LinkmanInfo],
+      tabs: [Chat],
       Orange:require('../../assets/Orange.jpg')
     };
   },

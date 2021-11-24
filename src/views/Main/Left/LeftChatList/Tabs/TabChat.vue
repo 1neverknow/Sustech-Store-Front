@@ -286,6 +286,7 @@ export default {
                       avatar: item.otherUserPicturePath,
                       nickname: item.otherUserName.toString(),
                       ctn: item.lastMessageContent,
+                      sender:false,
                       time: toDate(item.lastMessageDate),
                       type: "chat"
                     }
@@ -319,10 +320,10 @@ export default {
         })
       console.log(this.$store.getters.getToken)
     },
-    getHistory() {
+    getHistory(index) {
       this.$axios({
         method: 'get',
-        url: 'http://localhost:8081/chat/history/' + this.$store.state.currentChatId,
+        url: 'http://localhost:8081/chat/history/' + this.$store.state.chats[index].chatId,
         headers: {'authorization': this.$store.getters.getToken},
         transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
           let ret = '';
@@ -384,6 +385,7 @@ export default {
             avatar: goodsPicture,
             price: goodsPrice,
           }
+          this.$store.commit("setChatId", this.$store.state.chats[index].chatId);
           subscribeMsg = [subscribeMsg,goodsInformation,isBuyer]
           this.$store.commit("setInitialHistory", subscribeMsg);
           this.$store.commit("setMyself", myInformation);
@@ -409,12 +411,13 @@ export default {
       // console.log(index);
       // console.log(this.chats[index].chatId);
       // this.disconnect();
-      this.$store.commit("setChatId", this.$store.state.chats[index].chatId);
+
       // this.setCount();
       if (!this.$store.state.chats[index].isOnce) {
-        this.getHistory();
+        this.getHistory(index);
         this.$store.state.chats[index].isOnce = true;
       } else{
+        this.$store.commit("setChatId", this.$store.state.chats[index].chatId);
         this.$store.commit("setGoods", this.$store.state.chats[index].goodsInformation);
     }
 

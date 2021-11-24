@@ -41,7 +41,7 @@ import {toDate} from "element-ui/src/utils/date-util";
 
 export default {
   mounted() {
-    this.initial();
+    // this.initial();
   },
   name: "LeftTab",
   components: {
