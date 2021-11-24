@@ -93,7 +93,7 @@
               >
                 <el-result
                     icon="error"
-                    title="Sold-Out"
+                    title="Off-Shelves"
                     sub-title="The goods had been off shelves!"
                 >
                 </el-result>
@@ -120,13 +120,24 @@
             <!--      内容区底部按钮-->
             <div class="button">
               <template v-if="goodsState === 0">
-                <el-button
-                    class="buy"
-                    icon="el-icon-goods"
-                    :disabled="state"
-                    @click="wantIt"
-                >I Want to Buy / Sell
-                </el-button>
+                <template v-if="isSell">
+                  <el-button
+                      class="buy"
+                      icon="el-icon-goods"
+                      :disabled="state"
+                      @click="wantIt"
+                  >I Want to Buy
+                  </el-button>
+                </template>
+                <template v-else>
+                  <el-button
+                      class="buy"
+                      icon="el-icon-goods"
+                      :disabled="state"
+                      @click="wantIt"
+                  >I Want to Sell
+                  </el-button>
+                </template>
               </template>
               <template v-else>
                 <el-button
@@ -199,6 +210,7 @@
                 <i class="header-icon el-icon-search"></i>
               </template>
               <MyList
+                  style="margin-left: 10%;"
                   v-bind:showList="recommendList"
                   v-bind:type="'recommend'"
                   @refresh="getRecommend"
@@ -216,30 +228,31 @@
 <script>
 import GoodsComment from "@/components/GoodsComment"
 import ComplaintForm from "@/components/ComplaintForm"
+import MyList from "@/components/MyList"
 import Element from "element-ui";
 
 export default {
   name: "Details",
-  components: {GoodsComment, ComplaintForm},
+  components: {GoodsComment, ComplaintForm, MyList},
   data() {
     return {
       state: false, // 是否可以购买（售出后打上已售出标签，除非卖家撤下，商品详情依然存在）
-      goodsId: '11111111',  // 商品id
-      price: '100000',
-      title: 'Mana Stone',
+      goodsId: '',  // 商品id
+      price: '',
+      title: '',
       picturePath: [], // 商品展示图（轮播图）=> 数组
       labels: [],
-      introduce: 'you would be stronger after eating it',
+      introduce: '',
       announcer: {},
       comments: [],
       want: '',  // “我想要”的人数,
       announceTime: '',
       view: '',
       goodsState: 0,
-      activeNames: '1',
+      activeNames: '',
       inCollection: false,
       complainVisible: false,
-
+      isSell: true,
       recommendList: [],
     }
   },
@@ -274,6 +287,7 @@ export default {
         this.want = productDetails.want
         this.announceTime = productDetails.announceTime
         this.goodsState = productDetails.goodsState
+        this.isSell = productDetails.isSell
         this.getComments(this.goodsId)
         this.checkCollection(this.goodsId)
       })
@@ -322,12 +336,15 @@ export default {
       console.log('get recommended goods')
       this.$axios.get('http://localhost:8081/goods/recommend')
       .then(res => {
-        let counter = 0
-        const max = 4
-        while (counter < max && counter < res.data.data.length) {
-          const item = res.data.data[counter]
-          counter += 1
-          if (item.goodsId === this.goodsId) {
+        const data = res.data.data
+        console.log('recommend list: ', data)
+        console.log('data len: ', data.length)
+        for (let i in data) {
+          if (this.recommendList.length >= 5) {
+            break
+          }
+          const item = data[i]
+          if (item === null || item.goodsId === this.goodsId) {
             continue
           }
           this.recommendList.push({

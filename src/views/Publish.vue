@@ -223,8 +223,12 @@ export default {
       const isType = file.type === 'image/jpeg' || 'image/png'
       const isLt5M = file.size / 1024 / 1024 < 5
       if (!isType) {
-        // this.$message.error('上传头像图片只能是 JPG 格式!');
+        Element.Message({
+          message: 'File should be JPG/PNG',
+          type: 'error',
+        })
         fileList.pop()
+        return
       }
       if (!isLt5M) {
         Element.Message({
@@ -232,6 +236,7 @@ export default {
           type: 'error',
         })
         fileList.pop()
+        return
       }
       this.photos.push(file)
       this.hideUpload = fileList.length >= this.limit

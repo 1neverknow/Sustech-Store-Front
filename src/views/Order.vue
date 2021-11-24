@@ -135,6 +135,7 @@ export default {
         url: 'http://localhost:8081/user/buyDeal',
       }).then(res => {
         const orders = res.data.data
+        console.log('get buying deal', orders)
         this.total = orders.length
         for (let i in orders) {
           const item = orders[i]
@@ -168,6 +169,7 @@ export default {
         url: 'http://localhost:8081/user/sellDeal',
       }).then(res => {
         const orders = res.data.data
+        console.log('get selling deal', orders)
         this.total = orders.length
         for (let i in orders) {
           const item = orders[i]

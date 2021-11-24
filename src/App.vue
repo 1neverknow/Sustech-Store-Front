@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <router-view/>
+<!--    <router-view/>-->
+    <router-view :key="key"></router-view>
   </div>
 </template>
 
@@ -22,6 +23,11 @@ export default {
       })
     }, 1000)
   },
+  computed:{
+    key(){
+      return this.$route.path + Math.random();
+    }
+  }
 }
 
 </script>

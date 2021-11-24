@@ -210,7 +210,7 @@ export default {
 }
 .collection {
   background-image: url("../assets/imgs/tcyc.jpg");
-  margin-left: 2%;
+  /*margin-left: 2%;*/
 }
 
 .collection .content-wrapper .content {
