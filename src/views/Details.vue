@@ -87,7 +87,7 @@
             <div class="price">
               <span>￥{{price}}</span>
             </div>
-            <template v-if="goodsState === 1">
+            <template v-if="goodsState === 1 || goodsState === 2">
               <el-col :offset="11" :sm="18" :lg="10"
                       style="margin-top: -40%;"
               >
@@ -158,7 +158,7 @@
                 >Add to Collection
                 </el-button>
               </template>
-              <template v-else-if="!inCollection && goodsState === 1">
+              <template v-else-if="!inCollection">
                 <el-button
                     class="like"
                     icon="el-icon-star-off"
