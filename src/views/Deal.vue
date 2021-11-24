@@ -172,12 +172,15 @@ export default {
       })
     },
     getGoodsInfo(goodsAbbreviation) {
-      this.goodsList[0].goodsId = goodsAbbreviation.goodsId
-      this.goodsList[0].goodsName = goodsAbbreviation.title
-      this.goodsList[0].goodsPicture = goodsAbbreviation.picturePath[0].path
-      this.goodsList[0].sellerId = goodsAbbreviation.announcer.userId
-      this.goodsList[0].price = goodsAbbreviation.price
-      this.goodsList[0].number = 1
+      this.goodsList.push({
+        goodsId: goodsAbbreviation.goodsId,
+        goodsName: goodsAbbreviation.title,
+        goodsPicture: goodsAbbreviation.picturePath[0].path,
+        sellerId: goodsAbbreviation.announcer.userI,
+        price: goodsAbbreviation.price,
+        number: 1,
+        postage: goodsAbbreviation.postage
+      })
       this.dealInfo.postage = goodsAbbreviation.postage
     },
     getAddressInfo() {
