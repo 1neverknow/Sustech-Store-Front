@@ -38,9 +38,9 @@
               <el-input v-model="ruleForm.varifycode"></el-input>
             </el-form-item>
 
-            <el-form-item label="" style="margin-top: -15px">
+            <el-form-item label="" style="margin-top: -25px">
               <router-link to="/login">
-                <el-link type="primary" style="float: left; height: 15px; margin-top: 15px">< Back to login</el-link>
+                <el-link type="primary" style="float: left">< Back to login</el-link>
               </router-link>
             </el-form-item>
           </el-form>
@@ -228,6 +228,6 @@ export default {
   border-color: #cdcdcd;
 }
 .forgot-wrap .special-effect {
-  margin-top: -52%;
+  margin-top: -55%;
 }
 </style>
