@@ -51,7 +51,8 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-divider direction="vertical"></el-divider>
+<!--          <el-divider direction="vertical"></el-divider>-->
+
           <el-col :span="10" :offset="2" class="img-uploader">
             <h4 style="color: grey; line-height: 60px; font-size: 14px"
             >Add new photos here
@@ -190,7 +191,7 @@ export default {
             const productDetails = res.data.data
             this.goods.price = productDetails.price
             this.goods.title = productDetails.title
-            // this.getPicture(productDetails.picturePath)
+            this.getPicture(productDetails.picturePath)
             this.goods.labels = productDetails.labels
             this.goods.introduce = productDetails.introduce
             this.goods.postage = productDetails.postage

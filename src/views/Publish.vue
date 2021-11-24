@@ -148,7 +148,7 @@ export default {
       freeDelivery: true, // 是否包邮
       goods: {
         introduce: '',
-        isSell: '',
+        isSell: 'Sell',
         labels: [],
         price: '',
         title: '',

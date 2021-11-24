@@ -110,7 +110,7 @@ export default {
     return {
       labelPosition: 'top',
       ruleForm: {
-        email: 'c001hewanning@qq.com',
+        email: '',
         varifycode: '',
       },
       rules: {
