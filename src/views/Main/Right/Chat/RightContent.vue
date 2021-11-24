@@ -79,9 +79,6 @@ export default {
     key1(){
       return this.$store.state.key1
     },
-    key1(){
-      return this.$store.state.key1;
-    },
     isNoMessage() {
       const currentChatId = this.$store.state.currentChatId;
       for (let chat of this.$store.state.chats) {

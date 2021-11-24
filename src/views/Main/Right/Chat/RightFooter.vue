@@ -366,7 +366,9 @@ export default {
       console.log( this.$store.state)
 
       stomp.send("/app/chat", {}, JSON.stringify({"body": document.querySelector("#content-input").innerHTML,"chatId": this.$store.state.currentChatId}));
+      console.log(this.$store.state.key1)
       this.$store.state.key1=-this.$store.state.key1;
+      console.log(this.$store.state.key1)
       // stomp.send("app/clear", {}, JSON.stringify({'Authorization': this.$store.getters.getToken,"chatId": this.$store.state.currentChatId}))
       // stomp.send("/app/chat", {}, JSON.stringify({"body": document.querySelector("#content-input").innerHTML}));
 

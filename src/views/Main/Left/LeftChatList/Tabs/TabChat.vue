@@ -8,7 +8,7 @@
     <!--    <input id="subscribeMsg" type="text">-->
     <div
         v-for="(chat, index) in chats"
-        :key="'chat' + index"
+        :key="key1"
         class="chat-wrap"
         :class="{
         'chat-wrap-top': chat.isOnTop,
@@ -22,7 +22,7 @@
             :src="chat.avatar"
         />
       </div>
-      <div class="chat-msg">
+      <div class="chat-msg" >
         <div class="chat-msg-nickname">
           {{ chat.alias ? chat.alias : chat.nickname }}
         </div>
@@ -35,7 +35,7 @@
           "
         ></pre>
       </div>
-      <div class="chat-info" style="text-align:center">
+      <div class="chat-info" style="text-align:center"  >
         <span
             class="chat-info-time"
             :style="{ color: currentChatIndex === index ? '#fff' : '' }"
@@ -45,9 +45,9 @@
                 : getTime(chat.messages[chat.messages.length - 1].time)
           }}</span
         >
-        <span :key="unReadCount"
+        <span :key="judgeCount"
           class="chat-info-count"
-          :style="{ color: currentChatIndex === index ? '#e28353' : '' }"
+          :style="{ color: currentChatIndex === index ? '#e28353' : 'rgb(246, 233, 215)' }"
           >
           <!--          v-if="judgeCount"-->
           {{
@@ -136,6 +136,10 @@ export default {
           return chat.unReadCount !== 0;
         }
       }
+    },
+    key1(){
+      console.log(this.$store.state.key1)
+      return this.$store.state.key1
     },
   },
   methods: {
@@ -412,7 +416,7 @@ export default {
       // console.log(this.chats[index].chatId);
       // this.disconnect();
 
-      // this.setCount();
+      this.setCount();
       if (!this.$store.state.chats[index].isOnce) {
         this.getHistory(index);
         this.$store.state.chats[index].isOnce = true;
