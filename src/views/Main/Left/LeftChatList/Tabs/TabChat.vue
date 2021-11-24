@@ -3,7 +3,7 @@
   <!--    <input id="userMsg">-->
   <!--    <input id="subscribeMsg">-->
   <!--  </div>-->
-  <div class="left-chat-list-tab-wrap" :key="unReadCount">
+  <div class="left-chat-list-tab-wrap" >
     <!--    <input id="userMsg" type="text">-->
     <!--    <input id="subscribeMsg" type="text">-->
     <!--        :key="'chat' + index"-->
@@ -15,7 +15,6 @@
         'chat-wrap-selected': currentChatIndex === index
       }"
         @click="handleChangeChat(index)"
-        :key="key2"
     >
       <div class="chat-avatar">
         <img
