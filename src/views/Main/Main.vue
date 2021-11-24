@@ -19,8 +19,8 @@
   <!--  <div id="background">-->
 
   <div class="wrap" @click="handleHide">
-    <div class="backmain">
-      <div class="main-left">
+    <div class="backmain" >
+      <div class="main-left" >
         <left-header></left-header>
         <left-search></left-search>
         <left-tab></left-tab>
@@ -64,7 +64,10 @@ export default {
   computed: {
     currentRight() {
       return this.tabs[this.$store.state.currentRight];
-    }
+    },
+    key2(){
+      return this.$store.state.key2
+    },
   },
   methods: {
     handleHide() {

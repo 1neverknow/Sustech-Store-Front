@@ -3,18 +3,19 @@
   <!--    <input id="userMsg">-->
   <!--    <input id="subscribeMsg">-->
   <!--  </div>-->
-  <div class="left-chat-list-tab-wrap">
+  <div class="left-chat-list-tab-wrap" :key="unReadCount">
     <!--    <input id="userMsg" type="text">-->
     <!--    <input id="subscribeMsg" type="text">-->
+    <!--        :key="'chat' + index"-->
     <div
         v-for="(chat, index) in chats"
-        :key="key1"
         class="chat-wrap"
         :class="{
         'chat-wrap-top': chat.isOnTop,
         'chat-wrap-selected': currentChatIndex === index
       }"
         @click="handleChangeChat(index)"
+        :key="key2"
     >
       <div class="chat-avatar">
         <img
@@ -24,13 +25,14 @@
       </div>
       <div class="chat-msg" >
         <div class="chat-msg-nickname">
-          {{ chat.alias ? chat.alias : chat.nickname }}
+          {{ chat.nickname }}
         </div>
         <pre
             class="chat-msg-message"
             v-html="
             chat.messages.length === 0
               ? ''
+              // : chat.messages[0].ctn
               : chat.messages[chat.messages.length - 1].ctn
           "
         ></pre>
@@ -39,24 +41,16 @@
         <span
             class="chat-info-time"
             :style="{ color: currentChatIndex === index ? '#fff' : '' }"
-        >{{
-            chat.messages.length === 0
-                ? ""
-                : getTime(chat.messages[chat.messages.length - 1].time)
-          }}</span
+        >{{ chat.messages.length !== 0 ? getTime(chat.messages[chat.messages.length - 1].time) : "" }}</span
         >
-        <span :key="judgeCount"
-          class="chat-info-count"
-          :style="{ color: currentChatIndex === index ? '#e28353' : 'rgb(246, 233, 215)' }"
-          >
-          <!--          v-if="judgeCount"-->
-          {{
-            chat.unReadCount === 0
-                ? ""
-                : chat.unReadCount
-          }}
+        <span class="chat-info-count"
+              :style="{ color: currentChatIndex === index ? '#e28353' : 'rgb(246, 233, 215)' }">
+<!--              v-if="judgeCount">-->
+        <!--              >-->
+<!--        v-if="judgeCount">-->
+        {{ chat.unReadCount !== 0 ? chat.unReadCount : "" }}
         </span
-        >
+            >
         <div class="chat-info-icon-wrap" v-if="chat.isMute">
           <i
               :class="
@@ -137,9 +131,8 @@ export default {
         }
       }
     },
-    key1(){
-      console.log(this.$store.state.key1)
-      return this.$store.state.key1
+    key2() {
+      return this.$store.state.key2
     },
   },
   methods: {
@@ -231,97 +224,97 @@ export default {
         if (chat.chatId === currentChatId) {
           console.log(chat.isBuyer)
           console.log(chat.unReadCount)
-          chat.unReadCount=0;
+          chat.unReadCount = 0;
         }
       }
     },
-    getChatList(){
-        console.log(this.$store.getters.getToken)
-        this.$axios({
-          method: 'get',
-          url: 'http://localhost:8081/chat/list',
-          headers: {'authorization': this.$store.getters.getToken},
-          transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
-            var ret = '';
-            for (var it in data) {
-              // 如果要发送中文 编码
-              ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-            }
-            return ret.substring(0, ret.length - 1)
-          }]
-        }).then(res => {
-          if (res.data.code === 2000) {
-            const data = res.data.data
-            console.log(data)
-            let chatList=[]
-            let linkmanList = []
-            // console.log(toDate(data))
-            let count = 0
-            const chatHis = data.chatHistories
-            this.$store.state.myself.nickname = data.userName
-            this.$store.state.myself.avatar = data.picturePath
-            chatHis.forEach((item) => {
-              if(item.lastMessageContent==null){
-                chatList.push({
-                  chatId: item.chatId,
-                  linkmanIndex: count,
-                  linkmanId: item.chatId,
-                  isMute: false,
-                  isOnTop: false,
-                  isOnce: false,
-                  isBuyer: item.isBuyer,
-                  unReadCount: 0,
-                  messages: []
-                  // address: item.addressName,
-                  // type:item.isDefault==='null'?'Normal':'Default'
-                })
-              }else {
-                chatList.push({
-                  chatId: item.chatId,
-                  linkmanIndex: count,
-                  linkmanId: item.chatId,
-                  isMute: false,
-                  isOnTop: false,
-                  isOnce: false,
-                  isBuyer: item.isBuyer,
-                  unReadCount: item.unreadCount,
-                  messages: [
-                    {
-                      avatar: item.otherUserPicturePath,
-                      nickname: item.otherUserName.toString(),
-                      ctn: item.lastMessageContent,
-                      sender:false,
-                      time: toDate(item.lastMessageDate),
-                      type: "chat"
-                    }
-                  ]
-                  // address: item.addressName,
-                  // type:item.isDefault==='null'?'Normal':'Default'
-                })
-              }
-              linkmanList.push({
-                id: chatList.chatId,
-                // type: "A",
-                nickname: item.otherUserName.toString(),
-                avatar: item.otherUserPicturePath
-              })
-              count++
-              // this.$store.commit("setChatId", item.dealId);
-            })
-            this.$store.state.linkmans = linkmanList
-            this.$store.state.chats = chatList
-            console.log("#####################")
-            console.log(linkmanList)
-            console.log(chatList)
-            // for (let item = 0;item<chatList.length;item++){
-            //   this.handleChangeChat(item);
-            // }
-          } else {
-            this.$alert(res.data.message, 'Tip', {
-              confirmButtonText: 'OK'
-            })
+    getChatList() {
+      console.log(this.$store.getters.getToken)
+      this.$axios({
+        method: 'get',
+        url: 'http://localhost:8081/chat/list',
+        headers: {'authorization': this.$store.getters.getToken},
+        transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
+          var ret = '';
+          for (var it in data) {
+            // 如果要发送中文 编码
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
           }
-        })
+          return ret.substring(0, ret.length - 1)
+        }]
+      }).then(res => {
+        if (res.data.code === 2000) {
+          const data = res.data.data
+          console.log(data)
+          let chatList = []
+          let linkmanList = []
+          // console.log(toDate(data))
+          let count = 0
+          const chatHis = data.chatHistories
+          this.$store.state.myself.nickname = data.userName
+          this.$store.state.myself.avatar = data.picturePath
+          chatHis.forEach((item) => {
+            if (item.lastMessageContent == null) {
+              chatList.push({
+                chatId: item.chatId,
+                linkmanIndex: count,
+                linkmanId: item.chatId,
+                isMute: false,
+                isOnTop: false,
+                isOnce: false,
+                isBuyer: item.isBuyer,
+                unReadCount: 0,
+                messages: []
+                // address: item.addressName,
+                // type:item.isDefault==='null'?'Normal':'Default'
+              })
+            } else {
+              chatList.push({
+                chatId: item.chatId,
+                linkmanIndex: count,
+                linkmanId: item.chatId,
+                isMute: false,
+                isOnTop: false,
+                isOnce: false,
+                isBuyer: item.isBuyer,
+                unReadCount: item.unreadCount,
+                messages: [
+                  {
+                    avatar: item.otherUserPicturePath,
+                    nickname: item.otherUserName.toString(),
+                    ctn: item.lastMessageContent,
+                    sender: false,
+                    time: toDate(item.lastMessageDate),
+                    type: "chat"
+                  }
+                ]
+                // address: item.addressName,
+                // type:item.isDefault==='null'?'Normal':'Default'
+              })
+            }
+            linkmanList.push({
+              id: chatList.chatId,
+              // type: "A",
+              nickname: item.otherUserName.toString(),
+              avatar: item.otherUserPicturePath
+            })
+            count++
+            // this.$store.commit("setChatId", item.dealId);
+          })
+          this.$store.state.linkmans = linkmanList
+          this.$store.state.chats = chatList
+          console.log("#####################")
+          console.log(linkmanList)
+          console.log(chatList)
+          // for (let item = 0;item<chatList.length;item++){
+          //   this.handleChangeChat(item);
+          // }
+        } else {
+          this.$alert(res.data.message, 'Tip', {
+            confirmButtonText: 'OK'
+          })
+        }
+      })
       console.log(this.$store.getters.getToken)
     },
     getHistory(index) {
@@ -390,12 +383,12 @@ export default {
             price: goodsPrice,
           }
           this.$store.commit("setChatId", this.$store.state.chats[index].chatId);
-          subscribeMsg = [subscribeMsg,goodsInformation,isBuyer]
+          subscribeMsg = [subscribeMsg, goodsInformation, isBuyer]
           this.$store.commit("setInitialHistory", subscribeMsg);
           this.$store.commit("setMyself", myInformation);
           this.$store.commit("setOther", yourInformation);
           this.$store.commit("setGoods", goodsInformation);
-          this.$store.state.key1=-this.$store.state.key1;
+          this.$store.state.key1 = this.$store.state.key1+1;
         }
       })
     },
@@ -415,15 +408,16 @@ export default {
       // console.log(index);
       // console.log(this.chats[index].chatId);
       // this.disconnect();
-
+      this.unReadCount=0;
+      console.log(this.unReadCount)
       this.setCount();
       if (!this.$store.state.chats[index].isOnce) {
         this.getHistory(index);
         this.$store.state.chats[index].isOnce = true;
-      } else{
+      } else {
         this.$store.commit("setChatId", this.$store.state.chats[index].chatId);
         this.$store.commit("setGoods", this.$store.state.chats[index].goodsInformation);
-    }
+      }
 
       // this.connection();
       // this.commit();
@@ -503,13 +497,13 @@ export default {
   user-select: none;
 }
 
-.chat-info-count{
+.chat-info-count {
   color: #eee;
   user-select: none;
-  border:1px solid;
+  border: 1px solid;
   /*border-radius:10px;*/
   background: #ff0000;
-  border-radius:2em;
+  border-radius: 2em;
 }
 
 .chat-info-icon-wrap {

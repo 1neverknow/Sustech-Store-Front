@@ -39,12 +39,12 @@
       <div class="icon-wrap">
         <i class="icon icon-emoji" @click.stop="handleShowExpression"></i>
       </div>
-      <div class="icon-wrap">
-        <i class="icon icon-screencut" @click.stop="alert"></i>
-      </div>
-      <div class="icon-wrap">
-        <i class="icon icon-file" @click.stop="alert"></i>
-      </div>
+<!--      <div class="icon-wrap">-->
+<!--        <i class="icon icon-screencut" @click.stop="alert"></i>-->
+<!--      </div>-->
+<!--      <div class="icon-wrap">-->
+<!--        <i class="icon icon-file" @click.stop="alert"></i>-->
+<!--      </div>-->
     </div>
     <pre
         id="content-input"
@@ -58,13 +58,7 @@
     ></pre>
     <div class="action">
       <div class="action-txt">press "Ctrl+Enter" to wrap word</div>
-      <!--      <button id="connect">连接</button>-->
-      <!--      <button id="disconnect" disabled="disabled">断开</button>-->
       <button class="action-btn" @click="handleSend">Send</button>
-      <!--      <div>-->
-      <!--        <h3>订阅形式</h3>-->
-      <!--        <label>订阅消息：</label><input id="subscribeMsg" >-->
-      <!--      </div>-->
     </div>
   </div>
 </template>
@@ -77,47 +71,6 @@ import emojiSmall from "@/assets/emoji-small.png";
 import avatar from "@/assets/default.png";
 import spacer from "@/assets/spacer.gif";
 import {toDate} from "element-ui/src/utils/date-util";
-// import "../../../../util/jquery.js"
-// import "../../../../util/sockjs.min.js"
-// import "../../../../util/stomp.js"
-
-
-// const stomp = null;
-// $("#connect").click(function () {
-//   var url = "http://localhost:8081/webSocket"
-//   var socket = new SockJS(url);
-//   stomp = Stomp.over(socket);
-//   //连接
-//   stomp.connect(
-//       {"Authorization":'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyODQ5OTQ4NTEyQHFxLmNvbSIsImNydCI6MTYzNDc5ODk0MzU4OCwiZXhwIjoxNjM0ODAyNTQzfQ.JiWIAamPfMHmVFWDhJF40nMzP6CSANZxEsnREWjQoHqOv92hv-b0sk_5DEvTaZ9B3b0K_Exa7ci9_omj2oCHVA',
-//         "chatId":1}
-//       , function (frame) {
-//         //用户模式
-//         stomp.subscribe("/user/queue", function (res) {
-//           $("#userMsg").val(res.body);
-//         });
-//         stomp.subscribe("/app/subscribe/chat", function (res) {
-//           $("#subscribeMsg").val(res.body);
-//         });
-//         setConnect(true);
-//       });
-// });
-// $("#disconnect").click(function () {
-//   if (stomp != null) {
-//     stomp.disconnect();
-//   }
-//   setConnect(false);
-// });
-//设置按钮
-// function setConnect(connectStatus) {
-//   $("#connect").attr("disabled", connectStatus);
-//   $("#disconnect").attr("disabled", !connectStatus);
-// }
-//
-//发送用户消息
-// $("#action-btn").click(function () {
-//   stomp.send("/app/chat", {}, JSON.stringify({"body":$("#userText").val()}))
-// });
 
 function handleMessage(ctnInput) {
   let ctn = [];
@@ -296,7 +249,7 @@ export default {
     // },
 
 
-    commit(){
+    commit() {
       // this.$store.commit("setInitialHistory", subscribeMsg);
       // this.$store.commit("setMyself", myInformation);
     },
@@ -360,14 +313,17 @@ export default {
       document.execCommand("insertText", false, ctn);
     },
     handleSend() {
-      // stomp.send("/app/chat", {}, JSON.stringify({"body":document.querySelector("#content-input")}));
       const ctnInput = document.querySelector("#content-input");
       let ctn = handleMessage(ctnInput).trim();
-      console.log( this.$store.state)
+      console.log(this.$store.state)
 
-      stomp.send("/app/chat", {}, JSON.stringify({"body": document.querySelector("#content-input").innerHTML,"chatId": this.$store.state.currentChatId}));
+      stomp.send("/app/chat", {}, JSON.stringify({
+        "body": document.querySelector("#content-input").innerHTML,
+        "chatId": this.$store.state.currentChatId
+      }));
       console.log(this.$store.state.key1)
-      this.$store.state.key1=-this.$store.state.key1;
+      this.$store.state.key1 = this.$store.state.key1+1;
+      this.$store.state.key2 = this.$store.state.key2+1;
       console.log(this.$store.state.key1)
       // stomp.send("app/clear", {}, JSON.stringify({'Authorization': this.$store.getters.getToken,"chatId": this.$store.state.currentChatId}))
       // stomp.send("/app/chat", {}, JSON.stringify({"body": document.querySelector("#content-input").innerHTML}));

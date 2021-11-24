@@ -1,15 +1,6 @@
 <template>
-  <div class="left-chat-list-wrap">
+  <div class="left-chat-list-wrap" >
     <div >
-      <!--      <el-table-->
-      <!--          :data="tab"-->
-      <!--          style="width: 100%">-->
-      <!--        <el-table-column-->
-      <!--            prop="date"-->
-      <!--&lt;!&ndash;            label="日期"&ndash;&gt;-->
-      <!--            width="180">-->
-      <!--        </el-table-column>-->
-      <!--      </el-table>-->
       <a
           v-for="(nav, index) in navs"
           :key="'nav' + index"
@@ -17,16 +8,12 @@
           :title="nav.title"
           @click="handleChangeTab(index)"
       >
-        <!--        <i-->
-        <!--            class="left-chat-list-tab-icon"-->
-        <!--            :class="nav.icon + (index === currentNav ? '-selected' : '')"-->
-        <!--        ></i>-->
       </a>
-      <!--      <b :data="chats"></b>-->
+<!--            <b :data="chats"></b>-->
     </div>
     <keep-alive>
       <component :is="navs[currentNav].tab"></component>
-      <!--      <chat-list></chat-list>-->
+<!--            <chat-list></chat-list>-->
     </keep-alive>
   </div>
 </template>
@@ -75,7 +62,10 @@ export default {
   computed: {
     currentNav() {
       return this.$store.state.currentTabIndex;
-    }
+    },
+    key2(){
+      return this.$store.state.key2
+    },
   },
   methods: {
     handleChangeTab(index) {
