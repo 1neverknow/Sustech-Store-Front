@@ -43,12 +43,10 @@
                 <el-link type="primary" style="float: left; height: 15px; margin-top: 15px">< Back to login</el-link>
               </router-link>
             </el-form-item>
-
-            <div class="reset-btn">
-              <el-button type="primary" style="margin-top: -5px" @click="submitForm('ruleForm')">Reset</el-button>
-            </div>
-
           </el-form>
+          <div class="reset-btn">
+            <el-button type="primary" style="margin-top: -5px" @click="submitForm('ruleForm')">Reset</el-button>
+          </div>
         </el-main>
       </el-container>
     </el-card>
@@ -230,6 +228,6 @@ export default {
   border-color: #cdcdcd;
 }
 .forgot-wrap .special-effect {
-  margin-top: -50%;
+  margin-top: -52%;
 }
 </style>

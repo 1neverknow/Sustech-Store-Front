@@ -25,11 +25,11 @@
             </el-form-item>
 
 
-            <el-form-item v-if="this.invisible" label="Password">
+            <el-form-item v-if="this.invisible" label="Password" prop="password">
               <el-input type="password" v-model="ruleForm.password" style="width: 420px"></el-input>
               <el-button type="primary" @click="changePass('show')" style="width: 100px; float: right">Show</el-button>
             </el-form-item>
-            <el-form-item v-else label="Password">
+            <el-form-item v-else label="Password" prop="password">
               <el-input type="text" v-model="ruleForm.password" style="width: 420px"></el-input>
               <el-button type="default" @click="changePass('hide')" style="width: 100px; float: right">Hide</el-button>
             </el-form-item>
@@ -99,9 +99,6 @@ export default {
   },
   data() {
     const validateEmail = (rule, value, callback) => {
-      console.log(this)
-      console.log(value)
-
       if (value === '') {
         callback(new Error('Please input an email address'));
       } else {
@@ -115,11 +112,16 @@ export default {
       }
     };
     const validatePass = (rule, value, callback) => {
+      console.log('validate password', value)
       if (value === '') {
         callback(new Error('Password is required'));
       } else if (value.length < 6) {
         callback(new Error('Length must be more than 6'));
       } else {
+        const regex="^(?=.*[0-9].*)(?=.*[a-z].*)(?=.*[A-Z].*)(?=.*[0-9].*)(?=.*[~!@#$%^&*()_+|<>,\\.?\\/:;'\\[\\]\\{\\}\\\\].*).{8,16}$"
+        if (!regex.test(value)) {
+          callback(new Error('Password is too weak'));
+        }
         callback();
       }
     };
@@ -135,7 +137,6 @@ export default {
       rules: {
         username:[
           {required: true, message: 'Please input a name', trigger: 'blur'},
-          {min: 3, max: 12, message: 'The length must be 3 to 12 characters', trigger: 'blur'}
         ],
         email: [
           {validator: validateEmail, trigger: 'blur',},
