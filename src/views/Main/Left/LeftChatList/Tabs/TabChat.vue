@@ -268,7 +268,7 @@ export default {
                 // address: item.addressName,
                 // type:item.isDefault==='null'?'Normal':'Default'
               })
-            } else {
+            } else if(item.lastMessageContent.contains("img")){
               chatList.push({
                 chatId: item.chatId,
                 linkmanIndex: count,
@@ -283,6 +283,29 @@ export default {
                     avatar: item.otherUserPicturePath,
                     nickname: item.otherUserName.toString(),
                     ctn: item.lastMessageContent,
+                    sender: false,
+                    time: toDate(item.lastMessageDate),
+                    type: "chat"
+                  }
+                ]
+                // address: item.addressName,
+                // type:item.isDefault==='null'?'Normal':'Default'
+              })
+            }else{
+              chatList.push({
+                chatId: item.chatId,
+                linkmanIndex: count,
+                linkmanId: item.chatId,
+                isMute: false,
+                isOnTop: false,
+                isOnce: false,
+                isBuyer: item.isBuyer,
+                unReadCount: item.unreadCount,
+                messages: [
+                  {
+                    avatar: item.otherUserPicturePath,
+                    nickname: item.otherUserName.toString(),
+                    ctn: "[图片]",
                     sender: false,
                     time: toDate(item.lastMessageDate),
                     type: "chat"

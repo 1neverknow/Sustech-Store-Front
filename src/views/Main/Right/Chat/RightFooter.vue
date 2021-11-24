@@ -42,6 +42,14 @@
 <!--      <div class="icon-wrap">-->
 <!--        <i class="icon icon-screencut" @click.stop="alert"></i>-->
 <!--      </div>-->
+      <el-upload class="upload-demo" ref="upload" action="https://jsonplaceholder.typicode.com/posts/"
+                 :on-preview="handlePictureCardPreview" :on-change="OnChange"
+                 accept="image/jpeg,image/png" :auto-upload="false">
+        <i class="icon icon-file"></i>
+      </el-upload>
+      <el-dialog :visible.sync="dialogVisible" append-to-body>
+        <img width="100%" :src="dialogImageUrl" alt="">
+      </el-dialog>
 <!--      <div class="icon-wrap">-->
 <!--        <i class="icon icon-file" @click.stop="alert"></i>-->
 <!--      </div>-->
@@ -71,6 +79,9 @@ import emojiSmall from "@/assets/emoji-small.png";
 import avatar from "@/assets/default.png";
 import spacer from "@/assets/spacer.gif";
 import {toDate} from "element-ui/src/utils/date-util";
+import Element from "element-ui";
+import axios from "axios";
+import store from "@/store";
 
 function handleMessage(ctnInput) {
   let ctn = [];
@@ -104,7 +115,13 @@ export default {
     return {
       expressions: [],
       expressionIndex: 0,
-      lastEditRange: null
+      lastEditRange: null,
+      photo: "",
+      dialogImageUrl: '',
+      dialogVisible: false,
+      limit: 5,
+      hideUpload: false, //是否显示上传图片的加号
+
     };
   },
   // mounted() {
@@ -148,12 +165,12 @@ export default {
       }
     }
 
-    this.expressions.push({
-      title: "Emoji",
-      img: emoji,
-      smallImg: emoji,
-      items
-    });
+    // this.expressions.push({
+    //   title: "Emoji",
+    //   img: emoji,
+    //   smallImg: emoji,
+    //   items
+    // });
   },
   computed: {
     isShowExpression() {
@@ -248,7 +265,70 @@ export default {
     //   // this.commit();
     // },
 
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
+    // handleRemove(file, fileList) {
+    //   console.log('file', file)
+    //   const tmp_path = file.response
+    //   console.log(tmp_path)
+    //   const i = this.photos.findIndex(item => item.uid === file.uid)
+    //   this.photos.splice(i, 1)
+    // },
+    OnChange(file, fileList) {
+      const isType = file.type === 'image/jpeg' || 'image/png'
+      const isLt5M = file.size / 1024 / 1024 < 5
+      if (!isType) {
+        // this.$message.error('上传头像图片只能是 JPG 格式!');
+        fileList.pop()
+      }
+      if (!isLt5M) {
+        Element.Message({
+          message: 'Size of picture should be less than 5M',
+          type: 'error',
+        })
+        fileList.pop()
+      }
+      // this.photo=file
+      const photo = file
+      this.hideUpload = fileList.length >= this.limit
+      let photoData = new FormData();
+      photoData.append('photo', photo.raw)
+      const newRequest = axios.create();
+      newRequest({
+        method: "POST",
+        url: 'http://localhost:8081/chat/picture/'+this.$store.state.currentChatId,
+        data: photoData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          'Authorization': store.getters.getToken,
+        }
+      }).then(res => {
+        let data = res.data.data;
+        const reg = /\<\/?.*\>/gi;
+        const imgReg = /^<img.*>$/i;
+        data = data.replace(reg, (match, offxset, string) => {
+          if (match.match(imgReg) !== null) {
+            return match;
+          }
+          let aMatch = match;
+          aMatch = aMatch.replace(/^</, "&lt;");
+          aMatch = aMatch.replace(/>$/, "&gt;");
+          return aMatch;
+        });
 
+        const myself = this.$store.state.myself;
+        this.$store.commit("sendMessage", {
+          type: "chat",
+          time: new Date(),
+          sender: true,
+          nickname: myself.nickname,
+          avatar: myself.avatar,
+          ctn: data
+        });
+      })
+    },
     commit() {
       // this.$store.commit("setInitialHistory", subscribeMsg);
       // this.$store.commit("setMyself", myInformation);
@@ -313,6 +393,7 @@ export default {
       document.execCommand("insertText", false, ctn);
     },
     handleSend() {
+
       const ctnInput = document.querySelector("#content-input");
       let ctn = handleMessage(ctnInput).trim();
       console.log(this.$store.state)

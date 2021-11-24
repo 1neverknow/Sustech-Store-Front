@@ -41,7 +41,9 @@
               />
               <div class="msg-right-wrap">
                 <div class="msg-nickname">{{ msg.nickname }}</div>
-                <pre class="msg-ctn" v-html="msg.ctn"></pre>
+                <pre class="msg-ctn"
+                     style="background-color: #ffffff;"
+                     v-html="msg.ctn"></pre>
               </div>
             </div>
           </div>
