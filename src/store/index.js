@@ -35,6 +35,7 @@ export default new Vuex.Store({
         isShowChatterInfo: false,
         isShowSearch: false,
         key1:-1,
+        key2:-1,
 
         chatCount: 1,
         currentTabIndex: 0,
