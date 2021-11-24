@@ -62,6 +62,28 @@
         </el-main>
       </el-container>
     </el-card>
+
+    <div id="app1" class="special-effect">
+      <vue-particles
+          color="#FFF"
+          :particleOpacity="0.7"
+          :particlesNumber="60"
+          shapeType="circle"
+          :particleSize="4"
+          linesColor="#CCCCCC"
+          :linesWidth="1"
+          :lineLinked="true"
+          :lineOpacity="0.4"
+          :linesDistance="150"
+          :moveSpeed="5"
+          :hoverEffect="true"
+          hoverMode="grab"
+          :clickEffect="true"
+          clickMode="push"
+          class="lizi"
+      >
+      </vue-particles>
+    </div>
   </div>
 </template>
 
@@ -216,5 +238,8 @@ export default {
   width: 100%;
   height: 45px;
   margin-bottom: 10px;
+}
+.register-wrap .special-effect {
+  margin-top: -52%;
 }
 </style>

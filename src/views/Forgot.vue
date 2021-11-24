@@ -58,6 +58,28 @@
         </el-main>
       </el-container>
     </el-card>
+
+    <div id="app1" class="special-effect">
+      <vue-particles
+          color="#FFFFCC"
+          :particleOpacity="0.7"
+          :particlesNumber="60"
+          shapeType="circle"
+          :particleSize="4"
+          linesColor="#CCCCCC"
+          :linesWidth="1"
+          :lineLinked="true"
+          :lineOpacity="0.4"
+          :linesDistance="150"
+          :moveSpeed="5"
+          :hoverEffect="true"
+          hoverMode="grab"
+          :clickEffect="true"
+          clickMode="push"
+          class="lizi"
+      >
+      </vue-particles>
+    </div>
   </div>
 </template>
 
@@ -212,5 +234,8 @@ export default {
 .codeGetting{
   background: #cdcdcd;
   border-color: #cdcdcd;
+}
+.forgot-wrap .special-effect {
+  margin-top: -50%;
 }
 </style>

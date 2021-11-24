@@ -74,8 +74,8 @@
     </el-card>
     <div id="app1" class="special-effect">
       <vue-particles
-          color="#857"
-          :particleOpacity="0.7"
+          color="#0099CC"
+          :particleOpacity="0.4"
           :particlesNumber="60"
           shapeType="circle"
           :particleSize="4"
@@ -84,7 +84,7 @@
           :lineLinked="true"
           :lineOpacity="0.4"
           :linesDistance="150"
-          :moveSpeed="10"
+          :moveSpeed="5"
           :hoverEffect="true"
           hoverMode="grab"
           :clickEffect="true"
