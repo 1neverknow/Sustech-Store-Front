@@ -477,6 +477,8 @@ export default {
 #details .page-header .title .list li {
   float: left;
   margin-left: 50px;
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
+  'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
 }
 #details .page-header .title .list li a {
   font-size: 14px;
