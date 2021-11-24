@@ -5,13 +5,13 @@
     <el-card class="ms-login">
       <el-container>
         <el-header class="header" style="height: 100px">
-<!--          <router-link to="/user">-->
-            <el-avatar
-                :size="90"
-                src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-                style="margin: 5px auto; overflow: hidden; border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,.05); position: relative;"
-            ></el-avatar>
-<!--          </router-link>-->
+          <!--          <router-link to="/user">-->
+          <el-avatar
+              :size="90"
+              src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+              style="margin: 5px auto; overflow: hidden; border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,.05); position: relative;"
+          ></el-avatar>
+          <!--          </router-link>-->
         </el-header>
         <el-main class="ms-content">
           <el-form
@@ -35,7 +35,7 @@
               <el-button type="default" @click="changePass('hide')" style="width: 100px; float: right">Hide</el-button>
             </el-form-item>
 
-<!--            验证码-->
+            <!--            验证码-->
             <el-form-item label="Verify code" style="margin-bottom: 50px">
               <el-input type="text" v-model="verify.verifycode" style="width: 420px;"></el-input>
               <template v-if="verify.verifyImg">
@@ -72,6 +72,27 @@
         </el-main>
       </el-container>
     </el-card>
+    <div id="app1" class="special-effect">
+      <vue-particles
+          color="#857"
+          :particleOpacity="0.7"
+          :particlesNumber="60"
+          shapeType="circle"
+          :particleSize="4"
+          linesColor="#573"
+          :linesWidth="1"
+          :lineLinked="true"
+          :lineOpacity="0.4"
+          :linesDistance="150"
+          :moveSpeed="10"
+          :hoverEffect="true"
+          hoverMode="grab"
+          :clickEffect="true"
+          clickMode="push"
+          class="lizi"
+      >
+      </vue-particles>
+    </div>
   </div>
 </template>
 
@@ -119,8 +140,8 @@ export default {
       rememberMe: false,
       labelPosition: 'top',
       ruleForm: {
-        email: 'c001hewanning@qq.com',
-        password: '123',
+        email: '',
+        password: '',
       },
       rules: {
         email: [
@@ -265,6 +286,7 @@ export default {
     }
   },
   mounted() {
+
     this.activate()
   }
 }
@@ -281,7 +303,7 @@ export default {
 
 .login-wrap .ms-login {
   /*background-color: lightgrey;*/
-  margin: 70px auto auto;
+  margin: 3% auto auto;
   width: 600px;
   height: 600px;
   border-radius: 5px;
@@ -313,5 +335,8 @@ export default {
   width: 100%;
   height: 45px;
   margin-bottom: 10px;
+}
+.login-wrap .special-effect {
+  margin-top: -50%;
 }
 </style>
