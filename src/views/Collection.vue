@@ -28,22 +28,45 @@
         </div>
       </div>
     </el-card>
-    <el-footer class="footer">
-      <!-- 分页区域 -->
-      <el-pagination
-          class="pagination"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="queryInfo.pagenum"
-          :page-sizes="[4, 8, 12, 16]"
-          :page-size="queryInfo.pagesize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="queryInfo.total"
-          style="float:right;"
-          background
-      >
-      </el-pagination>
-    </el-footer>
+    <template v-if="showList.length <= 4">
+      <el-footer class="footer0">
+
+        <!-- 分页区域 -->
+        <el-pagination
+            class="pagination"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="queryInfo.pagenum"
+            :page-sizes="[4, 8, 12, 16]"
+            :page-size="queryInfo.pagesize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="queryInfo.total"
+            style="float:right;"
+            background
+        >
+        </el-pagination>
+      </el-footer>
+    </template>
+    <template v-else>
+      <el-footer class="footer1">
+
+        <!-- 分页区域 -->
+        <el-pagination
+            class="pagination"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="queryInfo.pagenum"
+            :page-sizes="[4, 8, 12, 16]"
+            :page-size="queryInfo.pagesize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="queryInfo.total"
+            style="float:right;"
+            background
+        >
+        </el-pagination>
+      </el-footer>
+    </template>
+
   </div>
 </template>
 
@@ -201,11 +224,18 @@ export default {
   margin: 0 0 20px;
   font-size: 20px;
 }
-.collection .footer {
-  margin-top: 50px;
+.collection .footer0 {
+  margin-top: 190px;
   margin-right: 50px;
-  margin-bottom: 50px;
   text-align: right;
+  background-color: whitesmoke;
+  /*float: right;*/
+}
+.collection .footer1 {
+  margin-top: 40px;
+  margin-right: 50px;
+  text-align: right;
+  background-color: whitesmoke;
   /*float: right;*/
 }
 /* 收藏列表为空的时候显示的内容CSS END */

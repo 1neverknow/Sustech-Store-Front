@@ -10,7 +10,8 @@ import axios from 'axios'
 
 import './axios'
 import './permission'
-
+import VueParticles from 'vue-particles'
+Vue.use(VueParticles)
 Vue.use(Element)
 
 Vue.prototype.$axios = axios

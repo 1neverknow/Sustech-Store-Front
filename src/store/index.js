@@ -15,8 +15,8 @@ export default new Vuex.Store({
         token: localStorage.getItem('token'),
         role: sessionStorage.getItem('role'),
         // 后端发送过来的用户信息
-        // userInfo: JSON.parse(localStorage.getItem('userInfo')),
-        userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
+        userInfo: JSON.parse(localStorage.getItem('userInfo')),
+        // userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
         loginInfo: JSON.parse(localStorage.getItem('loginInfo')),
         search_content: sessionStorage.getItem('search_content'),
         default_address: {
@@ -116,8 +116,8 @@ export default new Vuex.Store({
         SET_USERINFO: (state, userInfo) => {
             state.userInfo = userInfo
             // 登录之后，一次会话期间，保留登陆状态
-            // localStorage.setItem('userInfo', JSON.stringify(userInfo))
-            sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
+            localStorage.setItem('userInfo', JSON.stringify(userInfo))
+            // sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
         },
         SET_LOGININFO: (state, loginInfo) => {
             state.loginInfo = loginInfo
@@ -380,7 +380,7 @@ export default new Vuex.Store({
             state.search_content = []
             state.role = ''
             localStorage.removeItem('token')
-            sessionStorage.removeItem('userInfo')
+            localStorage.removeItem('userInfo')
             sessionStorage.removeItem('basic_info')
             sessionStorage.removeItem('query_good_list')
             sessionStorage.removeItem('search_content')

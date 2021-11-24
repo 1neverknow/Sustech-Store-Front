@@ -147,11 +147,11 @@ export default {
       labelPosition: 'left',
       freeDelivery: true, // 是否包邮
       goods: {
-        introduce: 'aaaaaaaaaa',
-        isSell: 'Sell',
+        introduce: '',
+        isSell: '',
         labels: [],
-        price: 999,
-        title: '300 Mana Stone',
+        price: '',
+        title: '',
         postage: 0,
       },
       goodsId: -1,
@@ -223,8 +223,12 @@ export default {
       const isType = file.type === 'image/jpeg' || 'image/png'
       const isLt5M = file.size / 1024 / 1024 < 5
       if (!isType) {
-        // this.$message.error('上传头像图片只能是 JPG 格式!');
+        Element.Message({
+          message: 'File should be JPG/PNG',
+          type: 'error',
+        })
         fileList.pop()
+        return
       }
       if (!isLt5M) {
         Element.Message({
@@ -232,6 +236,7 @@ export default {
           type: 'error',
         })
         fileList.pop()
+        return
       }
       this.photos.push(file)
       this.hideUpload = fileList.length >= this.limit

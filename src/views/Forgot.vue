@@ -6,13 +6,7 @@
       <el-container>
         <div style="margin: 50px"></div>
         <el-header style="height: 100px">
-          <router-link to="/user">
-            <el-avatar
-                :size="90"
-                src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-                style="margin: 5px auto; overflow: hidden; border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,.05); position: relative;"
-            ></el-avatar>
-          </router-link>
+          <img src="@/assets/pic.png" style="width: 90px; margin-top: 4px"/>
         </el-header>
         <el-main>
           <el-form
@@ -58,6 +52,28 @@
         </el-main>
       </el-container>
     </el-card>
+
+    <div id="app1" class="special-effect">
+      <vue-particles
+          color="#FFFFCC"
+          :particleOpacity="0.7"
+          :particlesNumber="60"
+          shapeType="circle"
+          :particleSize="4"
+          linesColor="#CCCCCC"
+          :linesWidth="1"
+          :lineLinked="true"
+          :lineOpacity="0.4"
+          :linesDistance="150"
+          :moveSpeed="5"
+          :hoverEffect="true"
+          hoverMode="grab"
+          :clickEffect="true"
+          clickMode="push"
+          class="lizi"
+      >
+      </vue-particles>
+    </div>
   </div>
 </template>
 
@@ -212,5 +228,8 @@ export default {
 .codeGetting{
   background: #cdcdcd;
   border-color: #cdcdcd;
+}
+.forgot-wrap .special-effect {
+  margin-top: -50%;
 }
 </style>

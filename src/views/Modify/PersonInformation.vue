@@ -2,11 +2,13 @@
   <div>
 
     <el-upload
+        ref="reload"
         class="avatar-uploader_image"
-        action="https://jsonplaceholder.typicode.com/posts/"
+        action="#"
         :show-file-list="false"
-        :on-success="handleAvatarSuccess"
-        :before-upload="beforeAvatarUpload">
+        :auto-upload="false"
+        :on-change="OnChange"
+    >
       <img v-if="imageUrl" :src="imageUrl" class="avatar">
       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
     </el-upload>
@@ -66,16 +68,16 @@
       </div>
       <el-form :model="MP_form" :rules="MP_rules" ref="MPForm" label-width="100px" class="demo-ruleForm">
 
-        <el-form-item v-if="!this.old_invisible" label="Old Password" label-width="160px" prop="old_password">
-          <el-input placeholder="Please input your old password" type="password" v-model="MP_form.old_password"
-                    style="width: 320px"></el-input>
-          <el-checkbox v-model="old_invisible" style="margin-left: 5px">show password</el-checkbox>
-        </el-form-item>
-        <el-form-item v-else label="Old Password" prop="old_password" label-width="160px">
-          <el-input placeholder="Please input your old password" type="text" v-model="MP_form.old_password"
-                    style="width: 320px"></el-input>
-          <el-checkbox v-model="old_invisible" style="margin-left: 5px">show password</el-checkbox>
-        </el-form-item>
+        <!--        <el-form-item v-if="!this.old_invisible" label="Old Password" label-width="160px" prop="old_password">-->
+        <!--          <el-input placeholder="Please input your old password" type="password" v-model="MP_form.old_password"-->
+        <!--                    style="width: 320px"></el-input>-->
+        <!--          <el-checkbox v-model="old_invisible" style="margin-left: 5px">show password</el-checkbox>-->
+        <!--        </el-form-item>-->
+        <!--        <el-form-item v-else label="Old Password" prop="old_password" label-width="160px">-->
+        <!--          <el-input placeholder="Please input your old password" type="text" v-model="MP_form.old_password"-->
+        <!--                    style="width: 320px"></el-input>-->
+        <!--          <el-checkbox v-model="old_invisible" style="margin-left: 5px">show password</el-checkbox>-->
+        <!--        </el-form-item>-->
 
         <el-form-item v-if="!this.new_invisible" label="New Password" prop="new_password" label-width="160px">
           <el-input placeholder="Please input your new password" type="password" v-model="MP_form.new_password"
@@ -109,6 +111,28 @@
       </el-form>
     </el-card>
 
+
+    <el-card style="margin-top: 20px">
+      <div slot="header" class="clearfix">
+        <span>Modify Telephone</span>
+      </div>
+      <el-form :model="MT_form" :rules="MT_rules" ref="MTForm" label-width="100px" class="demo-ruleForm">
+
+        <el-form-item  label="New Telephone" prop="new_telephone" label-width="160px">
+          <el-input placeholder="Please input your new telephone"  v-model="MT_form.new_telephone"
+                    style="width: 320px"></el-input>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" @click="submitMTForm('MTForm')">Modify</el-button>
+          <el-button @click="resetForm('MTForm')">Reset</el-button>
+        </el-form-item>
+
+      </el-form>
+
+    </el-card>
+
+
     <el-card style="margin-top: 20px">
       <div slot="header" class="clearfix">
         <span>Modify Email</span>
@@ -129,12 +153,12 @@
         </el-form-item>
 
         <el-form-item label="Varify Code" prop="varifycode" label-width="150px">
-          <el-input placeholder="Please input the varify code in your new email address" v-model="ME_form.varifycode"
+          <el-input placeholder="Please input the varify code in your new email address" v-model.number="ME_form.varifycode"
                     style="width: 25%"></el-input>
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="submitForm('MEForm')">Modify</el-button>
+          <el-button type="primary" @click="submitMEForm('MEForm')">Modify</el-button>
           <el-button @click="resetForm('MEForm')">Reset</el-button>
         </el-form-item>
 
@@ -158,6 +182,21 @@ export default {
     this.initial()
   },
   data() {
+    var validateMobilePhone = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('Please input your new telephone number'));
+      } else {
+        if (value !== '') {
+          var reg=/^1[3456789]\d{9}$/;
+          var reg1 =/^((0\d{2,3}-\d{7,8})|(1[3584]\d{9}))$/;
+          if(!reg.test(value)&&!reg1.test(value)){
+            callback(new Error('Please input valid telephone number'));
+          }
+        }
+        callback();
+      }
+    };
+
     var validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('Password is required'));
@@ -167,25 +206,39 @@ export default {
         callback();
       }
     };
+    var validateEmail = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请正确填写邮箱'));
+      } else {
+        if (value !== '') {
+          var reg=/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+          if(!reg.test(value)){
+            callback(new Error('请输入有效的邮箱'));
+          }
+        }
+        callback();
+      }
+    };
 
     return {
+      MT_form:{new_telephone:''},
       old_invisible: false,
       new_invisible: false,
       new_yes_invisible: false,
       edit_image: false,
       dialogImageUrl: '',
       dialogVisible: false,
-      imageUrl :  this.$store.getters.getBasic_Info.picturePath,
+      imageUrl: this.$store.getters.getBasic_Info.picturePath,
 
       ME_form: {
-        old_email: '208347209@qq.com',
+        old_email: this.$store.getters.getBasic_Info.email,
         new_email: '',
         varifycode: '',
       },
       ME_rules: {
         new_email: [
-          {required: true, message: '请输入邮箱地址', trigger: 'blur'},
-          {type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change']}
+          {required: true, message: 'Please input new email address', trigger: 'blur'},
+          {type: 'email', message: 'Please input valid email address', trigger: ['blur', 'change']}
         ],
         varifycode: {required: true, trigger: 'blur',}
       },
@@ -200,7 +253,7 @@ export default {
         user_name: this.$store.getters.getBasic_Info.userName,
         picture: this.$store.getters.getBasic_Info.picturePath,
         email: this.$store.getters.getBasic_Info.email,
-        gender: this.$store.getters.getBasic_Info.gender===0?'Man':this.$store.getters.getBasic_Info.gender===1?'Woman':'Secret',
+        gender: this.$store.getters.getBasic_Info.gender === 0 ? 'Man' : this.$store.getters.getBasic_Info.gender === 1 ? 'Woman' : 'Secret',
         birthday: this.$store.getters.getBasic_Info.birthday,
         credit: this.$store.getters.getBasic_Info.credit,
         id_card: this.$store.getters.getBasic_Info.id_card,
@@ -220,6 +273,13 @@ export default {
         birthday: [
           {type: 'date', required: true, message: 'Please select your birthday', trigger: 'change'}
         ],
+      },
+      MT_rules:{
+        new_telephone: [
+          {validator: validateMobilePhone, trigger: 'change'},
+          {required: true}
+
+        ]
       },
       MP_form: {
         old_password: '',
@@ -243,16 +303,33 @@ export default {
     };
   },
   methods: {
-    handleAvatarSuccess(res, file) {
+    OnChange(file) {
+      const isType = file.type === 'image/jpeg' || 'image/png'
+      const isLt5M = file.size / 1024 / 1024 < 5
+      if (!isType) {
+        Element.Message({
+          message: 'File should be JPG/PNG',
+          type: 'error',
+        })
+        return
+      }
+      if (!isLt5M) {
+        Element.Message({
+          message: 'Size of picture should be less than 5M',
+          type: 'error',
+        })
+        return
+      }
+      console.log(123124312412)
       this.imageUrl = URL.createObjectURL(file.raw);
       this.BI_form.image_path = file.raw;
 
       //创建 formData 对象
       let formData = new FormData();
       // 向 formData 对象中添加文件
-      if(this.BI_form.image_path!=='')
+      if (this.BI_form.image_path !== '')
         formData.append('photo', this.BI_form.image_path);
-      else formData.append('photo',null)
+      else formData.append('photo', null)
       axios.create()({
         method: 'post',
         url: 'http://localhost:8081/user/upload/face',
@@ -266,6 +343,41 @@ export default {
         if (res.data.code === 2000) {
           this.getBasicInfo()
           console.log("更改图片成功")
+          this.$message({
+            type: 'success',
+            message: 'Modify picture successfully!!'
+          });
+        }
+      })
+
+    },
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw);
+      this.BI_form.image_path = file.raw;
+
+      //创建 formData 对象
+      let formData = new FormData();
+      // 向 formData 对象中添加文件
+      if (this.BI_form.image_path !== '')
+        formData.append('photo', this.BI_form.image_path);
+      else formData.append('photo', null)
+      axios.create()({
+        method: 'post',
+        url: 'http://localhost:8081/user/upload/face',
+        headers: {
+          'Authorization': this.$store.getters.getToken,
+          'Content-Type': 'multipart/form-data'
+        },
+        data: formData,
+      }).then(res => {
+        console.log(res)
+        if (res.data.code === 2000) {
+          this.getBasicInfo()
+          console.log("更改图片成功")
+          this.$message({
+            type: 'success',
+            message: 'Modify picture successfully!!'
+          });
         }
       })
     },
@@ -292,49 +404,174 @@ export default {
         },
       }).then(res => {
         if (res.data.code === 2000) {
-          this.$store.commit("SET_Basic_Info",res.data.data)
+          this.$store.commit("SET_Basic_Info", res.data.data)
           console.log(this.$store.getters.getBasic_Info)
+        }
+      })
+    },
+
+    submitMEForm(formName) {
+      let EmailChange = {
+        checkCode : this.ME_form.varifycode,
+        content: this.ME_form.new_email,
+        type : 1
+      }
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$axios({
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            url: 'http://localhost:8081/user/security',
+            data: JSON.stringify(EmailChange),
+
+          }).then(res => {
+            if (res.data.code === 2000) {
+              this.getBasicInfo()
+              // this.$router.push('/account')
+              this.relogo()
+              this.$message({
+                type: 'success',
+                message: 'You successfully change your email'
+              });
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.data.message
+              });
+            }
+          })
         }
       })
     },
 
     submitBIForm(formName) {
       this.$refs[formName].validate((valid) => {
-        let gender = 0
-        if(this.BI_form.gender==='Woman') gender = 1
-        else if (this.BI_form.gender === 'Secret') gender = 2
-        let user = {
-          birthday: this.BI_form.birthday,
-          gender: gender,
-          name: this.BI_form.user_name,
-          sign: this.BI_form.PersonalitySignature
-        }
-
-        this.$axios({
-          method: 'put',
-          headers : {
-            'Content-Type': 'application/json',
-          },
-          url: 'http://localhost:8081/user/update',
-          data: JSON.stringify(user),
-
-        }).then(res => {
-          if(res.data.code===2000){
-            this.$message({
-              type: 'success',
-              message: 'Modify the information successfully'
-            });
-            this.getBasicInfo()
-          }else if(res.data.code===4001){
-            this.$message({
-              type: 'error',
-              message: res.data.message
-            });
+        if(valid){
+          let gender = 0
+          if (this.BI_form.gender === 'Woman') gender = 1
+          else if (this.BI_form.gender === 'Secret') gender = 2
+          let user = {
+            birthday: this.BI_form.birthday,
+            gender: gender,
+            name: this.BI_form.user_name,
+            sign: this.BI_form.PersonalitySignature
           }
-        });
+
+          this.$axios({
+            method: 'put',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            url: 'http://localhost:8081/user/update',
+            data: JSON.stringify(user),
+
+          }).then(res => {
+            if (res.data.code === 2000) {
+              this.$message({
+                type: 'success',
+                message: 'Modify the information successfully'
+              });
+              this.getBasicInfo()
+            } else if (res.data.code === 4001) {
+              this.$message({
+                type: 'error',
+                message: res.data.message
+              });
+            }
+          });
+        }
       });
     },
 
+    submitMTForm(formName){
+      let telephoneChange = {
+        type: 2,
+        content: this.MT_form.new_telephone,
+        checkCode: null
+      }
+      this.$refs[formName].validate((valid) => {
+        if(valid){
+          this.$axios({
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            url: 'http://localhost:8081/user/security',
+            data: JSON.stringify(telephoneChange),
+
+          }).then(res => {
+            if (res.data.code === 2000) {
+              this.getBasicInfo()
+              // this.$router.push('/account')
+              this.$message({
+                type: 'success',
+                message: 'You successfully change your password'
+              });
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.data.message
+              });
+            }
+          })
+        }
+      })
+    },
+
+
+
+    submitMPForm(formName) {
+      if (this.MP_form.new_password !== this.MP_form.new_yes_password) {
+        this.$message({
+          type: 'error',
+          message: 'Two times password was different,please check!'
+        });
+      } else {
+        let passwordChange = {
+          type: 0,
+          content: this.MP_form.new_password,
+          checkCode: null
+        }
+        this.$refs[formName].validate((valid) => {
+          if(valid){
+            this.$axios({
+              method: 'post',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              url: 'http://localhost:8081/user/security',
+              data: JSON.stringify(passwordChange),
+
+            }).then(res => {
+              if (res.data.code === 2000) {
+                console.log("are you log")
+                this.$message({
+                  type: 'success',
+                  message: 'You have change the password successfully, please login again'
+                });
+                this.relogo()
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: res.data.message
+                });
+              }
+            })
+          }
+
+        })
+
+      }
+    },
+
+    relogo() {
+      console.log("修改成功")
+      this.$store.commit('logout')
+      this.$router.push("/login")
+
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
@@ -343,6 +580,25 @@ export default {
     },
 
     Down(formName) {
+      this.$axios({
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        url: 'http://localhost:8081/user/sendCode1?email=' + this.ME_form.new_email,
+      }).then(res => {
+        if (res.data.code === 2000) {
+          this.$message({
+            type: 'success',
+            message: 'Check code send successfully, Please check your new email'
+          });
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.data.message
+          });
+        }
+      });
 
     },
   }

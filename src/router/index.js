@@ -10,7 +10,6 @@ import User from "@/views/User";
 import Details from "@/views/Details";
 import Collection from "@/views/Collection";
 import Activate from "@/views/Activate"
-import Contact from "@/views/Contact";
 import Deal from "@/views/Deal"
 import Publish from "@/views/Publish"
 import Order from "@/views/Order"
@@ -36,6 +35,7 @@ import Main from "@/views/Main/Main";
 import ST from "@/views/test"
 import SHP from '@/views/SearchHomePage'
 import UserComments from "@/views/UserComments";
+import Payment from "@/views/Payment";
 
 
 Vue.use(VueRouter)
@@ -125,6 +125,14 @@ const routes = [
         },
         component: EditGoods
       },
+      {
+        path: '/payment',
+        name: 'PY',
+        meta: {
+          requireAuth: true
+        },
+        component: Payment
+      }
     ]
   },
   {
@@ -166,14 +174,6 @@ const routes = [
     path: '/goods/:goodsId',
     name: 'Details',
     component: Details
-  },
-  {
-    path: '/product/contact',
-    name: 'Contact',
-    meta: {
-      requireAuth: true
-    },
-    component: Contact
   },
   {
     path: '/deal/:goodsId',

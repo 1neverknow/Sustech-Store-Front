@@ -28,7 +28,8 @@
             <div>
               <router-link
                   :to="{path: '/goods/'+ item.goodsId}"
-                  class="router-link-active">
+                  class="router-link-active"
+              >
                 <img
                     style="padding-top: 10px;width: 120px; height: 120px; text-align: center"
                     :src="item.picture"
@@ -71,7 +72,8 @@
               <div>
                 <router-link
                     :to="{path: '/goods/'+ item.goodsId}"
-                    class="router-link-active">
+                    class="router-link-active"
+                >
                   <img
                       style="width: 120px; height: 120px; text-align: center"
                       :src="item.picture"

@@ -11,7 +11,7 @@
           <span class="btn-bell-badge" v-if=this.$store.state.message></span>
         </div>
         <div class="user-avator-header">
-          <img v-bind:src="imageUrl" />
+          <img v-bind:src="this.$store.getters.getBasic_Info.picturePath" />
         </div>
         <el-dropdown class="user-name" trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
@@ -37,6 +37,18 @@
 
 
 export default {
+  computed: {
+    isFollow () {
+      return this.$store.state.getBasic_Info; //需要监听的数据
+    }
+  },
+  watch: {
+    isFollow (newVal, oldVal) {
+      //do something
+      console.log("watch")
+      this.imageUrl = this.$store.getters.getBasic_Info.picturePath
+    }
+  },
   name: "Header",
   mounted() {
     console.log("test3")
