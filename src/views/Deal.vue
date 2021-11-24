@@ -179,15 +179,18 @@ export default {
         sellerId: goodsAbbreviation.announcer.userI,
         price: goodsAbbreviation.price,
         number: 1,
-        postage: goodsAbbreviation.postage
       })
       this.dealInfo.postage = goodsAbbreviation.postage
     },
     getAddressInfo() {
       this.$axios.get('http://120.24.4.97:8081/user/address/')
       .then(res => {
+        console.log('address', res.data.data)
         // const addresses = res.data.data
         this.userInfo.addresses = res.data.data
+        if (res.data.data !== null) {
+          this.dealInfo.confirmAddress = res.data.data[0].addressId
+        }
       })
     },
     addDeal() {
