@@ -33,9 +33,9 @@
         <pre
             class="chat-msg-message"
             v-html="
-            chat.messages.length === 0
-              ? ''
-              : chat.messages[chat.messages.length - 1].ctn
+            chat.messages.length === 0 ? '':
+            (chat.messages[chat.messages.length - 1].ctn.toString().includes('8081')?'[图片]'
+            :chat.messages[chat.messages.length - 1].ctn)
           "
         ></pre>
       </div>
@@ -299,31 +299,6 @@ export default {
                 // address: item.addressName,
                 // type:item.isDefault==='null'?'Normal':'Default'
               })
-            // } else if (item.lastMessageContent.toString().includes("`<img")) {
-            //   console.log("^^^^^^^^^^^^^^^^^^^^")
-            //   console.log(item.lastMessageContent)
-            //   chatList.push({
-            //     chatId: item.chatId,
-            //     linkmanIndex: count,
-            //     linkmanId: item.chatId,
-            //     isMute: false,
-            //     isOnTop: false,
-            //     isOnce: false,
-            //     isBuyer: item.isBuyer,
-            //     unReadCount: item.unreadCount,
-            //     messages: [
-            //       {
-            //         avatar: item.otherUserPicturePath,
-            //         nickname: item.otherUserName.toString(),
-            //         ctn: "[图片]",
-            //         sender: false,
-            //         time: toDate(item.lastMessageDate),
-            //         type: "chat"
-            //       }
-            //     ]
-            //     // address: item.addressName,
-            //     // type:item.isDefault==='null'?'Normal':'Default'
-            //   })
             } else {
               // console.log(item.lastMessageContent.toString().includes("<img"))
               console.log("^^^^^^^^^^^^^^^^^^^^")

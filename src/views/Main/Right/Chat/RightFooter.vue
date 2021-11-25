@@ -299,7 +299,7 @@ export default {
       fileList.pop()
       const newRequest = axios.create();
       newRequest({
-        method: "POST",
+        method: "PUT",
         url: 'http://120.24.4.97:8081/chat/picture/'+this.$store.state.currentChatId,
         data: photoData,
         headers: {
