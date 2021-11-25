@@ -72,8 +72,9 @@ export default {
 .left-header-wrap {
   display: flex;
   width: 244px;
-  height: 40px;
-  padding: 18px;
+  height: 51px;
+  padding: 20px;
+  border-bottom: 1px solid #e28353;
 }
 
 .avatar {
