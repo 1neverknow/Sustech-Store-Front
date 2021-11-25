@@ -32,7 +32,6 @@
         </el-main>
       </el-container>
     </el-card>
-
     <div id="app1" class="special-effect">
       <vue-particles
           color="#FFF"
@@ -189,7 +188,7 @@ export default {
   height: 36px;
   margin-bottom: 10px;
 }
-.reset-wrap .special-effect {
+.register-wrap .special-effect {
   margin-top: -52%;
 }
 </style>

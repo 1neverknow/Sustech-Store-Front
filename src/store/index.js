@@ -12,7 +12,8 @@ Vue.use(Vuex)
 // store的内容更新之后，会通知到每个组件。这样就可以达到多个组件数据同步的效果
 export default new Vuex.Store({
     state: {
-        payJudge : sessionStorage.getItem('payJudge')===null?false:sessionStorage.getItem('payJudge')===null,
+        show: sessionStorage.getItem('show')===null?true:sessionStorage.getItem('show'),
+        payJudge : sessionStorage.getItem('payJudge')===null?false:sessionStorage.getItem('payJudge'),
         token: localStorage.getItem('token'),
         role: sessionStorage.getItem('role'),
         // 后端发送过来的用户信息
@@ -156,6 +157,11 @@ export default new Vuex.Store({
             state.payJudge = judge
             sessionStorage.setItem('payJudge', judge)
         },
+        SET_Show: (state, show) => {
+            state.show = show
+            sessionStorage.setItem('show', show)
+        },
+
         // SET_State: (state) => {
         //     state.state = '已搜索'
         //     sessionStorage.setItem('state','已搜索')
@@ -379,6 +385,7 @@ export default new Vuex.Store({
             state.search_content = []
             state.role = ''
             state.payJudge = false
+            state.show = false
             localStorage.removeItem('token')
             localStorage.removeItem('userInfo')
             sessionStorage.removeItem('basic_info')
@@ -386,6 +393,7 @@ export default new Vuex.Store({
             sessionStorage.removeItem('search_content')
             sessionStorage.removeItem('role')
             sessionStorage.removeItem('payJudge')
+            sessionStorage.removeItem('show')
         },
         removeLoginInfo(state) {
             state.loginInfo = null
@@ -421,6 +429,9 @@ export default new Vuex.Store({
         },
         getPay: state =>{
             return state.payJudge
+        },
+        getShow: state =>{
+            return state.show
         }
         // getState: state =>{
         //     return state.state

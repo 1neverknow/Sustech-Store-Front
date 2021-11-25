@@ -30,166 +30,230 @@
       </div>
     </el-header>
 
-    <el-main class="sh_mail">
-      <div class="bs-sysMsg">
-        <i class="el-alert__icon el-icon-warning"></i>
-        <div class="msg__content">
-          <el-carousel height="20px" indicator-position="none" :autoplay="true">
-            <el-carousel-item v-for="item in systemMsg" :key="item.id">
-              {{ item.title }}
-            </el-carousel-item>
-          </el-carousel>
+
+
+    <el-main class="sh_mail" >
+
+<!--      <div id="app1" class="special-effect" v-show="show">-->
+<!--        <vue-particles-->
+<!--            color="#0099CC"-->
+<!--            :particleOpacity="0.4"-->
+<!--            :particlesNumber="60"-->
+<!--            shapeType="circle"-->
+<!--            :particleSize="4"-->
+<!--            linesColor="#573"-->
+<!--            :linesWidth="1"-->
+<!--            :lineLinked="true"-->
+<!--            :lineOpacity="0.4"-->
+<!--            :linesDistance="150"-->
+<!--            :moveSpeed="5"-->
+<!--            :hoverEffect="true"-->
+<!--            hoverMode="grab"-->
+<!--            :clickEffect="true"-->
+<!--            clickMode="push"-->
+<!--            class="lizi"-->
+<!--        >-->
+<!--        </vue-particles>-->
+<!--      </div>-->
+
+      <div class="bac" v-show="this.show">
+        <div style="display: flex; height: 100px;">
+          <transition name="el-fade-in-linear"
+                      enter-class="fade-in-enter"
+                      enter-active-class="fade-in-active"
+                      leave-class="fade-out-enter"
+                      leave-active-class="fade-out-active">
+            <div  class="transition-box">
+              <vue-particles
+                  color="#0099CC"
+                  :particleOpacity="0.6"
+                  :particlesNumber="100"
+                  shapeType="circle"
+                  :particleSize="4"
+                  linesColor="#573"
+                  :linesWidth="1"
+                  :lineLinked="true"
+                  :lineOpacity="0.4"
+                  :linesDistance="150"
+                  :moveSpeed="5"
+                  :hoverEffect="true"
+                  hoverMode="grab"
+                  :clickEffect="true"
+                  clickMode="push"
+                  class="lizi"
+                  @click.native ="click"
+              >
+              </vue-particles>
+              <img src="../assets/background1.png" @click="click">
+
+            </div>
+          </transition>
+
         </div>
       </div>
 
-<!--      <el-collapse v-model="judge" @click="judge===['1']?judge=true:judge=['1']">-->
-<!--        <el-collapse-item name="1">-->
-          <div style="margin-top: 10px">
-            <el-carousel indicator-position="outside" height="500px" autoplay interval="2000">
-              <el-carousel-item v-for="carousel in carousels" :key="carousels">
-                <a target="_blank" :href="carousel.link">
-                  <!--              <p>asdasd</p>-->
-                  <img class="ca_img" :src="carousel.picturePath"/>
-                </a>
+      <div v-show="!this.show">
+        <div class="bs-sysMsg">
+          <i class="el-alert__icon el-icon-warning"></i>
+          <div class="msg__content">
+            <el-carousel height="20px" indicator-position="none" :autoplay="true">
+              <el-carousel-item v-for="item in systemMsg" :key="item.id">
+                {{ item.title }}
               </el-carousel-item>
-
             </el-carousel>
           </div>
-<!--        </el-collapse-item>-->
-<!--      </el-collapse>-->
-
-
-<!--      <div class ="bottom">-->
-      <el-card style="opacity: 0.8">
-        <div class="search_all" style="margin-top: 10px">
-          <el-form :inline="true" :model="formInline" class="demo-form-inline" ref="ruleForm"
-                   :rules="rules">
-
-            <el-form-item label="Search Type">
-              <el-select v-model="formInline.region" placeholder="Search Users or Goods">
-                <el-option label="Users" value="users"></el-option>
-                <el-option label="Goods" value="goods"></el-option>
-              </el-select>
-            </el-form-item>
-
-            <el-form-item>
-              <el-input v-model="formInline.content" placeholder="Please input the search content"></el-input>
-            </el-form-item>
-
-            <el-form-item>
-              <el-button type="primary" @click="onsubmit('ruleForm')">Search</el-button>
-            </el-form-item>
-          </el-form>
-
         </div>
 
-        <div class="goods" v-show="type">
+        <!--      <el-collapse v-model="judge" @click="judge===['1']?judge=true:judge=['1']">-->
+        <!--        <el-collapse-item name="1">-->
+        <div style="margin-top: 10px">
+          <el-carousel indicator-position="outside" height="500px" autoplay interval="2000">
+            <el-carousel-item v-for="carousel in carousels" :key="carousels">
+              <a target="_blank" :href="carousel.link">
+                <!--              <p>asdasd</p>-->
+                <img class="ca_img" :src="carousel.picturePath"/>
+              </a>
+            </el-carousel-item>
 
-
-          <el-col>
-            <el-row>
-              <div id="DailyRecom">
-                <!--     每日推荐 -->
-                <div v-for="item in list">
-                  <div>
-                    <img class="img_sc" :src="item.picture_path" alt="">
-                    <p class="p_sc">
-                      {{ item.name }}
-                    </p>
-                    <p class="price_sc">
-                      {{ item.price }}
-                    </p>
-                    <p class="p_sc">
-                      <!--                    <el-button type="text" class="button" icon="el-icon-star-off" @click="addCollection()">添加收藏-->
-                      <!--                    </el-button>-->
-                      <el-button style="float: inside" type="text" class="button" icon="el-icon-goods"
-                                 @click="queryGoods(item.goods_id)">Check The Details
-                      </el-button>
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </el-row>
-
-            <el-row>
-              <div class="pagination" style="float: bottom"
-              >
-                <el-pagination
-                    background
-                    layout="prev, pager, next"
-                    :page-count="goodsPage"
-                    @current-change="handleGoodsCurrentChange">
-                </el-pagination>
-              </div>
-            </el-row>
-          </el-col>
+          </el-carousel>
         </div>
+        <!--        </el-collapse-item>-->
+        <!--      </el-collapse>-->
 
-        <div class="user" v-show="!type">
-          <div v-for="item in user_list" style="margin: 10px">
-            <el-card style="opacity: 0.8">
-              <el-container>
-                <el-aside width="200px">
-                  <div class="search_user_image">
-                    <router-link :to="'/user/'+item.id">
-                      <img :src="item.picturePath">
-                    </router-link>
-                  </div>
-                </el-aside>
-                <el-container>
-                  <el-header>
-                    <el-descriptions class="margin-top" :column="3" border>
-                      <!--                <template slot="extra">-->
-                      <!--                  <router-link to="/pi_modify">-->
-                      <!--                    <el-button type="primary" size="medium">See details</el-button>-->
-                      <!--                  </router-link>-->
-                      <!--                </template>-->
 
-                      <el-descriptions-item label-style="width:15%" content-style="width:15%">
-                        <template slot="label">
-                          <i class="el-icon-user"></i>
-                          User Name
-                        </template>
-                        {{ item.userName }}
-                      </el-descriptions-item>
+        <!--      <div class ="bottom">-->
+        <el-card style="opacity: 0.8">
+          <div class="search_all" style="margin-top: 10px">
+            <el-form :inline="true" :model="formInline" class="demo-form-inline" ref="ruleForm"
+                     :rules="rules">
 
-                      <el-descriptions-item label-style="width:15%" content-style="width:15%">
-                        <template slot="label">
-                          <i class="el-icon-message"></i>
-                          Email
-                        </template>
-                        {{ item.email }}
-                      </el-descriptions-item>
+              <el-form-item label="Search Type">
+                <el-select v-model="formInline.region" placeholder="Search Users or Goods">
+                  <el-option label="Users" value="users"></el-option>
+                  <el-option label="Goods" value="goods"></el-option>
+                </el-select>
+              </el-form-item>
 
-                      <el-descriptions-item label-style="width:15%" content-style="width:15%">
-                        <template slot="label">
-                          <i class="el-icon-cherry"></i>
-                          Credit
-                        </template>
-                        {{ item.credit }}
-                      </el-descriptions-item>
+              <el-form-item>
+                <el-input v-model="formInline.content" placeholder="Please input the search content"></el-input>
+              </el-form-item>
 
-                    </el-descriptions>
-                  </el-header>
-
-                  <el-main>
-                    <el-row class="good_item">
-                      <div v-for="good in item.display_list">
-                        <el-col :span="180" class="im">
-                          <img :src="good.picturePath" @click="toGoods(good.goodsId)">
-                        </el-col>
-                      </div>
-                    </el-row>
-                  </el-main>
-
-                </el-container>
-              </el-container>
-            </el-card>
+              <el-form-item>
+                <el-button type="primary" @click="onsubmit('ruleForm')">Search</el-button>
+              </el-form-item>
+            </el-form>
 
           </div>
-        </div>
-      </el-card>
-<!--      </div>-->
+
+          <div class="goods" v-show="type">
+
+
+            <el-col>
+              <el-row>
+                <div id="DailyRecom">
+                  <!--     每日推荐 -->
+                  <div v-for="item in list">
+                    <div>
+                      <img class="img_sc" :src="item.picture_path" alt="">
+                      <p class="p_sc">
+                        {{ item.name }}
+                      </p>
+                      <p class="price_sc">
+                        {{ item.price }}
+                      </p>
+                      <p class="p_sc">
+                        <!--                    <el-button type="text" class="button" icon="el-icon-star-off" @click="addCollection()">添加收藏-->
+                        <!--                    </el-button>-->
+                        <el-button style="float: inside" type="text" class="button" icon="el-icon-goods"
+                                   @click="queryGoods(item.goods_id)">Check The Details
+                        </el-button>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </el-row>
+
+              <el-row>
+                <div class="pagination" style="float: bottom"
+                >
+                  <el-pagination
+                      background
+                      layout="prev, pager, next"
+                      :page-count="goodsPage"
+                      @current-change="handleGoodsCurrentChange">
+                  </el-pagination>
+                </div>
+              </el-row>
+            </el-col>
+          </div>
+
+          <div class="user" v-show="!type">
+            <div v-for="item in user_list" style="margin: 10px">
+              <el-card style="opacity: 0.8">
+                <el-container>
+                  <el-aside width="200px">
+                    <div class="search_user_image">
+                      <router-link :to="'/user/'+item.id">
+                        <img :src="item.picturePath">
+                      </router-link>
+                    </div>
+                  </el-aside>
+                  <el-container>
+                    <el-header>
+                      <el-descriptions class="margin-top" :column="3" border>
+                        <!--                <template slot="extra">-->
+                        <!--                  <router-link to="/pi_modify">-->
+                        <!--                    <el-button type="primary" size="medium">See details</el-button>-->
+                        <!--                  </router-link>-->
+                        <!--                </template>-->
+
+                        <el-descriptions-item label-style="width:15%" content-style="width:15%">
+                          <template slot="label">
+                            <i class="el-icon-user"></i>
+                            User Name
+                          </template>
+                          {{ item.userName }}
+                        </el-descriptions-item>
+
+                        <el-descriptions-item label-style="width:15%" content-style="width:15%">
+                          <template slot="label">
+                            <i class="el-icon-message"></i>
+                            Email
+                          </template>
+                          {{ item.email }}
+                        </el-descriptions-item>
+
+                        <el-descriptions-item label-style="width:15%" content-style="width:15%">
+                          <template slot="label">
+                            <i class="el-icon-cherry"></i>
+                            Credit
+                          </template>
+                          {{ item.credit }}
+                        </el-descriptions-item>
+
+                      </el-descriptions>
+                    </el-header>
+
+                    <el-main>
+                      <el-row class="good_item">
+                        <div v-for="good in item.display_list">
+                          <el-col :span="180" class="im">
+                            <img :src="good.picturePath" @click="toGoods(good.goodsId)">
+                          </el-col>
+                        </div>
+                      </el-row>
+                    </el-main>
+
+                  </el-container>
+                </el-container>
+              </el-card>
+
+            </div>
+          </div>
+        </el-card>
+        <!--      </div>-->
+
+      </div>
 
     </el-main>
   </el-container>
@@ -211,52 +275,8 @@ export default {
     next()
   },
   mounted() {
-    console.log(this.$store.getters.getGood_list)
-    if(this.$store.getters.getToken === null) {
-      this.$axios({
-        method: 'get',
-        url: 'http://120.24.4.97:8081/goods/random',
-      }).then(res => {
-        if (res.data.code === 2000) {
-          res.data.data.forEach(item => {
-            this.list.push({
-              goods_id: item.goodsId,
-              picture_path: item.picturePath,
-              price: '¥' + item.price,
-              name: item.title
-            })
-          })
-        }
-      })
-    }else if (this.$store.getters.getGood_list === null || this.$store.getters.getGood_list.length === 0) {
-      this.$axios({
-        method: 'get',
-        url: 'http://120.24.4.97:8081/goods/recommend',
-      }).then(res => {
-        if (res.data.code === 2000) {
-          res.data.data.forEach(item => {
-            if(item!==null){
-              this.list.push({
-                goods_id: item.goodsId,
-                picture_path: item.picturePath,
-                price: '¥' + item.price,
-                name: item.title
-              })
-            }
-          })
-        }
-      })
-    } else {
-      this.formInline = {
-        content: this.$store.getters.getContent,
-        region: 'goods'
-      }
-      this.$store.getters.getGood_list.forEach(item => {
-        this.list.push(item)
-      })
-      this.$store.commit('SET_Good_List', [])
-      console.log(this.list)
-    }
+    this.show = this.$store.getters.getShow
+    this.reflush()
     this.$axios({
       method: 'get',
       url: 'http://120.24.4.97:8081/carousel',
@@ -267,11 +287,11 @@ export default {
         })
       }
     })
-
   },
   name: "SHP",
   data() {
     return {
+      show : this.$store.getters.getShow,
       goodsPage: 0,
       type: true,
       state: false,
@@ -310,6 +330,57 @@ export default {
     }
   },
   methods: {
+    reflush(){
+      if(this.$store.getters.getToken === null) {
+        this.$axios({
+          method: 'get',
+          url: 'http://120.24.4.97:8081/goods/random',
+        }).then(res => {
+          if (res.data.code === 2000) {
+            res.data.data.forEach(item => {
+              this.list.push({
+                goods_id: item.goodsId,
+                picture_path: item.picturePath,
+                price: '¥' + item.price,
+                name: item.title
+              })
+            })
+          }
+        })
+      }else if (this.$store.getters.getGood_list === null || this.$store.getters.getGood_list.length === 0) {
+        this.$axios({
+          method: 'get',
+          url: 'http://120.24.4.97:8081/goods/recommend',
+        }).then(res => {
+          if (res.data.code === 2000) {
+            res.data.data.forEach(item => {
+              if(item!==null){
+                this.list.push({
+                  goods_id: item.goodsId,
+                  picture_path: item.picturePath,
+                  price: '¥' + item.price,
+                  name: item.title
+                })
+              }
+            })
+          }
+        })
+      } else {
+        this.formInline = {
+          content: this.$store.getters.getContent,
+          region: 'goods'
+        }
+        this.$store.getters.getGood_list.forEach(item => {
+          this.list.push(item)
+        })
+        this.$store.commit('SET_Good_List', [])
+        console.log(this.list)
+      }
+    },
+    click(){
+      this.$store.commit('SET_Show',false)
+      this.show = false
+    },
     handleGoodsCurrentChange(val) {
       this.state = true
       this.list = []
@@ -450,6 +521,9 @@ export default {
                 })
               }
             })
+          }else {
+            this.list = []
+            this.reflush()
           }
 
         } else {
@@ -477,7 +551,6 @@ export default {
 }
 
 .sh_mail {
-  margin-top: 10px;
   padding: 0;
   text-align: center;
   height: 95%;
@@ -637,5 +710,30 @@ export default {
 .bs-sysMsg .msg__content a.item:hover {
   text-decoration: underline;
 }
+/*.transition-box {*/
+/*  margin-bottom: 10px;*/
+/*  width: 200px;*/
+/*  height: 100px;*/
+/*  border-radius: 4px;*/
+/*  !*background-color: #409EFF;*!*/
+/*  text-align: center;*/
+/*  color: #fff;*/
+/*  !*padding: 40px 20px;*!*/
+/*  box-sizing: border-box;*/
+/*  margin-right: 20px;*/
+/*}*/
+.transition-box img{
+  height: 700px;
+  width: 1400px;
+}
+.bac{
+  height: 700px;
+}
 
+.fade-in-active, .fade-out-active{
+  transition: all 0.1s ease
+}
+.fade-in-enter, .fade-out-active{
+  opacity: 0
+}
 </style>
