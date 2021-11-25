@@ -115,14 +115,16 @@ export default {
       console.log('validate password', value)
       if (value === '') {
         callback(new Error('Password is required'));
-      } else if (value.length < 6) {
-        callback(new Error('Length must be more than 6'));
+      } else if (value.length < 8) {
+        callback(new Error('Length must be more than 8'));
       } else {
-        const regex="^(?=.*[0-9].*)(?=.*[a-z].*)(?=.*[A-Z].*)(?=.*[0-9].*)(?=.*[~!@#$%^&*()_+|<>,\\.?\\/:;'\\[\\]\\{\\}\\\\].*).{8,16}$"
-        if (!regex.test(value)) {
-          callback(new Error('Password is too weak'));
-        }
         callback();
+        // const regex="^(?=.*[0-9].*)(?=.*[a-z].*)(?=.*[A-Z].*)(?=.*[0-9].*)(?=.*[~!@#$%^&*()_+|<>,\\.?\\/:;'\\[\\]\\{\\}\\\\].*).{8,16}$"
+        // if (!regex.test(value)) {
+        //   callback(new Error('Password is too weak'));
+        // } else {
+        //   callback();
+        // }
       }
     };
     return {
@@ -142,7 +144,7 @@ export default {
           {validator: validateEmail, trigger: 'blur',},
         ],
         password: [
-          {validator: validatePass, trigger: 'blur',},
+          {validator: validatePass, trigger: 'change',},
         ],
       },
       invisible: true
