@@ -37,7 +37,6 @@
 
             <el-form-item label="" prop="agree" style="margin-top: -10px">
               <el-checkbox v-model="accept" label="I agree to"></el-checkbox>
-<!--              <el-link href="../info.html" type="primary" style="height: 15px; margin-top: -2px">Terms and Conditions</el-link>-->
               <el-button @click="handleRouter" type="text" style="margin-left: 5px; margin-top: 3px">Terms and Conditions</el-button>
             </el-form-item>
 
@@ -188,7 +187,7 @@ export default {
       this.invisible = !(value === 'show');
     },    //判断渲染，true:暗文显示，false:明文显示
     handleRouter() {
-      window.open('/info.html');
+      window.open('../info.html');
     },
   },
 }
