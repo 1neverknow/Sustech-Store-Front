@@ -30,12 +30,13 @@
         <i class="icon icon-chat" v-if="canChat" @click.stop="newChat"></i>
       </div>
       <div class="member-info-text">
-        <span style="margin-right: 10px;">备注:</span>
-        {{ memberInfo.alias }}
-      </div>
-      <div class="member-info-text">
-        <span style="margin-right: 10px;">地区:</span>
-        {{ memberInfo.region }}
+        <span style="margin-right: 10px;"></span>
+        {{this.$store.getters.getBasic_Info.sign}}
+<!--        {{ memberInfo.alias }}-->
+<!--      </div>-->
+<!--      <div class="member-info-text">-->
+<!--        <span style="margin-right: 10px;">地区:</span>-->
+<!--        {{ memberInfo.region }}-->
       </div>
     </div>
   </div>
@@ -122,15 +123,15 @@ export default {
 }
 
 .icon-chat {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   background-position: -223px -432px;
   cursor: pointer;
 }
 
 .member-info-text {
   color: #888;
-  font-size: 12px;
-  height: 19px;
+  font-size: 16px;
+  height: 10px;
 }
 </style>
