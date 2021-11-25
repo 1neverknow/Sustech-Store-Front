@@ -106,7 +106,7 @@ export default {
     },
     Reject(id){
       const _this= this
-      _this.$axios.put("http://120.24.4.97:8081/admin/operate/deal?canRefund"+false+"&recordId="+id).then(res => {
+      _this.$axios.put("http://120.24.4.97:8081/admin/operate/deal?canRefund="+false+"&recordId="+id).then(res => {
         console.log(res)
         _this.$axios.get("/admin/appealing/deal/not").then(res => {
           console.log(res)
