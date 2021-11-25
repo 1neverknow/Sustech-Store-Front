@@ -22,9 +22,9 @@
     <div class="backmain" >
       <div class="main-left" >
         <left-header></left-header>
-        <left-search></left-search>
+<!--        <left-search></left-search>-->
         <left-tab></left-tab>
-        <left-chat-list ></left-chat-list>
+<!--        <left-chat-list ></left-chat-list>-->
       </div>
       <div class="main-right">
         <keep-alive>
@@ -50,7 +50,7 @@ export default {
   name: "Main",
   components: {
     LeftHeader,
-    LeftSearch,
+    // LeftSearch,
     LeftTab,
     // LeftChatList,
     Chat
