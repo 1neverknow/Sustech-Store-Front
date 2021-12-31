@@ -207,7 +207,7 @@ export default {
       console.log('get details')
       this.$axios({
         method: 'get',
-        url: 'http://120.24.4.97:8081/goods/' + this.goods.goodsId,
+        url: 'http://localhost:8081/goods/' + this.goods.goodsId,
       })
           .then(res => {
             const productDetails = res.data.data
@@ -227,7 +227,7 @@ export default {
       }
     },
     clearPicture() {
-      this.$axios.delete('http://120.24.4.97:8081/goods/picture/' + this.goods.goodsId)
+      this.$axios.delete('http://localhost:8081/goods/picture/' + this.goods.goodsId)
       .then(res => {
         Element.Message({
           message: 'Delete all pictures!',
@@ -308,7 +308,7 @@ export default {
     },
     submitInfo() {
       return new Promise(resolve => {
-            this.$axios.post('http://120.24.4.97:8081/goods/edit', this.goods)
+            this.$axios.post('http://localhost:8081/goods/edit', this.goods)
               .then((res) => {
                 resolve('done');
               })
@@ -323,7 +323,7 @@ export default {
             const newRequest = axios.create();
             newRequest({
               method: "POST",
-              url: 'http://120.24.4.97:8081/goods/upload/picture?'
+              url: 'http://localhost:8081/goods/upload/picture?'
                   + 'goodsId=' + this.goods.goodsId,
               data: photoData,
               headers: {

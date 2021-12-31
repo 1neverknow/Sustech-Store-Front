@@ -101,7 +101,7 @@ export default {
       console.log('get comments')
       this.$axios({
         method: 'get',
-        url: 'http://120.24.4.97:8081/user/comment'
+        url: 'http://localhost:8081/user/comment'
       }).then(res => {
         if (res.data.data !== null) {
           res.data.data.forEach(item =>{

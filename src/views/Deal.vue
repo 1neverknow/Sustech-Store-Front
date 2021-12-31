@@ -164,7 +164,7 @@ export default {
       }
       this.$axios({
         method: 'get',
-        url: 'http://120.24.4.97:8081/goods/' + goodsId,
+        url: 'http://localhost:8081/goods/' + goodsId,
       }).then(res => {
         const info = res.data.data
         console.log(info)
@@ -183,7 +183,7 @@ export default {
       this.dealInfo.postage = goodsAbbreviation.postage
     },
     getAddressInfo() {
-      this.$axios.get('http://120.24.4.97:8081/user/address/')
+      this.$axios.get('http://localhost:8081/user/address/')
       .then(res => {
         console.log('address', res.data.data)
         // const addresses = res.data.data
@@ -196,7 +196,7 @@ export default {
     addDeal() {
       this.$axios({
         method: 'post',
-        url: 'http://120.24.4.97:8081/deal/addDeal'
+        url: 'http://localhost:8081/deal/addDeal'
             + "?addressId=" + this.dealInfo.confirmAddress
             + "&goodsId=" + this.goodsList[0].goodsId
       }).then(res => {

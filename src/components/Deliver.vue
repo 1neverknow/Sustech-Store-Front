@@ -45,7 +45,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$axios.put('http://120.24.4.97:8081/deal/deliver/'
+          this.$axios.put('http://localhost:8081/deal/deliver/'
               + this.dealId
               + '?mailingNumber=' + this.ruleForm.mailingNumber)
           .then((res) => {
@@ -71,7 +71,7 @@ export default {
         cancelButtonText: 'CANCEL',
         type: 'warning'
       }).then(() => {
-        this.$axios.put('http://120.24.4.97:8081/deal/deliver/'
+        this.$axios.put('http://localhost:8081/deal/deliver/'
             + this.dealId
             + '?mailingNumber=null')
         .then((res) => {

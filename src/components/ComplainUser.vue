@@ -126,7 +126,7 @@ export default {
           let url = ''
           let method = 'POST'
 
-          url = 'http://120.24.4.97:8081/user/complain?'
+          url = 'http://localhost:8081/user/complain?'
               + 'content=' + this.ruleForm.content
               + '&userId=' + this.id
 

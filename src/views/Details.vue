@@ -273,7 +273,7 @@ export default {
       // const _this = this
       this.$axios({
         method: 'get',
-        url: 'http://120.24.4.97:8081/goods/' + this.goodsId,
+        url: 'http://localhost:8081/goods/' + this.goodsId,
       })
       .then(res => {
         const productDetails = res.data.data
@@ -300,7 +300,7 @@ export default {
     getAnnouncer(announcerId) {
       this.$axios({
         method: 'get',
-        url: 'http://120.24.4.97:8081/user/information/'
+        url: 'http://localhost:8081/user/information/'
             + announcerId,
         headers: {'authorization': this.$store.getters.getToken},
       }).then(res => {
@@ -321,7 +321,7 @@ export default {
       console.log('get comments')
       this.$axios({
         method: 'get',
-        url: 'http://120.24.4.97:8081/goods/comment/'
+        url: 'http://localhost:8081/goods/comment/'
             + goodsId,
       }).then(res => {
         if (res.data.data !== null) {
@@ -334,7 +334,7 @@ export default {
     getRecommend() {
       this.recommendList = []
       console.log('get recommended goods')
-      this.$axios.get('http://120.24.4.97:8081/goods/recommend')
+      this.$axios.get('http://localhost:8081/goods/recommend')
       .then(res => {
         const data = res.data.data
         console.log('recommend list: ', data)
@@ -374,7 +374,7 @@ export default {
         })
         return
       }
-      this.$axios.post('http://120.24.4.97:8081/chat/want?goodsId=' + this.goodsId)
+      this.$axios.post('http://localhost:8081/chat/want?goodsId=' + this.goodsId)
           .then(res => {
             Element.Message({
               message: 'Success',
@@ -394,7 +394,7 @@ export default {
         })
         return
       }
-      this.$axios.put("http://120.24.4.97:8081/user/collection?goodsId="
+      this.$axios.put("http://localhost:8081/user/collection?goodsId="
           + this.goodsId).then(res => {
         Element.Message({
           message: 'Add product to collection successfully',
@@ -404,7 +404,7 @@ export default {
       })
     },
     removeFromCollection() {
-      this.$axios.delete("http://120.24.4.97:8081/user/collection?goodsId=" + this.goodsId)
+      this.$axios.delete("http://localhost:8081/user/collection?goodsId=" + this.goodsId)
         .then(res => {
           Element.Message({
             message: 'Remove successfully',
@@ -417,7 +417,7 @@ export default {
       if (!this.$store.getters.getUser) {
         return
       }
-      this.$axios.put("http://120.24.4.97:8081/user/checkCollection?goodsId=" + goodsId)
+      this.$axios.put("http://localhost:8081/user/checkCollection?goodsId=" + goodsId)
           .then(res => {
             console.log('in collection?', res.data.data)
             this.inCollection = res.data.data

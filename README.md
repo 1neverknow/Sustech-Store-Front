@@ -1,19 +1,11 @@
-# sustech-store
+# Sustech-Store-Front
 
-## Project setup
-```
-npm install
-```
+## 运行命令
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+1. npm install 
+2. npm run serve
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## 注意事项
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+我们配置的目标ip为本机，如要替换，则将localhost全局替换为目标ip
+

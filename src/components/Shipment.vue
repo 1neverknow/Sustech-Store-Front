@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     confirmGet() {
-      this.$axios.put('http://120.24.4.97:8081/deal/confirm/' + this.dealId)
+      this.$axios.put('http://localhost:8081/deal/confirm/' + this.dealId)
         .then(res => {
           Element.Message({
             message: 'Success!',

@@ -185,7 +185,7 @@ export default {
           const newRequests = axios.create()
           newRequests.defaults.withCredentials = true;
           // this.$axios.defaults.withCredentials = true;
-          newRequests.post('http://120.24.4.97:8081/login?checkCode=' + this.verify.verifycode, this.ruleForm)
+          newRequests.post('http://localhost:8081/login?checkCode=' + this.verify.verifycode, this.ruleForm)
               .then((res)=> {
             console.log(res)
             if (res.data.code === 2000) {
@@ -227,7 +227,7 @@ export default {
     getBasicInfo() {
       this.$axios({
         method: 'get',
-        url: 'http://120.24.4.97:8081/admin/appealing/allDeal',
+        url: 'http://localhost:8081/admin/appealing/allDeal',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -239,7 +239,7 @@ export default {
 
       this.$axios({
         method: 'get',
-        url: 'http://120.24.4.97:8081/user/me',
+        url: 'http://localhost:8081/user/me',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -263,7 +263,7 @@ export default {
       newRequests.defaults.withCredentials = true;
       newRequests({
         method: 'get',
-        url: 'http://120.24.4.97:8081/code/image',
+        url: 'http://localhost:8081/code/image',
         responseType: "blob"
       }).then(res => {
         const {data, headers} = res

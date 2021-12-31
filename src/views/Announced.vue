@@ -72,7 +72,7 @@ export default {
       this.showList = []
       this.queryInfo.total = 0
       console.log('get announcement onlist')
-      this.$axios.get('http://120.24.4.97:8081/user/announceGoods/0')
+      this.$axios.get('http://localhost:8081/user/announceGoods/0')
           .then(res => {
             const announcement_data = res.data.data
             console.log('onList', announcement_data)
@@ -88,7 +88,7 @@ export default {
               })
             }
             console.log('get announcement offlist')
-            this.$axios.get('http://120.24.4.97:8081/user/announceGoods/1')
+            this.$axios.get('http://localhost:8081/user/announceGoods/1')
                 .then(res => {
                   const announcement_data = res.data.data
                   console.log('offList', announcement_data)

@@ -238,7 +238,7 @@ export default {
     initialAccount() {
       this.$axios({
         method: 'get',
-        url: 'http://120.24.4.97:8081/user/me',
+        url: 'http://localhost:8081/user/me',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -261,7 +261,7 @@ export default {
       // this.user_name = 'user'
       // this.$axios({
       //   method: 'get',
-      //   url: 'http://120.24.4.97:8081/user/information/'
+      //   url: 'http://localhost:8081/user/information/'
       //       + this.$store.getters.getUser.userId,
       //   headers: {'authorization': this.$store.getters.getToken},
       //   data: {
@@ -289,7 +289,7 @@ export default {
       // })
       this.$axios({
         method: 'get',
-        url: 'http://120.24.4.97:8081/user/address',
+        url: 'http://localhost:8081/user/address',
         headers: {'authorization': this.$store.getters.getToken},
         transformRequest: [function (data) {  // 将{username:111,password:111} 转成 username=111&password=111
           var ret = '';

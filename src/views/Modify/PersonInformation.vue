@@ -332,7 +332,7 @@ export default {
       else formData.append('photo', null)
       axios.create()({
         method: 'post',
-        url: 'http://120.24.4.97:8081/user/upload/face',
+        url: 'http://localhost:8081/user/upload/face',
         headers: {
           'Authorization': this.$store.getters.getToken,
           'Content-Type': 'multipart/form-data'
@@ -363,7 +363,7 @@ export default {
       else formData.append('photo', null)
       axios.create()({
         method: 'post',
-        url: 'http://120.24.4.97:8081/user/upload/face',
+        url: 'http://localhost:8081/user/upload/face',
         headers: {
           'Authorization': this.$store.getters.getToken,
           'Content-Type': 'multipart/form-data'
@@ -398,7 +398,7 @@ export default {
     getBasicInfo() {
       this.$axios({
         method: 'get',
-        url: 'http://120.24.4.97:8081/user/me',
+        url: 'http://localhost:8081/user/me',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -423,7 +423,7 @@ export default {
             headers: {
               'Content-Type': 'application/json',
             },
-            url: 'http://120.24.4.97:8081/user/security',
+            url: 'http://localhost:8081/user/security',
             data: JSON.stringify(EmailChange),
 
           }).then(res => {
@@ -464,7 +464,7 @@ export default {
             headers: {
               'Content-Type': 'application/json',
             },
-            url: 'http://120.24.4.97:8081/user/update',
+            url: 'http://localhost:8081/user/update',
             data: JSON.stringify(user),
 
           }).then(res => {
@@ -498,7 +498,7 @@ export default {
             headers: {
               'Content-Type': 'application/json',
             },
-            url: 'http://120.24.4.97:8081/user/security',
+            url: 'http://localhost:8081/user/security',
             data: JSON.stringify(telephoneChange),
 
           }).then(res => {
@@ -541,7 +541,7 @@ export default {
               headers: {
                 'Content-Type': 'application/json',
               },
-              url: 'http://120.24.4.97:8081/user/security',
+              url: 'http://localhost:8081/user/security',
               data: JSON.stringify(passwordChange),
 
             }).then(res => {
@@ -585,7 +585,7 @@ export default {
         headers: {
           'Content-Type': 'application/json',
         },
-        url: 'http://120.24.4.97:8081/user/sendCode1?email=' + this.ME_form.new_email,
+        url: 'http://localhost:8081/user/sendCode1?email=' + this.ME_form.new_email,
       }).then(res => {
         if (res.data.code === 2000) {
           this.$message({

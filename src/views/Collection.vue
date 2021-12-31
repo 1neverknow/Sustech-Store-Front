@@ -94,7 +94,7 @@ export default {
       this.collectList = []
       this.showList = []
       console.log('get collection list')
-      this.$axios.get('http://120.24.4.97:8081/user/collection')
+      this.$axios.get('http://localhost:8081/user/collection')
         .then(res => {
           const collection_data = res.data.data
           this.queryInfo.total = collection_data.length

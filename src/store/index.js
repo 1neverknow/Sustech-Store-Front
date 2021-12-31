@@ -83,7 +83,7 @@ export default new Vuex.Store({
                     },
                     {
                         avatar,
-                        ctn: `<img src = "http://120.24.4.97:8081/user/user_picture_default.png" style="width: 80px; height: 80px;">`,
+                        ctn: `<img src = "http://localhost:8081/user/user_picture_default.png" style="width: 80px; height: 80px;">`,
                         nickname: "用户一",
                         sender: true,
                         time: new Date("2011-01-11 10:11:14"),

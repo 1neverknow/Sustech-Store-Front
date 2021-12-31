@@ -240,7 +240,7 @@ export default {
       this.commentVisible = value
     },
     cancelRefund(dealId) {
-      this.$axios.put('http://120.24.4.97:8081/deal/cancelRefund/' + dealId)
+      this.$axios.put('http://localhost:8081/deal/cancelRefund/' + dealId)
           .then((res)=>{
             Element.Message({
               message: 'Success!',

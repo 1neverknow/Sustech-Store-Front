@@ -108,7 +108,7 @@ export default {
     },
     Accept(id){
       const _this= this
-      _this.$axios.put("http://120.24.4.97:8081/admin/operate/user?needBanned="+true+"&recordId="+id).then(res => {
+      _this.$axios.put("http://localhost:8081/admin/operate/user?needBanned="+true+"&recordId="+id).then(res => {
         console.log(res)
         _this.$axios.get("/admin/complain/user/not").then(res => {
           console.log(res)
@@ -120,7 +120,7 @@ export default {
     },
     Reject(id){
       const _this= this
-      _this.$axios.put("http://120.24.4.97:8081/admin/operate/user?needBanned="+false+"&recordId="+id).then(res => {
+      _this.$axios.put("http://localhost:8081/admin/operate/user?needBanned="+false+"&recordId="+id).then(res => {
         console.log(res)
         _this.$axios.get("/admin/complain/user/not").then(res => {
           console.log(res)

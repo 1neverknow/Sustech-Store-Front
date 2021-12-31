@@ -64,7 +64,7 @@ export default {
         this.ruleForm.dealId = this.dealId
         this.ruleForm.isGood = (this.ruleForm.isGood === 'YES')
         if (valid) {
-          this.$axios.post('http://120.24.4.97:8081/deal/comment', this.ruleForm)
+          this.$axios.post('http://localhost:8081/deal/comment', this.ruleForm)
             .then((res)=>{
               Element.Message({
                 message: 'Success!',

@@ -108,7 +108,7 @@ export default {
     getLabelList() {
       this.list = []
       this.showList = []
-      this.$axios.get('http://120.24.4.97:8081/goods/label/' + this.label)
+      this.$axios.get('http://localhost:8081/goods/label/' + this.label)
           .then(res => {
             const search_data = res.data.data
             this.queryInfo.total = search_data.length

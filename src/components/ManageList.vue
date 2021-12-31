@@ -49,7 +49,7 @@ export default {
 
     },
     getAppealingDeal() {
-      this.$axios.get('http://120.24.4.97:8081/admin/appealing/deal')
+      this.$axios.get('http://localhost:8081/admin/appealing/deal')
         .then((res) => {
           const orders = res.data.data
           this.total = orders.length

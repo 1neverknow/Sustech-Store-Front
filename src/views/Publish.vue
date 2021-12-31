@@ -252,7 +252,7 @@ export default {
     submitInfo() {
       return new Promise(resolve => {
           this.goods.isSell = this.goods.isSell === 'Sell'
-          this.$axios.post('http://120.24.4.97:8081/goods/add', this.goods)
+          this.$axios.post('http://localhost:8081/goods/add', this.goods)
               .then((res) => {
             this.goodsId = res.data.data
             resolve('done');
@@ -268,7 +268,7 @@ export default {
         const newRequest = axios.create();
         newRequest({
           method: "POST",
-          url: 'http://120.24.4.97:8081/goods/upload/picture?'
+          url: 'http://localhost:8081/goods/upload/picture?'
               + 'goodsId=' + this.goodsId,
           data: photoData,
           headers: {

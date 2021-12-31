@@ -68,7 +68,7 @@ export default {
       }
       this.$axios({
         method: 'put',
-        url: 'http://120.24.4.97:8081/user/charge'
+        url: 'http://localhost:8081/user/charge'
             + '?money=' + this.rechargeParams.totalAmt
       }).then(res => {
         this.chargeId = res.data.data

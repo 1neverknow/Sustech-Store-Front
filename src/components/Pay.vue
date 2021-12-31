@@ -69,7 +69,7 @@ export default {
       }
       this.$axios({
         method: 'put',
-        url: 'http://120.24.4.97:8081/deal/pay/' + this.dealId
+        url: 'http://localhost:8081/deal/pay/' + this.dealId
       }).then(res => {
         Element.Message({
           message: 'Pay Success!',
@@ -95,7 +95,7 @@ export default {
             }
         )
         .then(() => {
-          this.$axios.get('http://120.24.4.97:8081/user/charge/' + chargeId)
+          this.$axios.get('http://localhost:8081/user/charge/' + chargeId)
           .then(res => {
 
             Element.Message({

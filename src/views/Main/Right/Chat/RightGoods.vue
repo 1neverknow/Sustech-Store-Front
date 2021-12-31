@@ -100,7 +100,7 @@ export default {
     //   const _this = this
     //   this.$axios({
     //     method: 'get',
-    //     url: 'http://120.24.4.97:8081/goods/' + val,
+    //     url: 'http://localhost:8081/goods/' + val,
     //     data: {
     //       goodsId: val
     //     },
@@ -128,7 +128,7 @@ export default {
     //     })
     //     return
     //   }
-    //   this.$axios.post("http://120.24.4.97:8081/product/user/addCollect", {
+    //   this.$axios.post("http://localhost:8081/product/user/addCollect", {
     //     userID: this.$store.getters.getUser.userID,
     //     productID: this.productID
     //   })

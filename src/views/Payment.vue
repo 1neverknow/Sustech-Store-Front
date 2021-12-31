@@ -160,7 +160,7 @@ export default {
           }
       )
           .then(() => {
-            this.$axios.get('http://120.24.4.97:8081/user/charge/' + chargeId)
+            this.$axios.get('http://localhost:8081/user/charge/' + chargeId)
                 .then(res => {
                   console.log("真的设置pay了")
                   this.$store.commit('SET_Pay',true)
@@ -181,7 +181,7 @@ export default {
     getBasicInfo() {
       this.$axios({
         method: 'get',
-        url: 'http://120.24.4.97:8081/user/me',
+        url: 'http://localhost:8081/user/me',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -201,7 +201,7 @@ export default {
       this.money = 0
       this.$axios({
         method: 'get',
-        url: 'http://120.24.4.97:8081/user/charge/history',
+        url: 'http://localhost:8081/user/charge/history',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -246,7 +246,7 @@ export default {
 
       this.$axios({
         method: 'get',
-        url: 'http://120.24.4.97:8081/user/consume/history',
+        url: 'http://localhost:8081/user/consume/history',
         headers: {
           'Content-Type': 'application/json',
         },
