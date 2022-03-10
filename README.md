@@ -1,4 +1,4 @@
-# Sustech-Store-Front
+# CS4242 Project
 
 ## 运行命令
 
