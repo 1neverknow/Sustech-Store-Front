@@ -18,6 +18,8 @@ Vue.prototype.$axios = axios
 
 Vue.config.productionTip = false
 
+console.log('Starting!')
+
 new Vue({
   router,
   store,

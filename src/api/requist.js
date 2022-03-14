@@ -9,6 +9,7 @@ export function postLogin (email, password, rememberMe) {
 }
 
 export function postRegister (email, username, password) {
+  console.log("Registering!");
   return Vue.prototype.$axios.post('/register', {
     email: email,
     username: username,

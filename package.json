@@ -2,14 +2,17 @@
   "name": "sustech-store",
   "version": "0.1.0",
   "private": true,
+  "description": "## Project setup ``` npm install ```",
+  "author": "",
   "scripts": {
     "serve": "vue-cli-service serve --disableHostCheck=true",
     "build": "vue-cli-service build --disableHostCheck=true"
   },
+  "main": "babel.config.js",
   "dependencies": {
     "async-validator": "^4.0.3",
     "axios": "^0.22.0",
-    "core-js": "^3.6.5",
+    "core-js": "^3.8.3",
     "element-ui": "^2.15.6",
     "stompjs": "^2.3.3",
     "vue": "^2.6.11",
@@ -18,7 +21,7 @@
     "vuex": "^3.4.0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
@@ -31,9 +34,6 @@
     "last 2 versions",
     "not dead"
   ],
-  "description": "## Project setup ``` npm install ```",
-  "main": "babel.config.js",
   "keywords": [],
-  "author": "",
   "license": "ISC"
 }
