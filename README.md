@@ -1,5 +1,9 @@
 # Sustech-Store-Front
 
+此项目为课程项目，不再维护，仅供参考
+
+后端地址:https://github.com/sdww0/SUSTech-Store-Back
+
 ## 运行命令
 
 1. npm install 
